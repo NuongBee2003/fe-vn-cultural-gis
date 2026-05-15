@@ -1,44 +1,19 @@
 ﻿import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import {
   UserPlus,
   LogIn,
   Star,
-  Home,
-  Sparkles,
-  Users,
-  Clock,
-  Palette,
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
 import NavItem from "./NavItem";
 
-const NAV_ITEMS = [
-  { label: "Trang chủ", icon: Home, href: "/" },
-  {
-    label: "Trải nghiệm",
-    icon: Sparkles,
-    children: [
-      { label: "Triển lãm ảo", href: "#" },
-      { label: "Tạo ảnh", href: "#" },
-    ],
-  },
-  { label: "Cộng đồng", icon: Users, href: "#" },
-  { label: "Dòng thời gian", icon: Clock, href: "#" },
-  {
-    label: "Văn hóa",
-    icon: Palette,
-    children: [
-      { label: "Ẩm thực", href: "#" },
-      { label: "Phong tục tập quán", href: "#" },
-      { label: "Nghệ thuật dân gian", href: "#" },
-    ],
-  },
-];
+import { MENU_NAV_ITEMS } from "@/constants/menuNav";
+import { PATHS } from "@/constants/paths";
 
 
-export default function Sidebar() {
-  const [active, setActive] = useState("Trang chủ");
+export default function Menu() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -52,8 +27,8 @@ export default function Sidebar() {
         ${collapsed ? "justify-center" : "justify-between gap-2"}`}
       >
         {!collapsed && (
-          <a
-            href="/"
+          <NavLink
+            to={PATHS.HOME}
             className="flex items-center gap-2.5 no-underline overflow-hidden"
           >
             <div className="w-[34px] h-[34px] rounded-full border border-[var(--brand-primary)] flex items-center justify-center shrink-0 bg-[var(--brand-primary-08)]">
@@ -70,7 +45,7 @@ export default function Sidebar() {
                 Di Sản <em className="text-[var(--brand-primary)]">Việt.</em>
               </div>
             </div>
-          </a>
+          </NavLink>
         )}
 
 
@@ -97,12 +72,10 @@ export default function Sidebar() {
             Điều hướng
           </div>
         )}
-        {NAV_ITEMS.map((item) => (
+        {MENU_NAV_ITEMS.map((item) => (
           <NavItem
             key={item.label}
             item={item}
-            active={active}
-            onClick={setActive}
             collapsed={collapsed}
           />
         ))}

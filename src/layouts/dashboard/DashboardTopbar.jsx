@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { PanelLeft } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { getDashboardBreadcrumbs } from "@/features/dash/type/sidebartype";
+import { getDashboardBreadcrumbs } from "@/constants/dashboardNav";
 
 export default function DashboardTopbar({ className, onToggleSidebar }) {
   const { pathname } = useLocation();
@@ -39,7 +39,12 @@ export default function DashboardTopbar({ className, onToggleSidebar }) {
                       {bc.label}
                     </Link>
                   ) : (
-                    <span className={cn("truncate", isLast ? "text-foreground font-medium" : "")}>
+                    <span
+                      className={cn(
+                        "truncate",
+                        isLast ? "text-foreground font-medium" : "",
+                      )}
+                    >
                       {bc.label}
                     </span>
                   )}

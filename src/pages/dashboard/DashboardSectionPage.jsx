@@ -1,7 +1,4 @@
-export default function DashboardSectionPage({
-  title,
-  description,
-}) {
+export default function DashboardSectionPage({ title, description }) {
   return (
     <main className="px-6 py-5">
       <div className="flex items-baseline gap-3">

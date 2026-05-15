@@ -1,4 +1,59 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Tailwind v4 theme token mapping (used by shadcn classes) ─── */
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Geist Variable', sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL / MAP PAGE styles  — completely untouched by dashboard
+   ───────────────────────────────────────────────────────────────── */
 
 html,
 body {
@@ -15,31 +70,69 @@ body {
   overflow: hidden;
 }
 
+@layer base {
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Project brand tokens — used by the map/user side only */
 :root {
-  /* Brand */
+  --radius: 0.625rem;
+
+  /* shadcn fallback values (neutral, won't affect map page visually
+     since map page doesn't use bg-background / text-foreground) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* ── Map / user page brand palette ── */
   --brand-primary: #C9A84C;
   --brand-on-primary: #2C1810;
   --brand-bg: #241209;
 
-  /* Accent / neutrals */
   --muted-1: #C4B89A;
   --muted-2: #F5EDD6;
 
-  /* Category colors */
   --cat-quanan-color: #A32D2D;
   --cat-quanan-bg: #FCEBEB;
-
   --cat-quancafe-color: #0F6E56;
   --cat-quancafe-bg: #E1F5EE;
-
   --cat-ditich-color: #1D4ED8;
   --cat-ditich-bg: #EFF6FF;
 
-  /* Map marker fallback */
   --marker-quanan: #E57373;
   --marker-quancafe: #4DB6AC;
   --marker-ditich: #64B5F6;
-  /* Brand variants and translucent shades used across the UI */
+
   --brand-primary-08: rgba(201,168,76,0.08);
   --brand-primary-07: rgba(201,168,76,0.07);
   --brand-primary-10: rgba(201,168,76,0.1);
@@ -49,8 +142,96 @@ body {
   --brand-primary-35: rgba(201,168,76,0.35);
   --brand-primary-50: rgba(201,168,76,0.5);
   --brand-primary-45: rgba(201,168,76,0.45);
-
   --brand-primary-variant: #D4B55A;
   --overlay-dark: rgba(44,24,16,0.85);
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   DASHBOARD THEME — scoped to [data-theme="dashboard"]
+   Clean white/light palette. Zero leak to map page.
+   ───────────────────────────────────────────────────────────────── */
+
+[data-theme="dashboard"] {
+  color-scheme: light;
+
+  /* ── Base surfaces ── */
+  --background:        oklch(1 0 0);            /* pure white              */
+  --foreground:        oklch(0.13 0.01 264);    /* near-black slate text   */
+
+  --card:              oklch(1 0 0);
+  --card-foreground:   oklch(0.13 0.01 264);
+
+  --popover:           oklch(1 0 0);
+  --popover-foreground: oklch(0.13 0.01 264);
+
+  /* ── Brand accent — slate-indigo ── */
+  --primary:           oklch(0.44 0.18 264);    /* indigo-700 #4338ca      */
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* ── Secondary / muted ── */
+  --secondary:         oklch(0.96 0.004 264);   /* slate-100               */
+  --secondary-foreground: oklch(0.22 0.01 264);
+
+  --muted:             oklch(0.96 0.004 264);   /* slate-50 / 100          */
+  --muted-foreground:  oklch(0.50 0.008 264);   /* slate-400 dimmed text   */
+
+  --accent:            oklch(0.94 0.012 264);   /* slate-100 hover         */
+  --accent-foreground: oklch(0.22 0.01 264);
+
+  /* ── Status ── */
+  --destructive:       oklch(0.58 0.24 27);     /* red-600                 */
+
+  /* ── Borders & inputs ── */
+  --border:            oklch(0.90 0.006 264);   /* slate-200 thin lines    */
+  --input:             oklch(0.93 0.005 264);
+  --ring:              oklch(0.55 0.18 264);
+
+  /* ── Charts ── */
+  --chart-1:           oklch(0.55 0.18 264);
+  --chart-2:           oklch(0.60 0.15 200);
+  --chart-3:           oklch(0.65 0.16 160);
+  --chart-4:           oklch(0.70 0.14 300);
+  --chart-5:           oklch(0.68 0.18 30);
+
+  /* ── Sidebar — very light gray, distinct from main content ── */
+  --sidebar:                    oklch(0.975 0.004 264);  /* slate-50         */
+  --sidebar-foreground:         oklch(0.22 0.01 264);
+  --sidebar-primary:            oklch(0.44 0.18 264);    /* indigo accent    */
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent:             oklch(0.91 0.010 264);   /* slate-200 hover  */
+  --sidebar-accent-foreground:  oklch(0.22 0.01 264);
+  --sidebar-border:             oklch(0.90 0.006 264);
+  --sidebar-ring:               oklch(0.55 0.18 264);
+}
+
+/* Active nav item — soft indigo pill */
+[data-theme="dashboard"] .bg-muted {
+  background-color: oklch(0.91 0.012 264) !important;
+  color: oklch(0.22 0.01 264) !important;
+}
+
+/* Hover states */
+[data-theme="dashboard"] .hover\:bg-muted:hover {
+  background-color: oklch(0.94 0.008 264) !important;
+}
+
+/* Content area — very faint slate wash */
+[data-theme="dashboard"] .bg-muted\/40 {
+  background-color: oklch(0.97 0.004 264 / 70%) !important;
+}
+
+/* Scrollbar styling */
+[data-theme="dashboard"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+[data-theme="dashboard"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="dashboard"] ::-webkit-scrollbar-thumb {
+  background: oklch(0.84 0.006 264);
+  border-radius: 3px;
+}
+[data-theme="dashboard"] ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.74 0.008 264);
+}

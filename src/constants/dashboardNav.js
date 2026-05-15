@@ -23,7 +23,6 @@ export const DASHBOARD_NAV_ITEMS = [
   {
     label: "Quản lý nội dung cộng đồng",
     icon: MessageSquareText,
-    base: "/dashboard/community",
     children: [
       { label: "Quản lý bài viết", to: "/dashboard/community/posts" },
       { label: "Quản lý đánh giá", to: "/dashboard/community/reviews" },
@@ -44,7 +43,10 @@ export const DASHBOARD_NAV_ITEMS = [
     base: "/dashboard/categories",
     children: [
       { label: "Quản lý ẩm thực", to: "/dashboard/categories/foods" },
-      { label: "Quản lý di tích lịch sử", to: "/dashboard/categories/historical-places" },
+      {
+        label: "Quản lý di tích lịch sử",
+        to: "/dashboard/categories/historical-places",
+      },
     ],
   },
   {

@@ -1,11 +1,9 @@
 import * as React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import {
-  ChevronDown,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { DASHBOARD_NAV_ITEMS } from "@/features/dash/type/sidebartype";
+import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboardNav";
 
 function NavItemLink({ to, icon: Icon, label }) {
   return (
@@ -115,9 +113,7 @@ export default function DashboardSidebar() {
                 item={item}
                 pathname={pathname}
                 open={openBase === item.base}
-                onOpenChange={(next) =>
-                  setOpenBase(next ? item.base : null)
-                }
+                onOpenChange={(next) => setOpenBase(next ? item.base : null)}
               />
             ) : (
               <NavItemLink

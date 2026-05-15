@@ -1,4 +1,3 @@
-import React from "react";
 import { Search, X } from "lucide-react";
 
 export default function SearchBar({ search, setSearch }) {
@@ -11,14 +10,14 @@ export default function SearchBar({ search, setSearch }) {
         placeholder="Tìm địa điểm..."
         className="flex-1 border-none outline-none text-[13.5px] text-gray-800 bg-transparent"
       />
-      {search && (
+      {search ? (
         <button
           onClick={() => setSearch("")}
           className="p-0 bg-transparent border-none cursor-pointer flex items-center"
         >
           <X size={13} className="text-gray-400" />
         </button>
-      )}
+      ) : null}
     </div>
   );
 }

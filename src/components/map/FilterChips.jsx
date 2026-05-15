@@ -1,6 +1,9 @@
-import React from "react";
 import { MapPin } from "lucide-react";
-import { FILTERS, FILTER_ACTIVE_STYLE, ALL_LOCATIONS_COUNT } from "../../../data/filters";
+import {
+  FILTERS,
+  FILTER_ACTIVE_STYLE,
+  ALL_LOCATIONS_COUNT,
+} from "@/constants/mapFilters";
 
 export default function FilterChips({ activeFilter, setActiveFilter }) {
   return (
@@ -20,7 +23,7 @@ export default function FilterChips({ activeFilter, setActiveFilter }) {
                     }`}
             style={isActive ? FILTER_ACTIVE_STYLE[f.key] : {}}
           >
-            {FIcon && <FIcon size={13} />}
+            {FIcon ? <FIcon size={13} /> : null}
             {f.label}
           </button>
         );

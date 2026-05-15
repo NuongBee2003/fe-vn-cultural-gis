@@ -1,15 +1,19 @@
 import { Outlet } from "react-router-dom";
-import DashboardSidebar from "@/features/dash/components/DashboardSidebar";
-import DashboardTopbar from "@/features/dash/components/DashboardTopbar";
-import ViewHeader from "@/components/ViewHeader";
-import logoVcm from "@/assets/logo-VCM.png";
 import { useState } from "react";
+
+import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
+import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
+import ViewHeader from "@/layouts/dashboard/ViewHeader";
+import logoVcm from "@/assets/logo-vcm.png";
 
 export default function DashboardLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden bg-background text-foreground">
+    <div
+      data-theme="dashboard"
+      className="flex h-screen w-screen flex-col overflow-hidden bg-background text-foreground"
+    >
       <ViewHeader
         logo={
           <img
