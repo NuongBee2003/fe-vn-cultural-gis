@@ -2,12 +2,12 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 // no hooks needed here
 import { MapPin } from "lucide-react";
 import "leaflet/dist/leaflet.css";
-import { ALL_LOCATIONS, CATEGORY_STYLES } from "../../data/locations";
-import { createCustomIcon } from "../../utils/icons";
+import { ALL_LOCATIONS, CATEGORY_STYLES } from "../../../data/locations";
+import { createCustomIcon } from "../../../utils/icons";
 
-import Food_SVG from "../../assets/icons/coffee-svgrepo-com.svg?raw";
-import Coffee_SVG from "../../assets/icons/food-dinner-svgrepo-com.svg?raw";
-import DiTich_SVG from "../../assets/icons/museum-svgrepo-com.svg?raw";
+import Food_SVG from "../../../assets/icons/food-dinner-svgrepo-com.svg";
+import Coffee_SVG from "../../../assets/icons/coffee-svgrepo.svg";
+import DiTich_SVG from "../../../assets/icons/museum-svgrepo-com.svg";
 
 export default function Map({ activeFilter = "all", search = "" }) {
   const filtered = ALL_LOCATIONS.filter((loc) => {
