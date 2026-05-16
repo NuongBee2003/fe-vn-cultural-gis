@@ -1,9 +1,5 @@
 import { MapPin } from "lucide-react";
-import {
-  FILTERS,
-  FILTER_ACTIVE_STYLE,
-  ALL_LOCATIONS_COUNT,
-} from "@/constants/mapFilters";
+import { FILTERS, FILTER_ACTIVE_STYLE } from "@/constants/mapFilters";
 
 export default function FilterChips({ activeFilter, setActiveFilter }) {
   return (
@@ -28,14 +24,6 @@ export default function FilterChips({ activeFilter, setActiveFilter }) {
           </button>
         );
       })}
-
-      <div
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-medium text-[var(--brand-primary)] shadow-md backdrop-blur-sm"
-        style={{ background: "var(--overlay-dark)" }}
-      >
-        <MapPin size={11} />
-        {ALL_LOCATIONS_COUNT} địa điểm
-      </div>
     </div>
   );
 }

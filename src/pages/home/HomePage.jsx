@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Map from "@/components/map/Map";
-import SearchBar from "@/components/map/SearchBar";
-import FilterChips from "@/components/map/FilterChips";
+import Map from "@/components/user/map/Map";
+import SearchBar from "@/components/user/map/SearchBar";
+import FilterChips from "@/components/user/map/FilterChips";
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("all");

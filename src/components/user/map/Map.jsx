@@ -8,7 +8,15 @@ import { createCustomIcon } from "@/utils/icons";
 
 import Food_SVG from "@/assets/icons/food-dinner-svgrepo-com.svg?raw";
 import Coffee_SVG from "@/assets/icons/coffee-svgrepo.svg?raw";
-import DiTich_SVG from "@/assets/icons/museum-svgrepo-com.svg?raw";
+import DiTich_SVG from "@/assets/icons/ditich-svgrepo-com.svg?raw";
+import Default_Location_SVG from "@/assets/icons/map-point-search-svgrepo-com.svg?raw";
+import HoiQuan_SVG from "@/assets/icons/hoiquan-svgrepo-com.svg?raw";
+import BaoTang_SVG from "@/assets/icons/museum-svgrepo-com.svg?raw";
+import NhaHat_SVG from "@/assets/icons/nhahat-svgrepo-com.svg?raw";
+import Chua_SVG from "@/assets/icons/pagoda-china-svgrepo-com.svg?raw";
+import Dinh_SVG from "@/assets/icons/Dinh-svgrepo-com.svg?raw";
+import Lang_SVG from "@/assets/icons/ho-chi-ming-mausoleum-svgrepo-com.svg?raw";
+import Den_SVG from "@/assets/icons/temple-structure-svgrepo-com.svg?raw";
 
 export default function Map({ activeFilter = "all", search = "" }) {
   const iconByCategory = useMemo(() => {
@@ -18,7 +26,27 @@ export default function Map({ activeFilter = "all", search = "" }) {
     for (const cat of Object.keys(CATEGORY_STYLES)) {
       const style = CATEGORY_STYLES[cat];
       const inner =
-        cat === "Quán ăn" ? Food_SVG : cat === "Quán cafe" ? Coffee_SVG : DiTich_SVG;
+        cat === "Quán ăn"
+          ? Food_SVG
+          : cat === "Quán cafe"
+            ? Coffee_SVG
+            : cat === "Di tích"
+              ? DiTich_SVG
+              : cat === "Hội quán"
+                ? HoiQuan_SVG
+                : cat === "Bảo tàng"
+                  ? BaoTang_SVG
+                  : cat === "Nhà hát"
+                    ? NhaHat_SVG
+                    : cat === "Chùa"
+                      ? Chua_SVG
+                      : cat === "Đình"
+                        ? Dinh_SVG
+                        : cat === "Lăng"
+                          ? Lang_SVG
+                          : cat === "Đền"
+                            ? Den_SVG
+                            : Default_Location_SVG;
       cache[cat] = createCustomIcon(style.markerColor, inner);
     }
 
@@ -89,14 +117,20 @@ export default function Map({ activeFilter = "all", search = "" }) {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <circle cx="12" cy="12" r="8" fill="white" opacity="0.2" />
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="8"
+                          fill="white"
+                          opacity="0.2"
+                        />
                       </svg>
                     </div>
                   </div>
 
                   <p className="mt-3 text-[13px] leading-relaxed text-gray-600">
-                    Không gian cực chill với view đẹp, thích hợp check-in cuối tuần,
-                    đồ uống ngon và nhân viên thân thiện.
+                    Không gian cực chill với view đẹp, thích hợp check-in cuối
+                    tuần, đồ uống ngon và nhân viên thân thiện.
                   </p>
 
                   <div className="mt-3 flex gap-2 overflow-x-auto pb-1">

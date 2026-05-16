@@ -8,7 +8,7 @@
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: "Geist Variable", sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -115,35 +115,61 @@ body {
   --sidebar-ring: oklch(0.708 0 0);
 
   /* ── Map / user page brand palette ── */
-  --brand-primary: #C9A84C;
-  --brand-on-primary: #2C1810;
+  --brand-primary: #c9a84c;
+  --brand-on-primary: #2c1810;
   --brand-bg: #241209;
 
-  --muted-1: #C4B89A;
-  --muted-2: #F5EDD6;
+  --muted-1: #c4b89a;
+  --muted-2: #f5edd6;
 
-  --cat-quanan-color: #A32D2D;
-  --cat-quanan-bg: #FCEBEB;
-  --cat-quancafe-color: #0F6E56;
-  --cat-quancafe-bg: #E1F5EE;
-  --cat-ditich-color: #1D4ED8;
-  --cat-ditich-bg: #EFF6FF;
+  --cat-quanan-color: #a32d2d;
+  --cat-quanan-bg: #fcebeb;
+  --cat-quancafe-color: #0f6e56;
+  --cat-quancafe-bg: #e1f5ee;
+  --cat-ditich-color: #1d4ed8;
+  --cat-ditich-bg: #eff6ff;
+  --cat-den-color: #7c3aed;
+  --cat-den-bg: #f5f3ff;
+  --marker-den: #a78bfa;
 
-  --marker-quanan: #E57373;
-  --marker-quancafe: #4DB6AC;
-  --marker-ditich: #64B5F6;
+  --marker-quanan: #e57373;
+  --marker-quancafe: #4db6ac;
+  --marker-ditich: #64b5f6;
 
-  --brand-primary-08: rgba(201,168,76,0.08);
-  --brand-primary-07: rgba(201,168,76,0.07);
-  --brand-primary-10: rgba(201,168,76,0.1);
-  --brand-primary-12: rgba(201,168,76,0.12);
-  --brand-primary-15: rgba(201,168,76,0.15);
-  --brand-primary-18: rgba(201,168,76,0.18);
-  --brand-primary-35: rgba(201,168,76,0.35);
-  --brand-primary-50: rgba(201,168,76,0.5);
-  --brand-primary-45: rgba(201,168,76,0.45);
-  --brand-primary-variant: #D4B55A;
-  --overlay-dark: rgba(44,24,16,0.85);
+  --cat-hoiquan-color: #be185d;
+  --cat-hoiquan-bg: #fff1f2;
+  --cat-baotang-color: #0ea5a4;
+  --cat-baotang-bg: #ecfeff;
+  --cat-nhahat-color: #7c3aed;
+  --cat-nhahat-bg: #f5f3ff;
+  --cat-chua-color: #d97706;
+  --cat-chua-bg: #fffaeb;
+  --cat-dinh-color: #065f46;
+  --cat-dinh-bg: #ecfdf5;
+  --cat-lang-color: #b45309;
+  --cat-lang-bg: #fff7ed;
+
+  --marker-quanan: #e57373;
+  --marker-quancafe: #4db6ac;
+  --marker-ditich: #64b5f6;
+  --marker-hoiquan: #f472b6;
+  --marker-baotang: #06b6d4;
+  --marker-nhahat: #a78bfa;
+  --marker-chua: #f59e0b;
+  --marker-dinh: #10b981;
+  --marker-lang: #f97316;
+
+  --brand-primary-08: rgba(201, 168, 76, 0.08);
+  --brand-primary-07: rgba(201, 168, 76, 0.07);
+  --brand-primary-10: rgba(201, 168, 76, 0.1);
+  --brand-primary-12: rgba(201, 168, 76, 0.12);
+  --brand-primary-15: rgba(201, 168, 76, 0.15);
+  --brand-primary-18: rgba(201, 168, 76, 0.18);
+  --brand-primary-35: rgba(201, 168, 76, 0.35);
+  --brand-primary-50: rgba(201, 168, 76, 0.5);
+  --brand-primary-45: rgba(201, 168, 76, 0.45);
+  --brand-primary-variant: #d4b55a;
+  --overlay-dark: rgba(44, 24, 16, 0.85);
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -155,53 +181,53 @@ body {
   color-scheme: light;
 
   /* ── Base surfaces ── */
-  --background:        oklch(1 0 0);            /* pure white              */
-  --foreground:        oklch(0.13 0.01 264);    /* near-black slate text   */
+  --background: oklch(1 0 0); /* pure white              */
+  --foreground: oklch(0.13 0.01 264); /* near-black slate text   */
 
-  --card:              oklch(1 0 0);
-  --card-foreground:   oklch(0.13 0.01 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.01 264);
 
-  --popover:           oklch(1 0 0);
+  --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.13 0.01 264);
 
   /* ── Brand accent — slate-indigo ── */
-  --primary:           oklch(0.44 0.18 264);    /* indigo-700 #4338ca      */
+  --primary: oklch(0.44 0.18 264); /* indigo-700 #4338ca      */
   --primary-foreground: oklch(0.99 0 0);
 
   /* ── Secondary / muted ── */
-  --secondary:         oklch(0.96 0.004 264);   /* slate-100               */
+  --secondary: oklch(0.96 0.004 264); /* slate-100               */
   --secondary-foreground: oklch(0.22 0.01 264);
 
-  --muted:             oklch(0.96 0.004 264);   /* slate-50 / 100          */
-  --muted-foreground:  oklch(0.50 0.008 264);   /* slate-400 dimmed text   */
+  --muted: oklch(0.96 0.004 264); /* slate-50 / 100          */
+  --muted-foreground: oklch(0.5 0.008 264); /* slate-400 dimmed text   */
 
-  --accent:            oklch(0.94 0.012 264);   /* slate-100 hover         */
+  --accent: oklch(0.94 0.012 264); /* slate-100 hover         */
   --accent-foreground: oklch(0.22 0.01 264);
 
   /* ── Status ── */
-  --destructive:       oklch(0.58 0.24 27);     /* red-600                 */
+  --destructive: oklch(0.58 0.24 27); /* red-600                 */
 
   /* ── Borders & inputs ── */
-  --border:            oklch(0.90 0.006 264);   /* slate-200 thin lines    */
-  --input:             oklch(0.93 0.005 264);
-  --ring:              oklch(0.55 0.18 264);
+  --border: oklch(0.9 0.006 264); /* slate-200 thin lines    */
+  --input: oklch(0.93 0.005 264);
+  --ring: oklch(0.55 0.18 264);
 
   /* ── Charts ── */
-  --chart-1:           oklch(0.55 0.18 264);
-  --chart-2:           oklch(0.60 0.15 200);
-  --chart-3:           oklch(0.65 0.16 160);
-  --chart-4:           oklch(0.70 0.14 300);
-  --chart-5:           oklch(0.68 0.18 30);
+  --chart-1: oklch(0.55 0.18 264);
+  --chart-2: oklch(0.6 0.15 200);
+  --chart-3: oklch(0.65 0.16 160);
+  --chart-4: oklch(0.7 0.14 300);
+  --chart-5: oklch(0.68 0.18 30);
 
   /* ── Sidebar — very light gray, distinct from main content ── */
-  --sidebar:                    oklch(0.975 0.004 264);  /* slate-50         */
-  --sidebar-foreground:         oklch(0.22 0.01 264);
-  --sidebar-primary:            oklch(0.44 0.18 264);    /* indigo accent    */
+  --sidebar: oklch(0.975 0.004 264); /* slate-50         */
+  --sidebar-foreground: oklch(0.22 0.01 264);
+  --sidebar-primary: oklch(0.44 0.18 264); /* indigo accent    */
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent:             oklch(0.91 0.010 264);   /* slate-200 hover  */
-  --sidebar-accent-foreground:  oklch(0.22 0.01 264);
-  --sidebar-border:             oklch(0.90 0.006 264);
-  --sidebar-ring:               oklch(0.55 0.18 264);
+  --sidebar-accent: oklch(0.91 0.01 264); /* slate-200 hover  */
+  --sidebar-accent-foreground: oklch(0.22 0.01 264);
+  --sidebar-border: oklch(0.9 0.006 264);
+  --sidebar-ring: oklch(0.55 0.18 264);
 }
 
 /* Active nav item — soft indigo pill */

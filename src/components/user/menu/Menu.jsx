@@ -8,10 +8,9 @@ import {
   PanelLeftOpen,
 } from "lucide-react";
 import NavItem from "./NavItem";
-
+import logoVcm from "@/assets/logo-vcm.png";
 import { MENU_NAV_ITEMS } from "@/constants/menuNav";
 import { PATHS } from "@/constants/paths";
-
 
 export default function Menu() {
   const [collapsed, setCollapsed] = useState(false);
@@ -31,24 +30,26 @@ export default function Menu() {
             to={PATHS.HOME}
             className="flex items-center gap-2.5 no-underline overflow-hidden"
           >
-            <div className="w-[34px] h-[34px] rounded-full border border-[var(--brand-primary)] flex items-center justify-center shrink-0 bg-[var(--brand-primary-08)]">
-              <Star size={14} fill="var(--brand-primary)" stroke="none" />
+            <div className="w-[34px] h-[34px] rounded-full border border-[var(--brand-primary)] flex items-center justify-center shrink-0 bg-white">
+              <img
+                src={logoVcm}
+                alt="VietCulture"
+                className=" object-contain"
+              />
             </div>
             <div className="leading-tight overflow-hidden">
               <div className="text-[9px] tracking-widest font-medium uppercase text-[var(--brand-primary)] whitespace-nowrap">
-                Nền tảng số
+                VietCulture
               </div>
               <div
                 className="text-[14px] font-semibold text-[var(--muted-2)] whitespace-nowrap"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                Di Sản <em className="text-[var(--brand-primary)]">Việt.</em>
+                Map
               </div>
             </div>
           </NavLink>
         )}
-
-
 
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -73,11 +74,7 @@ export default function Menu() {
           </div>
         )}
         {MENU_NAV_ITEMS.map((item) => (
-          <NavItem
-            key={item.label}
-            item={item}
-            collapsed={collapsed}
-          />
+          <NavItem key={item.label} item={item} collapsed={collapsed} />
         ))}
       </nav>
 
