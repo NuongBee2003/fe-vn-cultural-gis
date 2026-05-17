@@ -3,7 +3,7 @@ import { FILTERS, FILTER_ACTIVE_STYLE } from "@/constants/mapFilters";
 
 export default function FilterChips({ activeFilter, setActiveFilter }) {
   return (
-    <div className="flex gap-2 flex-wrap pointer-events-auto">
+    <div className="flex gap-2 overflow-x-auto flex-nowrap pb-2 pointer-events-auto custom-scrollbar">
       {FILTERS.map((f) => {
         const isActive = activeFilter === f.key;
         const FIcon = f.icon;
@@ -11,7 +11,7 @@ export default function FilterChips({ activeFilter, setActiveFilter }) {
           <button
             key={f.key}
             onClick={() => setActiveFilter(f.key)}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12.5px] border-[1.5px] cursor-pointer shadow-md transition-all duration-150
+            className={`shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12.5px] border-[1.5px] cursor-pointer shadow-md transition-all duration-150
                     ${
                       isActive
                         ? "font-semibold"

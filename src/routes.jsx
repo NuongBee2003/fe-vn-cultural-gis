@@ -6,7 +6,8 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardSectionPage from "@/pages/dashboard/DashboardSectionPage";
 import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
-import HolidaysPage from "@/pages/home/HolidaysPage";
+import HolidaysPage from "@/pages/holiday/HolidaysPage";
+import HistoryPage from "@/pages/history/HistoryPage";
 
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
@@ -28,6 +29,15 @@ export const routeConfig = [
     title: "Lịch lễ Việt Nam",
   },
 
+  {
+    path: PATHS.HISTORY,
+    element: (
+      <MapLayout>
+        <HistoryPage />
+      </MapLayout>
+    ),
+    title: "Hành trình lịch sử Việt Nam",
+  },
   {
     path: PATHS.DASHBOARD,
     element: <DashboardLayout />,

@@ -1,15 +1,15 @@
-import Firework from "@/assets/img/firework.jpg";
-import LunarNewYear from "@/assets/img/lunar-newyear.jpg";
-import GiaiPhong from "@/assets/img/ngay-giai-phong-mien-nam.jpg";
-import NhaGiao from "@/assets/img/nha-giao-viet-nam.jpg";
-import PhuNuVN from "@/assets/img/phu-nu-vn.jpg";
-import QTPhuNu from "@/assets/img/qt-phu-nu.jpg";
-import QTThieuNhi from "@/assets/img/qt-thieu-nhi.jpg";
-import QuocKhanh from "@/assets/img/Quoc-khanh.jpg";
-import QTLaoDong from "@/assets/img/quoc-te-lao-dong.png";
-import TrungThu from "@/assets/img/trung-thu.jpg";
-import Valungtung from "@/assets/img/valentine.jpg";
-import GioTo from "@/assets/img/gio-to-hung-vuong.jpg";
+import Firework from "@/assets/img/holiday/firework.jpg";
+import LunarNewYear from "@/assets/img/holiday/lunar-newyear.jpg";
+import GiaiPhong from "@/assets/img/holiday/ngay-giai-phong-mien-nam.jpg";
+import NhaGiao from "@/assets/img/holiday/nha-giao-viet-nam.jpg";
+import PhuNuVN from "@/assets/img/holiday/phu-nu-vn.jpg";
+import QTPhuNu from "@/assets/img/holiday/qt-phu-nu.jpg";
+import QTThieuNhi from "@/assets/img/holiday/qt-thieu-nhi.jpg";
+import QuocKhanh from "@/assets/img/holiday/Quoc-khanh.jpg";
+import QTLaoDong from "@/assets/img/holiday/quoc-te-lao-dong.png";
+import TrungThu from "@/assets/img/holiday/trung-thu.jpg";
+import Valungtung from "@/assets/img/holiday/valentine.jpg";
+import GioTo from "@/assets/img/holiday/gio-to-hung-vuong.jpg";
 export const HOLIDAYS = [
   {
     title: "Ngày lễ chính",
