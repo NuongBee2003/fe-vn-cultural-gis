@@ -19,7 +19,8 @@ export default function Menu() {
     <aside
       className={` z-[2000] h-screen bg-[var(--brand-bg)] border-r border-[var(--brand-primary-18)] flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-2xl
         ${collapsed ? "w-16" : "w-60"}`}
-    >
+    > 
+    
       {/* Brand + Toggle */}
       <div
         className={`border-b border-[var(--brand-primary-18)] flex items-center min-h-[64px] px-3 py-3.5

@@ -4,6 +4,9 @@ import { Navigate } from "react-router-dom";
 import MapLayout from "@/layouts/MapLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardSectionPage from "@/pages/dashboard/DashboardSectionPage";
+import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
+import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
+import HolidaysPage from "@/pages/home/HolidaysPage";
 
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
@@ -14,6 +17,15 @@ export const routeConfig = [
     path: PATHS.HOME,
     element: <MapLayout />,
     title: "Di Sản Việt — Bản đồ văn hóa",
+  },
+  {
+    path: PATHS.HOLIDAYS,
+    element: (
+      <MapLayout>
+        <HolidaysPage />
+      </MapLayout>
+    ),
+    title: "Lịch lễ Việt Nam",
   },
 
   {
@@ -44,10 +56,7 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_PLACES,
-        element: dashPage(
-          "Quản lý địa điểm",
-          "Danh sách và quản lý các địa điểm",
-        ),
+        element: <PlacesManagementPage />,
         title: "Quản lý địa điểm",
       },
       {
@@ -72,8 +81,8 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_CATEGORIES_FOODS,
-        element: dashPage("Quản lý ẩm thực", "Danh mục ẩm thực Việt Nam"),
-        title: "Quản lý ẩm thực",
+        element: <CategoriesManagementPage />,
+        title: "Quản lý thể loại",
       },
       {
         path: PATHS.DASHBOARD_CATEGORIES_HISTORICAL,

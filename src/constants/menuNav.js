@@ -15,6 +15,7 @@ import { PATHS } from "@/constants/paths";
 /** @type {MenuNavItem[]} */
 export const MENU_NAV_ITEMS = [
   { label: "Trang chủ", icon: Home, href: PATHS.HOME },
+  { label: "Lịch lễ", icon: Clock, href: PATHS.HOLIDAYS },
   {
     label: "Trải nghiệm",
     icon: Sparkles,

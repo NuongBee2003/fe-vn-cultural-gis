@@ -40,14 +40,7 @@ export const DASHBOARD_NAV_ITEMS = [
   {
     label: "Quản lý thể loại",
     icon: Tags,
-    base: "/dashboard/categories",
-    children: [
-      { label: "Quản lý ẩm thực", to: "/dashboard/categories/foods" },
-      {
-        label: "Quản lý di tích lịch sử",
-        to: "/dashboard/categories/historical-places",
-      },
-    ],
+    to: "/dashboard/categories",
   },
   {
     label: "Quản lý trải nghiệm",
