@@ -11,7 +11,18 @@ import ImgThoiDaiVuaHung from "@/assets/img/history/thoidaivuahung.jpg";
 import TienSu from "@/assets/img/history/tiensu-hongbang.webp";
 import ImgTruyenThuyetThanhGiong from "@/assets/img/history/truyenthuyetthanhgiong.png";
 import ImgVanLang from "@/assets/img/history/vanlang.jpg";
-
+import ImgChampa from "@/assets/img/history/Champa.webp";
+import ImgChienThangBachDang from "@/assets/img/history/ChienThangBachDang.png";
+import ImgGiuVungDocLap from "@/assets/img/history/GiuVungDocLap.webp";
+import ImgKhoiNghia2BaTrung from "@/assets/img/history/KhoiNghia2BaTrung.jpg";
+import ImgKhoiNghiaBaTrieu from "@/assets/img/history/KhoiNghiaBaTrieu.jpg";
+import ImgKhoiNghiaLyBi from "@/assets/img/history/KhoiNghiaLyBi.jpg";
+import ImgKhoiNghiaMaiThucLoan from "@/assets/img/history/KhoiNghiaMaiThucLoan.jpg";
+import ImgKhoiNghiaPhungHung from "@/assets/img/history/KhoiNghiaPhungHung.jpg";
+import ImgNamVietDietVong from "@/assets/img/history/NamVietDietVong.jpg";
+import ImgNenTuChu from "@/assets/img/history/NenTuChu.jpg";
+import ImgThoiKyBacThuoc from "@/assets/img/history/ThoiKyBacThuoc.png";
+import ImgNhaNuocVanXuan from "@/assets/img/history/NhaNuocVanXuan.webp";
 // History Character Images
 import CharAnDuongVuong from "@/assets/img/history-character/anduongvuong.webp";
 import HungQuocVuong from "@/assets/img/history-character/HungQuocVuong.jpg";
@@ -20,7 +31,16 @@ import LacLongQuan from "@/assets/img/history-character/laclongquan-auco.jpg";
 import CharThanhGiong from "@/assets/img/history-character/thanhgiong.jpg";
 import CharTrieuDa from "@/assets/img/history-character/trieuda.jpg";
 import CharVuaHungVuong from "@/assets/img/history-character/vua-hung-vuong.jpg";
-import CharTanThuyHoang from "@/assets/img/history-character/tanthuyhoang.jpg"
+import CharTanThuyHoang from "@/assets/img/history-character/tanthuyhoang.jpg";
+import CharBaTrieu from "@/assets/img/history-character/BaTrieu.jpg";
+import CharDuongDinhNghe from "@/assets/img/history-character/DuongDinhNghe.webp";
+import CharHaiBaTrung from "@/assets/img/history-character/HaiBaTrung.jpg";
+import CharKhuLien from "@/assets/img/history-character/KhuLien.jpg";
+import CharKhucThuaDu from "@/assets/img/history-character/KhucThuaDu.jpg";
+import CharLyNamDe from "@/assets/img/history-character/LyNamDe.jpg";
+import CharMaiThucLoan from "@/assets/img/history-character/MaiThucLoan.png";
+import CharNgoQuyen from "@/assets/img/history-character/NgoQuyen.jpg";
+import CharPhungHung from "@/assets/img/history-character/PhungHung.webp";
 export const HISTORY_TIMELINE = [
 
   // ─── THỜI TIỀN SỬ & HỒNG BÀNG ─────────────────────────────────────────────
@@ -178,9 +198,9 @@ export const HISTORY_TIMELINE = [
     period: "179 TCN – 938",
     description: "Hơn 1000 năm người Việt sống dưới ách đô hộ của các triều đại phong kiến phương Bắc. Dù bị áp bức, người Việt vẫn giữ vững bản sắc văn hóa và không ngừng đứng lên đấu tranh giành độc lập.",
     figure: "Ngô Quyền",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/800px-Ngo_Quyen.jpg",
+    image: ImgThoiKyBacThuoc,
     figureDescription: "Ngô Quyền là người lãnh đạo cuộc kháng chiến chống quân Nam Hán và giành chiến thắng quyết định trên sông Bạch Đằng năm 938. Chiến thắng này đã chấm dứt hoàn toàn hơn 1000 năm Bắc thuộc, mở ra thời kỳ độc lập, tự chủ lâu dài cho dân tộc Việt Nam. Vì vậy, Ngô Quyền được xem là danh nhân tiêu biểu nhất của thời kỳ Bắc thuộc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/400px-Ngo_Quyen.jpg"
+    figureImage: CharNgoQuyen
   },
   {
     id: 14,
@@ -190,9 +210,9 @@ export const HISTORY_TIMELINE = [
     period: "179 TCN – 111 TCN",
     description: "Triệu Đà sáp nhập Âu Lạc vào nước Nam Việt. Dù vẫn giữ một số tự trị ban đầu, người Việt dần bị đồng hóa văn hóa. Năm 111 TCN, nhà Hán diệt Nam Việt, áp đặt cai trị trực tiếp.",
     figure: "Triệu Đà",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Nam_Viet_map.png/800px-Nam_Viet_map.png",
+    image: ImgAuLacSupDo,
     figureDescription: "Triệu Đà là người đứng đầu nước Nam Việt, sử dụng cả sức mạnh quân sự lẫn mưu kế chính trị để thôn tính Âu Lạc. Ông cho con trai là Trọng Thủy kết hôn với công chúa Mỵ Châu nhằm dò xét bí mật quân sự của Âu Lạc. Sau khi nắm được điểm yếu của nỏ thần, Triệu Đà tiến quân xâm lược và đánh bại An Dương Vương, khiến nước Âu Lạc sụp đổ vào năm 179 TCN",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Nam_Viet_map.png/400px-Nam_Viet_map.png"
+    figureImage: CharTrieuDa
   },
   {
     id: 15,
@@ -202,9 +222,9 @@ export const HISTORY_TIMELINE = [
     period: "111 TCN – 34 SCN",
     description: "Nhà Hán thiết lập bộ máy cai trị chặt chẽ, thi hành chính sách đồng hóa, bóc lột nặng nề. Người Việt vẫn âm thầm duy trì phong tục và tiếng nói riêng, chờ cơ hội vùng dậy.",
     figure: "Trưng Trắc",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Hai_Ba_Trung.jpg/800px-Hai_Ba_Trung.jpg",
+    image: ImgNamVietDietVong,
     figureDescription: "Trưng Trắc là người lãnh đạo cuộc khởi nghĩa Hai Bà Trưng năm 40, cuộc đấu tranh lớn đầu tiên của nhân dân ta chống lại ách đô hộ của nhà Hán. Cuộc khởi nghĩa nhanh chóng giành được chính quyền ở nhiều quận huyện và khôi phục nền tự chủ trong thời gian ngắn. Hình ảnh Trưng Trắc thể hiện rõ tinh thần quật khởi, ý chí độc lập và vai trò của người Việt trong giai đoạn đầu chống chính quyền đô hộ phương Bắc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Hai_Ba_Trung.jpg/400px-Hai_Ba_Trung.jpg"
+    figureImage: CharHaiBaTrung
   },
   {
     id: 16,
@@ -214,9 +234,9 @@ export const HISTORY_TIMELINE = [
     period: "40 SCN – 43 SCN",
     description: "Trưng Trắc và Trưng Nhị phất cờ khởi nghĩa, đánh đuổi thái thú Tô Định, giải phóng 65 thành trì, lập nền độc lập ngắn ngủi. Hai Bà trở thành biểu tượng bất tử về lòng yêu nước của phụ nữ Việt Nam.",
     figure: "Trưng Trắc và Trưng Nhị",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Hai_Ba_Trung.jpg/800px-Hai_Ba_Trung.jpg",
+    image: ImgKhoiNghia2BaTrung,
     figureDescription: "Trưng Trắc là người lãnh đạo chính, Trưng Nhị là em gái, cùng trực tiếp chỉ huy nghĩa quân. Hai bà cùng phất cờ khởi nghĩa năm 40, đánh đuổi quan lại nhà Hán, giành lại quyền tự chủ trong 3 năm. Hai Bà Trưng là biểu tượng tiêu biểu nhất cho tinh thần quật khởi, lòng yêu nước và vai trò của phụ nữ Việt Nam trong lịch sử chống đô hộ",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Hai_Ba_Trung.jpg/400px-Hai_Ba_Trung.jpg"
+    figureImage: CharHaiBaTrung
   },
   {
     id: 17,
@@ -226,9 +246,9 @@ export const HISTORY_TIMELINE = [
     period: "192 SCN",
     description: "Khu Liên lãnh đạo người Chăm nổi dậy ở vùng đất Nhật Nam (miền Trung ngày nay), lập ra vương quốc Champa độc lập. Champa tồn tại hàng nghìn năm và để lại di sản văn hóa phong phú.",
     figure: "Khu Liên",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/My_Son_temples.jpg/800px-My_Son_temples.jpg",
+    image: ImgChampa,
     figureDescription: "Khu Liên là thủ lĩnh đã lãnh đạo cuộc nổi dậy của nhân dân Tượng Lâm năm 192 chống lại sự cai trị của nhà Hán. Cuộc khởi nghĩa thắng lợi, Khu Liên giành quyền tự chủ và đặt nền móng cho sự ra đời của nhà nước Lâm Ấp, tiền thân của vương quốc Champa sau này. Vì vậy, Khu Liên được xem là danh nhân tiêu biểu nhất trong giai đoạn hình thành ban đầu của Champa",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/My_Son_temples.jpg/400px-My_Son_temples.jpg"
+    figureImage: CharKhuLien
   },
   {
     id: 18,
@@ -238,9 +258,9 @@ export const HISTORY_TIMELINE = [
     period: "248 SCN",
     description: "Bà Triệu (Triệu Thị Trinh) cưỡi voi đánh giặc với câu nói bất hủ: 'Tôi muốn cưỡi cơn gió mạnh, đạp luồng sóng dữ'. Dù thất bại, Bà trở thành biểu tượng kiêu hùng của phụ nữ Việt.",
     figure: "Bà Triệu (Triệu Thị Trinh)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ba_Trieu.jpg/800px-Ba_Trieu.jpg",
+    image: ImgKhoiNghiaBaTrieu,
     figureDescription: "Bà Triệu là người lãnh đạo cuộc khởi nghĩa chống lại ách đô hộ của nhà Đông Ngô năm 248. Với ý chí kiên cường và tinh thần bất khuất, bà trở thành biểu tượng tiêu biểu của lòng yêu nước và khát vọng độc lập của dân tộc Việt Nam trong thời kỳ Bắc thuộc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ba_Trieu.jpg/400px-Ba_Trieu.jpg"
+    figureImage: CharBaTrieu
   },
   {
     id: 19,
@@ -250,9 +270,9 @@ export const HISTORY_TIMELINE = [
     period: "542 – 602",
     description: "Lý Bí (Lý Nam Đế) lãnh đạo khởi nghĩa thành công, lập ra nhà nước Vạn Xuân độc lập – đặt tên mang ý nghĩa đất nước mãi mãi mùa xuân. Đây là lần đầu tiên người Việt thành lập nhà nước độc lập có tên gọi riêng.",
     figure: "Lý Bí (Lý Nam Đế)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Ly_Nam_De.jpg/800px-Ly_Nam_De.jpg",
+    image: ImgNhaNuocVanXuan,
     figureDescription: "Lý Bí là người lãnh đạo cuộc khởi nghĩa năm 542 chống ách đô hộ của nhà Lương. Sau thắng lợi, ông xưng đế năm 544, lập ra nhà nước Vạn Xuân, đặt nền móng cho một nhà nước độc lập, tự chủ lâu dài. Vì vậy, Lý Bí (Lý Nam Đế) là danh nhân tiêu biểu nhất của giai đoạn này",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Ly_Nam_De.jpg/400px-Ly_Nam_De.jpg"
+    figureImage: CharLyNamDe
   },
   {
     id: 20,
@@ -262,9 +282,9 @@ export const HISTORY_TIMELINE = [
     period: "722 SCN",
     description: "Mai Thúc Loan (Mai Hắc Đế) phát động cuộc khởi nghĩa lớn chống ách đô hộ nhà Đường, lập triều đình riêng. Dù thất bại, ông là anh hùng tiêu biểu trong chuỗi kháng chiến bất khuất của người Việt.",
     figure: "Mai Thúc Loan",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Mai_Thuc_Loan.jpg/800px-Mai_Thuc_Loan.jpg",
+    image: ImgKhoiNghiaMaiThucLoan,
     figureDescription: "còn gọi là Mai Hắc Đế, là người lãnh đạo cuộc khởi nghĩa lớn chống lại ách đô hộ của nhà Đường vào năm 722 SCN. Xuất thân từ tầng lớp nông dân ở Hoan Châu, ông đã tập hợp đông đảo nhân dân đứng lên phản kháng sự bóc lột nặng nề của chính quyền đô hộ, đặc biệt là việc bắt dân đi cống nạp và lao dịch. Cuộc khởi nghĩa nhanh chóng lan rộng, ông tự xưng là Hoàng đế, lập căn cứ và tổ chức bộ máy cai trị. Dù cuối cùng bị nhà Đường đàn áp, khởi nghĩa Mai Thúc Loan thể hiện tinh thần quật cường của nhân dân ta và để lại dấu ấn mạnh mẽ trong lịch sử đấu tranh giành độc lập thời Bắc thuộc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Mai_Thuc_Loan.jpg/400px-Mai_Thuc_Loan.jpg"
+    figureImage: CharMaiThucLoan
   },
   {
     id: 21,
@@ -274,9 +294,9 @@ export const HISTORY_TIMELINE = [
     period: "791 SCN",
     description: "Phùng Hưng (Bố Cái Đại Vương) lãnh đạo nhân dân nổi dậy, chiếm thành Tống Bình (Hà Nội), cai trị tự chủ trong nhiều năm. Ông được nhân dân tôn thờ như người cha của đất nước.",
     figure: "Phùng Hưng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Phung_Hung.jpg/800px-Phung_Hung.jpg",
+    image: ImgKhoiNghiaPhungHung,
     figureDescription: "Phùng Hưng là hào trưởng có uy tín lớn ở vùng Đường Lâm. Trước sự áp bức, bóc lột nặng nề của chính quyền đô hộ nhà Đường, ông đã tập hợp lực lượng nhân dân nổi dậy khởi nghĩa. Nghĩa quân nhanh chóng chiếm được thành Tống Bình, lật đổ ách cai trị của quan lại phương Bắc và làm chủ đất nước trong một thời gian. Dù khởi nghĩa sau đó bị đàn áp, Phùng Hưng vẫn được nhân dân tôn kính, suy tôn là Bố Cái Đại Vương, thể hiện lòng biết ơn sâu sắc đối với người lãnh đạo đã dám đứng lên vì dân tộc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Phung_Hung.jpg/400px-Phung_Hung.jpg"
+    figureImage: CharPhungHung
   },
   {
     id: 22,
@@ -286,9 +306,9 @@ export const HISTORY_TIMELINE = [
     period: "905 SCN – 931 SCN",
     description: "Khúc Thừa Dụ nhân nhà Đường suy yếu, chiếm quyền cai trị An Nam, đặt nền tảng cho nền tự chủ. Họ Khúc ba đời xây dựng bộ máy hành chính độc lập, chuẩn bị cho nền độc lập hoàn toàn.",
     figure: "Khúc Thừa Dụ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Khuc_Thua_Du.jpg/800px-Khuc_Thua_Du.jpg",
+    image: ImgNenTuChu,
     figureDescription: "Khúc Thừa Dụ là hào trưởng lớn ở Hồng Châu, có thế lực và uy tín sâu rộng trong nhân dân. Trong bối cảnh nhà Đường suy yếu, ông đã giành quyền tự chủ bằng con đường hòa bình, không đổ máu, được chính quyền phương Bắc công nhận chức Tiết độ sứ. Việc này chấm dứt sự cai trị trực tiếp kéo dài hàng thế kỷ, mở ra giai đoạn tự chủ của dân tộc Việt. Khúc Thừa Dụ được xem là người đặt nền móng đầu tiên cho quá trình giành lại độc lập hoàn toàn",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Khuc_Thua_Du.jpg/400px-Khuc_Thua_Du.jpg"
+    figureImage: CharKhucThuaDu
   },
   {
     id: 23,
@@ -298,9 +318,9 @@ export const HISTORY_TIMELINE = [
     period: "931 SCN – 937 SCN",
     description: "Dương Đình Nghệ đánh đuổi quân Nam Hán, giữ vững nền tự chủ cho đất Việt. Ông là người thầy và nhạc phụ của Ngô Quyền, đặt nền tảng cho chiến thắng Bạch Đằng lịch sử.",
     figure: "Dương Đình Nghệ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Duong_Dinh_Nghe.jpg/800px-Duong_Dinh_Nghe.jpg",
+    image: ImgGiuVungDocLap,
     figureDescription: "Dương Đình Nghệ là tướng tài, từng phò tá họ Khúc. Khi nhà Nam Hán đem quân xâm lược, ông đã lãnh đạo quân dân đánh bại quân xâm lược, giữ vững nền tự chủ còn non trẻ. Dưới thời ông, đất nước tương đối ổn định, tạo tiền đề quan trọng cho thắng lợi quyết định của Ngô Quyền sau này. Dương Đình Nghệ là hình mẫu của một vị tướng trung nghĩa, đặt lợi ích dân tộc lên trên hết",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Duong_Dinh_Nghe.jpg/400px-Duong_Dinh_Nghe.jpg"
+    figureImage: CharDuongDinhNghe
   },
   {
     id: 24,
@@ -310,9 +330,9 @@ export const HISTORY_TIMELINE = [
     period: "938 SCN",
     description: "Ngô Quyền dùng kế cắm cọc gỗ bọc sắt dưới lòng sông Bạch Đằng, nhử thuyền chiến Nam Hán vào bẫy khi thủy triều rút, tiêu diệt hoàn toàn quân địch. Chiến thắng chấm dứt hơn 1000 năm Bắc thuộc.",
     figure: "Ngô Quyền",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/800px-Ngo_Quyen.jpg",
+    image: ImgChienThangBachDang,
     figureDescription: "Ngô Quyền là người lãnh đạo cuộc kháng chiến chống quân Nam Hán và giành chiến thắng quyết định trên sông Bạch Đằng năm 938. Chiến thắng này đã chấm dứt hoàn toàn hơn 1000 năm Bắc thuộc, mở ra thời kỳ độc lập, tự chủ lâu dài cho dân tộc Việt Nam. Vì vậy, Ngô Quyền được xem là danh nhân tiêu biểu nhất của thời kỳ Bắc thuộc",
-    figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/400px-Ngo_Quyen.jpg"
+    figureImage: CharNgoQuyen
   },
 
   // ─── TỰ CHỦ & PHONG KIẾN SỚM ───────────────────────────────────────────────
