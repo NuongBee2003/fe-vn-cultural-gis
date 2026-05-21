@@ -80,34 +80,42 @@ export default function Menu() {
       </nav>
 
       {/* Login and Register */}
-      <div className="px-1.5 py-2.5 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
+      <div className="relative z-50 px-1.5 py-2.5 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
         {collapsed ? (
           <>
             <div className="flex justify-center">
-              <button
+              <div
                 title="Đăng ký"
                 className="w-10 h-10 rounded-lg flex items-center justify-center text-[var(--brand-primary)] bg-transparent border border-[var(--brand-primary-35)] cursor-pointer hover:bg-[var(--brand-primary-10)] transition-all"
               >
                 <UserPlus size={15} />
-              </button>
+              </div>
             </div>
             <div className="flex justify-center">
-              <button
+              <NavLink  
+              onClick={()=>{console.log("Nhan")}}
+              to={PATHS.LOGIN}
                 title="Đăng nhập"
                 className="w-10 h-10 rounded-lg flex items-center justify-center text-[var(--brand-on-primary)] bg-[var(--brand-primary)] border-none cursor-pointer hover:bg-[var(--brand-primary-variant)] transition-all"
               >
                 <LogIn size={15} />
-              </button>
+              </NavLink>
             </div>
           </>
         ) : (
           <>
-            <button className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-[var(--brand-primary)] bg-transparent border border-[var(--brand-primary-35)] cursor-pointer transition-all hover:bg-[var(--brand-primary-10)]">
+            <NavLink
+              to={PATHS.REGISTER}
+              className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-[var(--brand-primary)] bg-transparent border border-[var(--brand-primary-35)] cursor-pointer transition-all hover:bg-[var(--brand-primary-10)] no-underline"
+            >
               <UserPlus size={13} /> Đăng ký
-            </button>
-            <button className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold text-[var(--brand-on-primary)] bg-[var(--brand-primary)] border-none cursor-pointer transition-all hover:bg-[var(--brand-primary-variant)]">
+            </NavLink>
+            <NavLink
+              to={PATHS.LOGIN}
+              className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold text-[var(--brand-on-primary)] bg-[var(--brand-primary)] border-none cursor-pointer transition-all hover:bg-[var(--brand-primary-variant)] no-underline"
+            >
               <LogIn size={13} /> Đăng nhập
-            </button>
+            </NavLink>
           </>
         )}
       </div>

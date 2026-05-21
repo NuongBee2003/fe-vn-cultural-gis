@@ -8,6 +8,8 @@ import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
+import LoginPage from "@/pages/login&register/login";
+import RegisterPage from "@/pages/login&register/register";
 
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
@@ -28,7 +30,24 @@ export const routeConfig = [
     ),
     title: "Lịch lễ Việt Nam",
   },
-
+  {
+    path: PATHS.LOGIN,
+    element: (
+      <MapLayout>
+        <LoginPage/>
+      </MapLayout>
+    ),
+    title: "ĐĂNG NHẬP",
+  },
+  {
+  path: PATHS.REGISTER,
+  element: (
+    <MapLayout>
+      <RegisterPage />
+    </MapLayout>
+  ),
+  title: "Đăng ký",
+},
   {
     path: PATHS.HISTORY,
     element: (
