@@ -128,6 +128,13 @@ export default function Map({ activeFilter = "all", search = "" }) {
                     </div>
                   </div>
 
+                  {location.address && (
+                    <div className="mt-3 flex items-start gap-1.5 text-[12px] text-gray-600">
+                      <MapPin size={14} className="mt-0.5 shrink-0 text-gray-400" />
+                      <span className="leading-relaxed">{location.address}</span>
+                    </div>
+                  )}
+
                   <p className="mt-3 text-[13px] leading-relaxed text-gray-600">
                     Không gian cực chill với view đẹp, thích hợp check-in cuối
                     tuần, đồ uống ngon và nhân viên thân thiện.
