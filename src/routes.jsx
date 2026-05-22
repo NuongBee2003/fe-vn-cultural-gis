@@ -33,18 +33,14 @@ export const routeConfig = [
   {
     path: PATHS.LOGIN,
     element: (
-      <MapLayout>
         <LoginPage/>
-      </MapLayout>
     ),
     title: "ĐĂNG NHẬP",
   },
   {
   path: PATHS.REGISTER,
   element: (
-    <MapLayout>
       <RegisterPage />
-    </MapLayout>
   ),
   title: "Đăng ký",
 },

@@ -15,12 +15,12 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[var(--brand-bg)] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-7xl grid lg:grid-cols-2 overflow-hidden rounded-3xl border border-[var(--brand-primary-18)] shadow-2xl bg-white">
+    <div className="h-screen w-full bg-white flex overflow-hidden">
+      <div className="w-full h-full grid lg:grid-cols-2 bg-white">
 
         {/* Left */}
         <div
-          className="hidden lg:flex flex-col justify-end relative overflow-hidden bg-cover bg-center p-12"
+          className="hidden lg:flex flex-col justify-center relative bg-cover bg-center p-12 h-full"
           style={{
             backgroundImage: `url(${VNCulture})`,
           }}
@@ -52,8 +52,8 @@ export default function RegisterPage() {
         </div>
 
         {/* Right */}
-        <div className="flex items-center justify-center p-6 sm:p-10 bg-white">
-          <div className="w-full max-w-md">
+        <div className="flex justify-center p-6 sm:p-10 bg-white h-full overflow-y-auto">
+          <div className="w-full max-w-md my-auto py-8">
             
             {/* Header */}
             <div className="mb-8">

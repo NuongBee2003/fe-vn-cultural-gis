@@ -27,12 +27,12 @@ export default function LoginPage() {
     }
   };
   return (
-    <div className="min-h-screen bg-[var(--brand-bg)] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-5xl grid lg:grid-cols-2 overflow-hidden rounded-3xl border border-[var(--brand-primary-18)] shadow-2xl bg-white">
+    <div className="h-screen w-full bg-white flex overflow-hidden">
+      <div className="w-full h-full grid lg:grid-cols-2 bg-white">
 
         {/* Left */}
         <div
-          className="hidden lg:flex flex-col justify-end relative overflow-hidden bg-cover bg-center p-12"
+          className="hidden lg:flex flex-col justify-end relative bg-cover bg-center p-12 h-full"
           style={{
             backgroundImage: `url(${VNCulture})`,
           }}
@@ -67,8 +67,8 @@ export default function LoginPage() {
         </div>
 
         {/* Right */}
-        <div className="flex items-center justify-center p-6 sm:p-10 bg-white">
-          <div className="w-full max-w-md">
+        <div className="flex justify-center p-6 sm:p-10 bg-white h-full overflow-y-auto">
+          <div className="w-full max-w-md my-auto py-8">
             <div className="mb-8">
               <h2 className="text-4xl font-bold tracking-tight text-gray-900">
                 Đăng nhập
@@ -185,7 +185,7 @@ export default function LoginPage() {
             <p className="text-center text-sm text-gray-500 mt-7">
               Bạn chưa có tài khoản?{" "}
               <NavLink
-                to={PATHS.HOME}
+                to={PATHS.REGISTER}
                 className="text-[var(--brand-primary)] font-semibold hover:underline"
               >
                 Đăng ký ngay
