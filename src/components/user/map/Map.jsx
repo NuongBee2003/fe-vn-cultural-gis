@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { MapPin } from "lucide-react";
+import { useMemo, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, LayersControl } from "react-leaflet";
+import { MapPin, LocateFixed } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 import { ALL_LOCATIONS, CATEGORY_STYLES } from "@/constants/mapLocations";
@@ -59,16 +59,62 @@ export default function Map({ activeFilter = "all", search = "" }) {
     return matchFilter && matchSearch;
   });
 
+  const [mapInstance, setMapInstance] = useState(null);
+  const [userPosition, setUserPosition] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+
+  const locateUser = () => {
+    if (!mapInstance) return;
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const latlng = [latitude, longitude];
+        setUserPosition(latlng);
+        mapInstance.flyTo(latlng, 14);
+        setLoadingLocation(false);
+      },
+      (err) => {
+        console.error(err);
+        alert("Không thể lấy vị trí của bạn. Vui lòng kiểm tra quyền truy cập vị trí.");
+        setLoadingLocation(false);
+      },
+      { enableHighAccuracy: true }
+    );
+  };
+
   return (
-    <MapContainer
-      center={[10.79, 106.68]}
-      zoom={12}
-      style={{ width: "100%", height: "100%" }}
-    >
-      <TileLayer
-        attribution="&copy; OpenStreetMap contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <div className="relative w-full h-full">
+      <MapContainer
+        center={[10.79, 106.68]}
+        zoom={12}
+        style={{ width: "100%", height: "100%", zIndex: 0 }}
+        ref={setMapInstance}
+      >
+        <LayersControl position="bottomright">
+          <LayersControl.BaseLayer checked name="Bản đồ Đường phố">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Bản đồ Vệ tinh">
+            <TileLayer
+              attribution='&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+
+        {userPosition && (
+          <Marker position={userPosition}>
+            <Popup className="rounded-2xl">
+              <div className="p-2 font-semibold text-center text-[13px] whitespace-nowrap">
+                Vị trí hiện tại của bạn
+              </div>
+            </Popup>
+          </Marker>
+        )}
       {filtered.map((location, index) => {
         const style = CATEGORY_STYLES[location.category];
         return (
@@ -127,6 +173,13 @@ export default function Map({ activeFilter = "all", search = "" }) {
                       </svg>
                     </div>
                   </div>
+
+                  {location.address && (
+                    <div className="mt-3 flex items-start gap-1.5 text-[12px] text-gray-600">
+                      <MapPin size={14} className="mt-0.5 shrink-0 text-gray-400" />
+                      <span className="leading-relaxed">{location.address}</span>
+                    </div>
+                  )}
 
                   <p className="mt-3 text-[13px] leading-relaxed text-gray-600">
                     Không gian cực chill với view đẹp, thích hợp check-in cuối
@@ -195,5 +248,20 @@ export default function Map({ activeFilter = "all", search = "" }) {
         );
       })}
     </MapContainer>
+
+      <div className="absolute bottom-[100px] right-[10px] z-[1000]">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            locateUser();
+          }}
+          className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-gray-50 transition-colors cursor-pointer"
+          title="Vị trí của tôi"
+        >
+          <LocateFixed className={`text-blue-600 ${loadingLocation ? 'animate-pulse' : ''}`} size={24} />
+        </button>
+      </div>
+    </div>
   );
 }

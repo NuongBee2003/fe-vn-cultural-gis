@@ -8,6 +8,7 @@ import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
+import StudioPage from "@/pages/studio/StudioPage";
 import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
 
@@ -52,6 +53,15 @@ export const routeConfig = [
       </MapLayout>
     ),
     title: "Hành trình lịch sử Việt Nam",
+  },
+  {
+    path: PATHS.STUDIO,
+    element: (
+      <MapLayout>
+        <StudioPage />
+      </MapLayout>
+    ),
+    title: "Studio Văn Hóa",
   },
   {
     path: PATHS.DASHBOARD,

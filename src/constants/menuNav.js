@@ -22,7 +22,7 @@ export const MENU_NAV_ITEMS = [
     icon: Sparkles,
     children: [
       { label: "Triển lãm ảo", href: "#" },
-      { label: "Tạo ảnh", href: "#" },
+      { label: "Tạo ảnh", href: PATHS.STUDIO },
     ],
   },
   { label: "Cộng đồng", icon: Users, href: "#" },
