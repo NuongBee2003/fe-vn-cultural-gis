@@ -7,7 +7,6 @@ export function useStudio() {
   const [photoUrl, setPhotoUrl] = useState(defaultImg);
   const [selectedStyle, setSelectedStyle] = useState(AI_STYLES[0]);
   const [customPrompt, setCustomPrompt] = useState("");
-  const [caption, setCaption] = useState("Ngàn năm văn hiến");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -75,8 +74,6 @@ export function useStudio() {
     setSelectedStyle,
     customPrompt,
     setCustomPrompt,
-    caption,
-    setCaption,
     isGenerating,
     isGenerated,
     isDownloading,

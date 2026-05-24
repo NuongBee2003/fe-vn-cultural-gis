@@ -10,8 +10,6 @@ export default function StudioControls({
   customPrompt,
   setCustomPrompt,
   buildFinalPrompt,
-  caption,
-  setCaption,
   isGenerating,
   isGenerated,
   isDownloading,
@@ -105,19 +103,8 @@ export default function StudioControls({
           )}
         </div>
 
-        {/* ── 3. Caption + Generate ── */}
+        {/* ── + Generate ── */}
         <div className="px-6 pt-4 pb-4">
-          <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-            <Type size={12} />
-            3. Lời tựa
-          </p>
-          <input
-            type="text"
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-stone-50 text-sm text-stone-700 placeholder:text-stone-300"
-            placeholder="Nhập lời tựa hiển thị trên ảnh..."
-          />
           <button
             onClick={handleGenerate}
             disabled={isGenerating}
