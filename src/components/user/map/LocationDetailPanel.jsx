@@ -1,5 +1,18 @@
+import { useState } from "react";
 import { MapPin, Navigation, Route, X } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
+import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
+
+const GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=900&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=700&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=900&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=750&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=650&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=850&auto=format&fit=crop",
+];
 
 export default function LocationDetailPanel({
   location,
@@ -11,6 +24,13 @@ export default function LocationDetailPanel({
   onClearRoute,
 }) {
   const style = CATEGORY_STYLES[location.category];
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+
+  const openGallery = (index = 0) => {
+    setGalleryIndex(index);
+    setGalleryOpen(true);
+  };
 
   return (
     <div className="pointer-events-auto absolute bottom-0 left-0 right-0 z-[1001] flex max-h-[min(72vh,520px)] w-full flex-col overflow-hidden rounded-t-2xl bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.18)] md:bottom-6 md:left-6 md:right-auto md:max-h-[min(80vh,600px)] md:w-[min(400px,calc(100%-3rem))] md:rounded-2xl md:shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
@@ -28,19 +48,27 @@ export default function LocationDetailPanel({
       </button>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <div className="relative h-[140px] w-full shrink-0 md:h-[160px]">
+        <button
+          type="button"
+          onClick={() => openGallery(0)}
+          className="relative h-[140px] w-full shrink-0 cursor-pointer md:h-[160px]"
+          aria-label="Xem tất cả hình ảnh"
+        >
           <img
-            src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+            src={GALLERY_IMAGES[0]}
             alt=""
             className="h-full w-full object-cover"
           />
+          <span className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+            {GALLERY_IMAGES.length} ảnh
+          </span>
           <div
             className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md"
             style={{ background: style.bg, color: style.color }}
           >
             {location.category}
           </div>
-        </div>
+        </button>
 
         <div className="p-4 pt-3">
           <h3 className="m-0 pr-8 text-[17px] font-bold leading-tight text-gray-900">
@@ -96,19 +124,30 @@ export default function LocationDetailPanel({
           </p>
 
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-            {[
-              "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
-              "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-              "https://images.unsplash.com/photo-1521017432531-fbd92d768814",
-              "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-            ].map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt=""
-                className="h-[64px] w-[64px] shrink-0 rounded-xl object-cover"
-              />
+            {GALLERY_IMAGES.slice(1, 5).map((img, idx) => (
+              <button
+                key={img}
+                type="button"
+                onClick={() => openGallery(idx + 1)}
+                className="shrink-0 overflow-hidden rounded-xl ring-2 ring-transparent transition hover:ring-blue-400 focus:outline-none focus:ring-blue-500"
+                aria-label={`Xem ảnh ${idx + 2}`}
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="h-[64px] w-[64px] object-cover"
+                />
+              </button>
             ))}
+            {GALLERY_IMAGES.length > 5 && (
+              <button
+                type="button"
+                onClick={() => openGallery(0)}
+                className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-xl bg-gray-100 text-[12px] font-semibold text-gray-600 hover:bg-gray-200"
+              >
+                +{GALLERY_IMAGES.length - 5}
+              </button>
+            )}
           </div>
 
           <div className="mt-4 space-y-3 border-t border-gray-100 pt-3">
@@ -160,6 +199,14 @@ export default function LocationDetailPanel({
           {routeLoading ? "Đang tính tuyến..." : "Chỉ đường tới đây"}
         </button>
       </div>
+
+      <ImageMasonryGallery
+        open={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        images={GALLERY_IMAGES}
+        title={location.name}
+        initialIndex={galleryIndex}
+      />
     </div>
   );
 }
