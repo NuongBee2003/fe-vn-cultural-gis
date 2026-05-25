@@ -21,7 +21,7 @@ export const MENU_NAV_ITEMS = [
     label: "Trải nghiệm",
     icon: Sparkles,
     children: [
-      { label: "Triển lãm ảo", href: "#" },
+      { label: "Triển lãm ảo", href: PATHS.EXHIBITION },
       { label: "Tạo ảnh", href: PATHS.STUDIO },
     ],
   },
@@ -31,9 +31,9 @@ export const MENU_NAV_ITEMS = [
     label: "Văn hóa",
     icon: Palette,
     children: [
-      { label: "Ẩm thực", href: "#" },
-      { label: "Phong tục tập quán", href: "#" },
-      { label: "Nghệ thuật dân gian", href: "#" },
+      { label: "Ẩm thực", href: PATHS.CULTURE_FOOD },
+      { label: "Phong tục tập quán", href: PATHS.CULTURE_CUSTOMS },
+      { label: "Nghệ thuật dân gian", href: PATHS.CULTURE_FOLK_ART },
     ],
   },
 ];
