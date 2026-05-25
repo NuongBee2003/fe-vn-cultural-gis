@@ -4,6 +4,11 @@ export const PATHS = {
   HISTORY: "/history",
   LOGIN : "/login",
   REGISTER:"/register",
+  STUDIO: "/studio",
+  EXHIBITION: "/exhibition",
+  CULTURE_FOOD: "/culture/food",
+  CULTURE_CUSTOMS: "/culture/customs",
+  CULTURE_FOLK_ART: "/culture/folk-art",
   DASHBOARD: "/dashboard",
 
   DASHBOARD_USERS: "/dashboard/users",

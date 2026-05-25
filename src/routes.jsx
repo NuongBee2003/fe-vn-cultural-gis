@@ -8,6 +8,11 @@ import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
+import StudioPage from "@/pages/studio/StudioPage";
+import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
+import CultureFoodPage from "@/pages/culture/CultureFoodPage";
+import CultureCustomsPage from "@/pages/culture/CultureCustomsPage";
+import CultureFolkArtPage from "@/pages/culture/CultureFolkArtPage";
 import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
 
@@ -52,6 +57,51 @@ export const routeConfig = [
       </MapLayout>
     ),
     title: "Hành trình lịch sử Việt Nam",
+  },
+  {
+    path: PATHS.STUDIO,
+    element: (
+      <MapLayout>
+        <StudioPage />
+      </MapLayout>
+    ),
+    title: "Studio Văn Hóa",
+  },
+  {
+    path: PATHS.EXHIBITION,
+    element: (
+      <MapLayout>
+        <ExhibitionPage />
+      </MapLayout>
+    ),
+    title: "Triển lãm ảo",
+  },
+  {
+    path: PATHS.CULTURE_FOOD,
+    element: (
+      <MapLayout>
+        <CultureFoodPage />
+      </MapLayout>
+    ),
+    title: "Ẩm thực Việt Nam",
+  },
+  {
+    path: PATHS.CULTURE_CUSTOMS,
+    element: (
+      <MapLayout>
+        <CultureCustomsPage />
+      </MapLayout>
+    ),
+    title: "Phong tục tập quán",
+  },
+  {
+    path: PATHS.CULTURE_FOLK_ART,
+    element: (
+      <MapLayout>
+        <CultureFolkArtPage />
+      </MapLayout>
+    ),
+    title: "Nghệ thuật dân gian",
   },
   {
     path: PATHS.DASHBOARD,
