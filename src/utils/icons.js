@@ -11,26 +11,35 @@ L.Icon.Default.mergeOptions({
 });
 
 // Simplified SVGs and icon HTML generation moved here.
-export function createCustomIcon(markerColor, innerSvg) {
+export function createCustomIcon(markerColor, innerSvg, { active = false } = {}) {
+  const size = active ? 52 : 40;
+  const inner = active ? 26 : 22;
+  const anchor = size / 2;
+
   const html = `
     <div style="
-      width: 40px; height: 40px;
+      width: ${size}px; height: ${size}px;
       background: ${markerColor};
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: ${
+        active
+          ? "0 0 0 4px rgba(37, 99, 235, 0.35), 0 4px 16px rgba(0,0,0,0.35)"
+          : "0 2px 8px rgba(0,0,0,0.3)"
+      };
+      border: ${active ? "3px solid #2563eb" : "2px solid rgba(255,255,255,0.35)"};
+      transition: transform 0.15s ease;
+      transform: ${active ? "scale(1.05)" : "none"};
     ">
-      <div style="width: 22px; height: 22px; display:flex; align-items:center; justify-content:center;">
+      <div style="width: ${inner}px; height: ${inner}px; display:flex; align-items:center; justify-content:center;">
         ${innerSvg}
       </div>
     </div>`;
 
   return L.divIcon({
     html,
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-    popupAnchor: [0, -24],
-    className: "",
+    iconSize: [size, size],
+    iconAnchor: [anchor, anchor],
+    className: active ? "marker-active" : "",
   });
 }
