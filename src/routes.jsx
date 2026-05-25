@@ -13,6 +13,7 @@ import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
 import CultureFoodPage from "@/pages/culture/CultureFoodPage";
 import CultureCustomsPage from "@/pages/culture/CultureCustomsPage";
 import CultureFolkArtPage from "@/pages/culture/CultureFolkArtPage";
+import CommunityPage from "@/pages/community/CommunityPage";
 import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
 
@@ -34,6 +35,15 @@ export const routeConfig = [
       </MapLayout>
     ),
     title: "Lịch lễ Việt Nam",
+  },
+  {
+    path: PATHS.COMMUNITY,
+    element: (
+      <MapLayout>
+        <CommunityPage />
+      </MapLayout>
+    ),
+    title: "Cộng đồng",
   },
   {
     path: PATHS.LOGIN,

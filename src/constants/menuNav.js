@@ -25,7 +25,7 @@ export const MENU_NAV_ITEMS = [
       { label: "Tạo ảnh", href: PATHS.STUDIO },
     ],
   },
-  { label: "Cộng đồng", icon: Users, href: "#" },
+  { label: "Cộng đồng", icon: Users, href: PATHS.COMMUNITY },
   { label: "Hành trình lịch sử Việt Nam", icon: Clock, href: PATHS.HISTORY },
   {
     label: "Văn hóa",
