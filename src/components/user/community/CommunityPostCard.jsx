@@ -54,7 +54,7 @@ export default function CommunityPostCard({ post }) {
                 badge.className
               }
             >
-              {badge.label}
+            
             </span>
           </div>
           <h2 className="mt-1 text-base font-semibold text-slate-900 leading-snug">
