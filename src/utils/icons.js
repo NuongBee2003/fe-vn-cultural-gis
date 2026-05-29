@@ -12,8 +12,8 @@ L.Icon.Default.mergeOptions({
 
 // Simplified SVGs and icon HTML generation moved here.
 export function createCustomIcon(markerColor, innerSvg, { active = false } = {}) {
-  const size = active ? 52 : 40;
-  const inner = active ? 26 : 22;
+  const size = active ? 44 : 32;
+  const inner = active ? 22 : 16;
   const anchor = size / 2;
 
   const html = `

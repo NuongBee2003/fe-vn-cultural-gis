@@ -19,7 +19,7 @@ export default function StudioControls({
   const [showCustomPrompt, setShowCustomPrompt] = useState(false);
 
   return (
-    <div className="w-88 bg-white border-l border-stone-200 flex flex-col shadow-xl z-10 overflow-hidden">
+    <div className="w-full shrink-0 md:w-88 bg-white border-t md:border-t-0 md:border-l border-stone-200 flex flex-col shadow-xl z-10 overflow-visible md:overflow-hidden">
 
       {/* Header */}
       <div className="px-6 py-5 border-b border-stone-100 bg-linear-to-br from-amber-50 to-stone-50">

@@ -338,9 +338,9 @@ export default function CommunityPage() {
   return (
     <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden bg-slate-50">
       <div className="h-full overflow-y-auto" ref={pageScrollRef}>
-        <div className="px-6 py-8">
+        <div className="px-4 pt-14 pb-8 md:px-6 md:py-8">
           <div className="mx-auto w-full max-w-7xl">
-            <div className="sticky top-0 z-[2050] bg-slate-50 pb-4">
+            <div className="sticky top-0 z-[40] bg-slate-50 pb-4">
               <div
                 className={
                   "overflow-hidden transition-[opacity,transform] duration-200 will-change-[opacity,transform] " +

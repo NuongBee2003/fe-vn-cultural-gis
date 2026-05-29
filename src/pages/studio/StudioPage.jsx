@@ -69,7 +69,7 @@ export default function StudioPage() {
   };
 
   return (
-    <div className="flex-1 h-full flex overflow-hidden bg-stone-50">
+    <div className="flex-1 h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden bg-stone-50">
       <StudioPreview
         photoUrl={photoUrl}
         selectedStyle={selectedStyle}
