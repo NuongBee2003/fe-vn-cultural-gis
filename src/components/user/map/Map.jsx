@@ -11,6 +11,7 @@ import "leaflet/dist/leaflet.css";
 
 import { ALL_LOCATIONS, CATEGORY_STYLES } from "@/constants/mapLocations";
 import { createCustomIcon } from "@/utils/icons";
+import { useCategories } from "@/api/useLocationQuery";
 import {
   fetchDrivingRoute,
   formatDistance,
@@ -65,21 +66,37 @@ function locationKey(location, index) {
 }
 
 export default function Map({ activeFilter = "all", search = "" }) {
+  const { data: categories = [] } = useCategories();
+
   const { iconByCategory, activeIconByCategory } = useMemo(() => {
     /** @type {Record<string, L.DivIcon>} */
     const normal = {};
     /** @type {Record<string, L.DivIcon>} */
     const active = {};
 
-    for (const cat of Object.keys(CATEGORY_STYLES)) {
-      const style = CATEGORY_STYLES[cat];
-      const inner = getCategorySvg(cat);
-      normal[cat] = createCustomIcon(style.markerColor, inner);
-      active[cat] = createCustomIcon(style.markerColor, inner, { active: true });
+    // 1. Initialize icons from the dynamic categories list loaded from API
+    for (const c of categories) {
+      const catName = c.name;
+      const style = CATEGORY_STYLES[catName];
+      const markerColor = style?.markerColor || "#3b82f6";
+      const inner = c.icon_marker || getCategorySvg(catName);
+
+      normal[catName] = createCustomIcon(markerColor, inner);
+      active[catName] = createCustomIcon(markerColor, inner, { active: true });
+    }
+
+    // 2. Pre-fill hardcoded CATEGORY_STYLES if API doesn't have them yet (fallback/development)
+    for (const catName of Object.keys(CATEGORY_STYLES)) {
+      if (!normal[catName]) {
+        const style = CATEGORY_STYLES[catName];
+        const inner = getCategorySvg(catName);
+        normal[catName] = createCustomIcon(style.markerColor, inner);
+        active[catName] = createCustomIcon(style.markerColor, inner, { active: true });
+      }
     }
 
     return { iconByCategory: normal, activeIconByCategory: active };
-  }, []);
+  }, [categories]);
 
   const filtered = ALL_LOCATIONS.filter((loc) => {
     const matchFilter = activeFilter === "all" || loc.category === activeFilter;
@@ -270,8 +287,8 @@ export default function Map({ activeFilter = "all", search = "" }) {
               position={[location.lat, location.lng]}
               icon={
                 isActive
-                  ? activeIconByCategory[location.category]
-                  : iconByCategory[location.category]
+                  ? activeIconByCategory[location.category] || createCustomIcon("#3b82f6", getCategorySvg(location.category), { active: true })
+                  : iconByCategory[location.category] || createCustomIcon("#3b82f6", getCategorySvg(location.category))
               }
               zIndexOffset={isActive ? 1000 : 0}
               eventHandlers={{

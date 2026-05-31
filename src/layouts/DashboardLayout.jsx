@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
@@ -8,6 +8,15 @@ import logoVcm from "@/assets/logo-vcm.png";
 
 export default function DashboardLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const adminUser = localStorage.getItem("adminUser");
+    if (adminUser) {
+      const user = JSON.parse(adminUser);
+      setUsername(user.username || "Admin");
+    }
+  }, []);
 
   return (
     <div
@@ -24,7 +33,7 @@ export default function DashboardLayout() {
         }
         title="VietCulture Map"
         description="Bản đồ văn hóa Việt Nam"
-        name={"Nguyễn Thành Đạt"}
+        name={username}
       />
 
       <DashboardTopbar onToggleSidebar={() => setSidebarVisible((v) => !v)} />

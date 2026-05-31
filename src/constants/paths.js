@@ -4,6 +4,7 @@ export const PATHS = {
   HISTORY: "/history",
   LOGIN : "/login",
   REGISTER:"/register",
+  ADMIN_LOGIN: "/admin/login",
   STUDIO: "/studio",
   EXHIBITION: "/exhibition",
   CULTURE_FOOD: "/culture/food",

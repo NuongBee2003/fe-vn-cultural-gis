@@ -10,21 +10,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table-data/table";
-import { FILTERS } from "@/constants/mapFilters";
+import { useCategories } from "@/api/useLocationQuery";
+import { useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/api/categoryApi";
+import CategoryFormModal from "@/components/dashboard/CategoryFormModal";
 
 const PAGE_SIZES = [5, 10, 15, 20];
-
-const CATEGORIES = FILTERS.filter((filter) => filter.key !== "all").map((filter, index) => ({
-  id: index + 1,
-  name: filter.label,
-  key: filter.key,
-  status: "Hoạt động",
-}));
 
 export default function CategoriesManagementPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const { data: rawCategories = [], isLoading, error } = useCategories();
+  const createMutation = useCreateCategory();
+  const updateMutation = useUpdateCategory();
+  const deleteMutation = useDeleteCategory();
+
+  const CATEGORIES = useMemo(() => {
+    if (!rawCategories || !Array.isArray(rawCategories)) {
+      return [];
+    }
+    return rawCategories.map((c, index) => ({
+      id: c.id || index + 1,
+      name: c.name || "",
+      icon_marker: c.icon_marker || "",
+      color: c.color || "#B8922E",
+      key: c.name || index,
+      status: "Hoạt động",
+    }));
+  }, [rawCategories]);
+
+
+
+
+
 
   const filteredCategories = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -35,7 +56,7 @@ export default function CategoriesManagementPage() {
     return CATEGORIES.filter((category) => {
       return category.name.toLowerCase().includes(query);
     });
-  }, [search]);
+  }, [search, CATEGORIES]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCategories.length / pageSize));
 
@@ -60,36 +81,48 @@ export default function CategoriesManagementPage() {
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-[minmax(220px,1fr)_auto] md:w-130">
-          <label className="flex flex-col gap-2">
-            <span className="text-sm text-muted-foreground">Tìm kiếm</span>
-            <Input
-              placeholder="Tên danh mục..."
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-                setPage(1);
-              }}
-            />
-          </label>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="grid gap-3 sm:grid-cols-[minmax(220px,1fr)_auto]">
+            <label className="flex flex-col gap-2">
+              <span className="text-sm text-muted-foreground">Tìm kiếm</span>
+              <Input
+                placeholder="Tên danh mục..."
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
+              />
+            </label>
 
-          <label className="flex flex-col gap-2">
-            <span className="text-sm text-muted-foreground">Số hàng / trang</span>
-            <select
-              className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-              value={pageSize}
-              onChange={(event) => {
-                setPageSize(Number(event.target.value));
-                setPage(1);
-              }}
-            >
-              {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label className="flex flex-col gap-2">
+              <span className="text-sm text-muted-foreground">Số hàng / trang</span>
+              <select
+                className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                value={pageSize}
+                onChange={(event) => {
+                  setPageSize(Number(event.target.value));
+                  setPage(1);
+                }}
+              >
+                {PAGE_SIZES.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <Button
+            onClick={() => {
+              setSelectedCategory(null);
+              setIsModalOpen(true);
+            }}
+            className="bg-[#B8922E] hover:bg-[#a67d22] h-8"
+          >
+            + Tạo danh mục
+          </Button>
         </div>
       </div>
 
@@ -99,7 +132,9 @@ export default function CategoriesManagementPage() {
             <TableRow>
               <TableHead>#</TableHead>
               <TableHead>Tên danh mục</TableHead>
-              <TableHead className="text-right">Trạng thái</TableHead>
+              <TableHead>Icon</TableHead>
+              <TableHead>Màu sắc</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -107,17 +142,63 @@ export default function CategoriesManagementPage() {
               <TableRow key={category.id}>
                 <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
                 <TableCell>{category.name}</TableCell>
-                <TableCell className="text-right">
-                  <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-foreground/80">
-                    {category.status}
-                  </span>
+                <TableCell>
+                  {category.icon_marker ? (
+                    <img
+                      src={category.icon_marker}
+                      alt={category.name}
+                      className="h-8 w-8 object-cover rounded"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Không có</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-6 h-6 rounded border"
+                      style={{ backgroundColor: category.color || "#B8922E" }}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {category.color || "#B8922E"}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setIsModalOpen(true);
+                    }}
+                    disabled={updateMutation.isPending}
+                  >
+                    Sửa
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          `Bạn có chắc chắn muốn xóa danh mục "${category.name}"?`
+                        )
+                      ) {
+                        deleteMutation.mutate(category.id);
+                      }
+                    }}
+                    disabled={deleteMutation.isPending}
+                  >
+                    Xóa
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={3}>
+              <TableCell colSpan={5}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="text-sm text-muted-foreground">
                     Hiển thị {pageItems.length} trên tổng {filteredCategories.length} danh mục
@@ -151,6 +232,33 @@ export default function CategoriesManagementPage() {
           </TableFooter>
         </Table>
       </div>
+
+      {/* Modal Form */}
+      <CategoryFormModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedCategory(null);
+        }}
+        initialData={selectedCategory}
+        isLoading={createMutation.isPending || updateMutation.isPending}
+        onSubmit={async (formData) => {
+          try {
+            if (selectedCategory) {
+              await updateMutation.mutateAsync({
+                id: selectedCategory.id,
+                data: formData,
+              });
+            } else {
+              await createMutation.mutateAsync(formData);
+            }
+            setIsModalOpen(false);
+            setSelectedCategory(null);
+          } catch (error) {
+            console.error(error);
+          }
+        }}
+      />
     </main>
   );
 }

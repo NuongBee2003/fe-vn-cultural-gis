@@ -38,7 +38,7 @@ export const DASHBOARD_NAV_ITEMS = [
     ],
   },
   {
-    label: "Quản lý thể loại",
+    label: "Quản lý danh mục địa điểm",
     icon: Tags,
     to: "/dashboard/categories",
   },

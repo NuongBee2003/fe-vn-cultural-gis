@@ -1,0 +1,198 @@
+/**
+ * API Client cho các dịch vụ liên quan đến Địa điểm (Place) và Vị trí (Location)
+ * Kết nối trực tiếp với backend Express (port 3002).
+ */
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3002/api/v1";
+
+/**
+ * Hàm Helper ánh xạ (mapping) dữ liệu từ DB (Sequelize) sang cấu trúc mà giao diện FE đang dùng.
+ * Giúp tương thích hoàn toàn với Map.jsx và các component hiện tại mà không phải sửa nhiều code UI.
+ */
+export function mapDbLocationToFe(dbLoc) {
+  if (!dbLoc) return null;
+  return {
+    id: dbLoc.id,
+    placeId: dbLoc.place_id,
+    name: dbLoc.place?.name || "Địa điểm không tên",
+    category: dbLoc.place?.category?.name || "Khác",
+    lat: Number(dbLoc.lat),
+    lng: Number(dbLoc.lng),
+    address: dbLoc.address || "",
+    iconMarker: dbLoc.place?.category?.icon_marker || "",
+  };
+}
+
+/**
+ * 1. Lấy danh sách điểm (locations) nằm trong khung nhìn bản đồ (bbox - bounding box)
+ * @param {string} bbox Bounding box dạng "minLng,minLat,maxLng,maxLat"
+ * @param {number} limit Giới hạn số lượng trả về (mặc định 50)
+ */
+export async function getLocationsByGeo(bbox, limit = 50) {
+  try {
+    const res = await fetch(`${BASE_URL}/location/geo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ bbox, limit }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    // Giả sử API trả về định dạng { success: true, data: [...] }
+    const list = result.data || [];
+    return list.map(mapDbLocationToFe);
+  } catch (error) {
+    console.error("Lỗi khi fetch getLocationsByGeo:", error);
+    throw error;
+  }
+}
+
+/**
+ * 2. Lấy danh sách điểm (locations) lọc theo Category ID
+ * @param {number} categoryId ID của danh mục cần lọc
+ */
+export async function getLocationsByCategory(categoryId) {
+  try {
+    const res = await fetch(`${BASE_URL}/location/category/${categoryId}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    const list = result.data || [];
+    return list.map(mapDbLocationToFe);
+  } catch (error) {
+    console.error(`Lỗi khi fetch getLocationsByCategory (${categoryId}):`, error);
+    throw error;
+  }
+}
+
+/**
+ * 3. Lấy chi tiết thông tin của 1 Location từ ID
+ * @param {number} locationId ID của location cần xem chi tiết
+ */
+export async function getLocationDetail(locationId) {
+  try {
+    const res = await fetch(`${BASE_URL}/location/${locationId}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    return result.data; // Trả về thông tin gốc từ DB
+  } catch (error) {
+    console.error(`Lỗi khi lấy chi tiết location ${locationId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * 4. Lấy chi tiết một địa điểm lớn (Place) kèm danh sách locations, assets, reviews, rating_avg...
+ * Đây là API cực mạnh để hiển thị đầy đủ thông tin ở Panel bên phải.
+ * @param {number} placeId ID của địa điểm cần lấy chi tiết
+ */
+export async function getPlaceDetail(placeId) {
+  try {
+    const res = await fetch(`${BASE_URL}/place/${placeId}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    // BE route.get('/:id') trả về thẳng object Place
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(`Lỗi khi lấy chi tiết place ${placeId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * 5. Viết đánh giá (review) cho địa điểm
+ * @param {number} placeId ID địa điểm cần đánh giá
+ * @param {number} rating Số sao (1 đến 5)
+ * @param {string} comment Nội dung đánh giá
+ * @param {string} token JWT token của user đã đăng nhập
+ */
+export async function createPlaceReview(placeId, rating, comment, token) {
+  try {
+    const res = await fetch(`${BASE_URL}/place/${placeId}/review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ rating, comment }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    return result.data;
+  } catch (error) {
+    console.error(`Lỗi khi tạo review cho place ${placeId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * 6. Tạo mới địa điểm (Place) kèm danh sách vị trí (Locations) - (Dành cho Admin/Người dùng thêm điểm)
+ * @param {Object} placeData Dữ liệu place cần tạo, ví dụ:
+ * {
+ *   name: "Chùa Bà Thiên Hậu",
+ *   description: "Một ngôi chùa cổ...",
+ *   category_id: 2,
+ *   locations: [
+ *     { lat: 10.75, lng: 106.66, address: "Nguyễn Trãi, Q5", district_id: 1 }
+ *   ]
+ * }
+ */
+export async function createPlace(placeData) {
+  try {
+    const res = await fetch(`${BASE_URL}/place`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(placeData),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Lỗi khi tạo mới địa điểm:", error);
+    throw error;
+  }
+}
+
+/**
+ * 7. Lấy danh sách danh mục (categories) từ server
+ */
+export async function getCategories() {
+  try {
+    const res = await fetch(`${BASE_URL}/category`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Lỗi khi fetch getCategories:", error);
+    throw error;
+  }
+}
+

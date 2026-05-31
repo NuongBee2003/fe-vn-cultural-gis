@@ -15,6 +15,8 @@ import CultureCustomsPage from "@/pages/culture/CultureCustomsPage";
 import CultureFolkArtPage from "@/pages/culture/CultureFolkArtPage";
 import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
@@ -43,12 +45,10 @@ export const routeConfig = [
     title: "ĐĂNG NHẬP",
   },
   {
-  path: PATHS.REGISTER,
-  element: (
-      <RegisterPage />
-  ),
-  title: "Đăng ký",
-},
+    path: PATHS.ADMIN_LOGIN,
+    element: <AdminLoginPage />,
+    title: "ĐĂNG NHẬP ADMIN",
+  },
   {
     path: PATHS.HISTORY,
     element: (
@@ -105,9 +105,13 @@ export const routeConfig = [
   },
   {
     path: PATHS.DASHBOARD,
-    element: <DashboardLayout />,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     title: "Dashboard",
-    protected: false, // TODO: đổi thành true khi có AuthGuard
+    protected: true,
     children: [
       {
         index: true,
@@ -121,8 +125,8 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_CATEGORIES,
-        element: <Navigate to={PATHS.DASHBOARD_CATEGORIES_FOODS} replace />,
-        title: "Quản lý thể loại",
+        element: <CategoriesManagementPage />,
+        title: "Quản lý danh mục địa điểm",
       },
       {
         path: PATHS.DASHBOARD_REPORTS,
@@ -153,11 +157,6 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_USERS_ACCOUNTS,
         element: dashPage("Quản lý tài khoản", "Danh sách tài khoản người dùng"),
         title: "Quản lý tài khoản",
-      },
-      {
-        path: PATHS.DASHBOARD_CATEGORIES_FOODS,
-        element: <CategoriesManagementPage />,
-        title: "Quản lý thể loại",
       },
       {
         path: PATHS.DASHBOARD_CATEGORIES_HISTORICAL,

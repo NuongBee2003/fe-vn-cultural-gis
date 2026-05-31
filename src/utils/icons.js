@@ -16,6 +16,21 @@ export function createCustomIcon(markerColor, innerSvg, { active = false } = {})
   const inner = active ? 26 : 22;
   const anchor = size / 2;
 
+  let contentHtml = "";
+  if (typeof innerSvg === "string") {
+    const trimmed = innerSvg.trim();
+    if (
+      trimmed.startsWith("http://") ||
+      trimmed.startsWith("https://") ||
+      trimmed.startsWith("/") ||
+      trimmed.startsWith("data:image")
+    ) {
+      contentHtml = `<img src="${trimmed}" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" />`;
+    } else {
+      contentHtml = innerSvg;
+    }
+  }
+
   const html = `
     <div style="
       width: ${size}px; height: ${size}px;
@@ -32,7 +47,7 @@ export function createCustomIcon(markerColor, innerSvg, { active = false } = {})
       transform: ${active ? "scale(1.05)" : "none"};
     ">
       <div style="width: ${inner}px; height: ${inner}px; display:flex; align-items:center; justify-content:center;">
-        ${innerSvg}
+        ${contentHtml}
       </div>
     </div>`;
 
@@ -43,3 +58,4 @@ export function createCustomIcon(markerColor, innerSvg, { active = false } = {})
     className: active ? "marker-active" : "",
   });
 }
+
