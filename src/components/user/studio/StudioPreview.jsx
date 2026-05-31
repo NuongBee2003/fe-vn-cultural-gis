@@ -9,7 +9,7 @@ export default function StudioPreview({
   error,
 }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4 bg-stone-100">
+    <div className="w-full shrink-0 md:flex-1 flex flex-col items-center justify-center p-5 md:p-8 gap-4 bg-stone-100 min-h-[50vh] md:min-h-0">
       {/* Canvas */}
       <div
         className="relative w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl bg-stone-900"

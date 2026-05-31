@@ -5,6 +5,7 @@ import {
   Marker,
   Polyline,
   LayersControl,
+  ZoomControl,
 } from "react-leaflet";
 import { LocateFixed } from "lucide-react";
 import "leaflet/dist/leaflet.css";
@@ -238,9 +239,11 @@ export default function Map({ activeFilter = "all", search = "" }) {
       <MapContainer
         center={[10.79, 106.68]}
         zoom={12}
+        zoomControl={false}
         style={{ width: "100%", height: "100%", zIndex: 0 }}
         ref={setMapInstance}
       >
+        <ZoomControl position="bottomleft" />
         <LayersControl position="bottomright">
           <LayersControl.BaseLayer checked name="Bản đồ Đường phố">
             <TileLayer

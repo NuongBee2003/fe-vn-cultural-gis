@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   UserPlus,
@@ -6,6 +6,7 @@ import {
   Star,
   PanelLeftClose,
   PanelLeftOpen,
+  Menu as MenuIcon,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
@@ -14,12 +15,32 @@ import { PATHS } from "@/constants/paths";
 
 export default function Menu() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside
-      className={` z-[2000] h-screen bg-[var(--brand-bg)] border-r border-[var(--brand-primary-18)] flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-2xl
-        ${collapsed ? "w-16" : "w-60"}`}
-    > 
+    <>
+      {/* Mobile Overlay */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-[1999]"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden fixed top-3 left-3 z-[1500] w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[var(--brand-primary)] pointer-events-auto"
+      >
+        <MenuIcon size={20} />
+      </button>
+
+      <aside
+        className={`z-[2000] h-screen bg-[var(--brand-bg)] border-r border-[var(--brand-primary-18)] flex flex-col overflow-hidden transition-all duration-300 ease-in-out shadow-2xl
+          fixed md:relative top-0 left-0
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          ${collapsed ? "w-60 md:w-16" : "w-60"}`}
+      >
     
       {/* Brand + Toggle */}
       <div
@@ -55,7 +76,7 @@ export default function Menu() {
         <button
           onClick={() => setCollapsed(!collapsed)}
           title={collapsed ? "Mở sidebar" : "Đóng sidebar"}
-          className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 cursor-pointer transition-all duration-150
+          className="hidden md:flex w-7 h-7 rounded-md items-center justify-center shrink-0 cursor-pointer transition-all duration-150
             bg-white/5 border border-[var(--brand-primary-18)] text-[var(--muted-1)]
             hover:bg-[var(--brand-primary-12)] hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary-50)]"
         >
@@ -120,5 +141,6 @@ export default function Menu() {
         )}
       </div>
     </aside>
+    </>
   );
 }

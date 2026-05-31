@@ -39,7 +39,7 @@ export default function HistoryPage() {
       >
         <div className="mx-auto max-w-6xl flex flex-col xl:flex-row gap-8">
           
-          <div className="flex-1">
+          <div className="flex-1 order-2 xl:order-1">
             {/* Header */}
             <header className="mb-12 text-center xl:text-left">
               <p className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
