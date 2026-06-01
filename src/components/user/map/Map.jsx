@@ -10,9 +10,8 @@ import {
 import { LocateFixed } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
-import { ALL_LOCATIONS, CATEGORY_STYLES } from "@/constants/mapLocations";
 import { createCustomIcon } from "@/utils/icons";
-import { useCategories } from "@/api/useLocationQuery";
+import { useCategories, useLocationsByGeo, useLocationsByCategory } from "@/api/useLocationQuery";
 import {
   fetchDrivingRoute,
   formatDistance,
@@ -23,87 +22,50 @@ import FitRouteBounds from "@/components/user/map/FitRouteBounds";
 import FlyToSelected from "@/components/user/map/FlyToSelected";
 import LocationDetailPanel from "@/components/user/map/LocationDetailPanel";
 
-import Food_SVG from "@/assets/icons/food-dinner-svgrepo-com.svg?raw";
-import Coffee_SVG from "@/assets/icons/coffee-svgrepo.svg?raw";
-import DiTich_SVG from "@/assets/icons/ditich-svgrepo-com.svg?raw";
-import Default_Location_SVG from "@/assets/icons/map-point-search-svgrepo-com.svg?raw";
-import HoiQuan_SVG from "@/assets/icons/hoiquan-svgrepo-com.svg?raw";
-import BaoTang_SVG from "@/assets/icons/museum-svgrepo-com.svg?raw";
-import NhaHat_SVG from "@/assets/icons/nhahat-svgrepo-com.svg?raw";
-import Chua_SVG from "@/assets/icons/pagoda-china-svgrepo-com.svg?raw";
-import Dinh_SVG from "@/assets/icons/Dinh-svgrepo-com.svg?raw";
-import Lang_SVG from "@/assets/icons/ho-chi-ming-mausoleum-svgrepo-com.svg?raw";
-import Den_SVG from "@/assets/icons/temple-structure-svgrepo-com.svg?raw";
-
-function getCategorySvg(cat) {
-  switch (cat) {
-    case "Quán ăn":
-      return Food_SVG;
-    case "Quán cafe":
-      return Coffee_SVG;
-    case "Di tích":
-      return DiTich_SVG;
-    case "Hội quán":
-      return HoiQuan_SVG;
-    case "Bảo tàng":
-      return BaoTang_SVG;
-    case "Nhà hát":
-      return NhaHat_SVG;
-    case "Chùa":
-      return Chua_SVG;
-    case "Đình":
-      return Dinh_SVG;
-    case "Lăng":
-      return Lang_SVG;
-    case "Đền":
-      return Den_SVG;
-    default:
-      return Default_Location_SVG;
-  }
+function locationKey(location, index) {
+  return `${location.id}-${index}`;
 }
 
-function locationKey(location, index) {
-  return `${location.name}-${index}`;
+// Utility: Tính bbox từ map bounds dạng "minLng,minLat,maxLng,maxLat"
+function getBboxFromBounds(bounds) {
+  if (!bounds) return null;
+  const { _southWest, _northEast } = bounds;
+  return `${_southWest.lng},${_southWest.lat},${_northEast.lng},${_northEast.lat}`;
 }
 
 export default function Map({ activeFilter = "all", search = "" }) {
   const { data: categories = [] } = useCategories();
+  const [bbox, setBbox] = useState("106.68,10.76,106.70,10.79");
+  
+  // Tìm category ID từ activeFilter
+  const selectedCategoryId = useMemo(() => {
+    if (activeFilter === "all") return null;
+    const cat = categories.find((c) => c.name === activeFilter);
+    return cat?.id || null;
+  }, [activeFilter, categories]);
 
-  const { iconByCategory, activeIconByCategory } = useMemo(() => {
-    /** @type {Record<string, L.DivIcon>} */
-    const normal = {};
-    /** @type {Record<string, L.DivIcon>} */
-    const active = {};
+  // Gọi API theo filter: 
+  // - Nếu "all" → gọi getLocationsByGeo (theo bbox)
+  // - Nếu có category → gọi getLocationsByCategory
+  const { data: geoLocations = [], isLoading: isLoadingGeo } = useLocationsByGeo(
+    activeFilter === "all" ? bbox : null,
+    50
+  );
+  const { data: categoryLocations = [], isLoading: isLoadingCategory } = useLocationsByCategory(
+    selectedCategoryId
+  );
 
-    // 1. Initialize icons from the dynamic categories list loaded from API
-    for (const c of categories) {
-      const catName = c.name;
-      const style = CATEGORY_STYLES[catName];
-      const markerColor = style?.markerColor || "#3b82f6";
-      const inner = c.icon_marker || getCategorySvg(catName);
+  // Chọn data tùy theo filter
+  const apiLocations = activeFilter === "all" ? geoLocations : categoryLocations;
+  const isLoadingLocations = activeFilter === "all" ? isLoadingGeo : isLoadingCategory;
 
-      normal[catName] = createCustomIcon(markerColor, inner);
-      active[catName] = createCustomIcon(markerColor, inner, { active: true });
-    }
-
-    // 2. Pre-fill hardcoded CATEGORY_STYLES if API doesn't have them yet (fallback/development)
-    for (const catName of Object.keys(CATEGORY_STYLES)) {
-      if (!normal[catName]) {
-        const style = CATEGORY_STYLES[catName];
-        const inner = getCategorySvg(catName);
-        normal[catName] = createCustomIcon(style.markerColor, inner);
-        active[catName] = createCustomIcon(style.markerColor, inner, { active: true });
-      }
-    }
-
-    return { iconByCategory: normal, activeIconByCategory: active };
-  }, [categories]);
-
-  const filtered = ALL_LOCATIONS.filter((loc) => {
-    const matchFilter = activeFilter === "all" || loc.category === activeFilter;
-    const matchSearch = loc.name.toLowerCase().includes(search.toLowerCase());
-    return matchFilter && matchSearch;
-  });
+  // Lọc locations theo search text
+  const filtered = useMemo(() => {
+    return apiLocations.filter((loc) => {
+      const matchSearch = loc.name.toLowerCase().includes(search.toLowerCase());
+      return matchSearch;
+    });
+  }, [apiLocations, search]);
 
   const [mapInstance, setMapInstance] = useState(null);
   const [userPosition, setUserPosition] = useState(null);
@@ -234,6 +196,27 @@ export default function Map({ activeFilter = "all", search = "" }) {
     );
   };
 
+  // Lắng nghe sự kiện di chuyển/zoom bản đồ để cập nhật bbox
+  useEffect(() => {
+    if (!mapInstance) return;
+
+    const handleMapMove = () => {
+      const bounds = mapInstance.getBounds();
+      const newBbox = getBboxFromBounds(bounds);
+      if (newBbox) {
+        setBbox(newBbox);
+      }
+    };
+
+    mapInstance.on("moveend", handleMapMove);
+    mapInstance.on("zoomend", handleMapMove);
+
+    return () => {
+      mapInstance.off("moveend", handleMapMove);
+      mapInstance.off("zoomend", handleMapMove);
+    };
+  }, [mapInstance]);
+
   return (
     <div className="relative h-full w-full">
       <MapContainer
@@ -264,7 +247,7 @@ export default function Map({ activeFilter = "all", search = "" }) {
         {userPosition && (
           <Marker
             position={userPosition}
-            icon={createCustomIcon("#2563eb", Default_Location_SVG)}
+            icon={createCustomIcon("#2563eb", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>')}
           />
         )}
 
@@ -288,11 +271,7 @@ export default function Map({ activeFilter = "all", search = "" }) {
             <Marker
               key={key}
               position={[location.lat, location.lng]}
-              icon={
-                isActive
-                  ? activeIconByCategory[location.category] || createCustomIcon("#3b82f6", getCategorySvg(location.category), { active: true })
-                  : iconByCategory[location.category] || createCustomIcon("#3b82f6", getCategorySvg(location.category))
-              }
+              icon={createCustomIcon(location.markerColor || "#3b82f6", location.iconMarker || "", { active: isActive })}
               zIndexOffset={isActive ? 1000 : 0}
               eventHandlers={{
                 click: () => selectLocation(location, index),
@@ -338,6 +317,13 @@ export default function Map({ activeFilter = "all", search = "" }) {
           />
         </button>
       </div>
+
+      {/* Loading indicator */}
+      {isLoadingLocations && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-white px-4 py-2 rounded-lg shadow-md text-sm text-gray-600">
+          Đang tải markers...
+        </div>
+      )}
     </div>
   );
 }

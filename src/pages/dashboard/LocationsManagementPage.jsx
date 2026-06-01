@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useAllLocations } from "@/api/useLocationQuery";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
@@ -15,7 +15,7 @@ import {
 
 const PAGE_SIZES = [5, 10, 15, 20];
 
-export default function PlacesManagementPage() {
+export default function LocationsManagementPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -27,31 +27,29 @@ export default function PlacesManagementPage() {
   const meta = apiData?.meta || { total: 0, page: 1, limit: 20, totalPages: 0 };
 
   // Lọc theo search text (client-side trên dữ liệu đã fetch từ API)
-  const filteredLocations = useMemo(() => {
-    return locations.filter((location) => {
-      const query = search.trim().toLowerCase();
-      if (!query) return true;
+  const filteredLocations = locations.filter((location) => {
+    const query = search.trim().toLowerCase();
+    if (!query) return true;
 
-      return (
-        location.name.toLowerCase().includes(query) ||
-        location.category.toLowerCase().includes(query) ||
-        location.address.toLowerCase().includes(query)
-      );
-    });
-  }, [locations, search]);
+    return (
+      location.name.toLowerCase().includes(query) ||
+      location.category.toLowerCase().includes(query) ||
+      location.address.toLowerCase().includes(query)
+    );
+  });
 
   const handlePageSizeChange = (newSize) => {
     setPageSize(newSize);
-    setPage(1);
+    setPage(1); // Reset về trang 1 khi thay đổi page size
   };
 
   return (
     <main className="px-6 py-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold">Quản lý địa điểm</h1>
+          <h1 className="text-xl font-semibold">Quản lý các vị trí</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Xem danh sách địa điểm và điều hướng trang để quản lý dữ liệu.
+            Xem danh sách tất cả các vị trí (locations) trong hệ thống.
           </p>
         </div>
 
@@ -59,11 +57,9 @@ export default function PlacesManagementPage() {
           <label className="flex flex-col gap-2">
             <span className="text-sm text-muted-foreground">Tìm kiếm</span>
             <Input
-              placeholder="Tên địa điểm hoặc thể loại..."
+              placeholder="Tên, thể loại hoặc địa chỉ..."
               value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-              }}
+              onChange={(event) => setSearch(event.target.value)}
             />
           </label>
 
@@ -72,9 +68,7 @@ export default function PlacesManagementPage() {
             <select
               className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               value={pageSize}
-              onChange={(event) => {
-                handlePageSizeChange(Number(event.target.value));
-              }}
+              onChange={(event) => handlePageSizeChange(Number(event.target.value))}
             >
               {PAGE_SIZES.map((size) => (
                 <option key={size} value={size}>
@@ -102,6 +96,7 @@ export default function PlacesManagementPage() {
                 <TableHead>#</TableHead>
                 <TableHead>Tên địa điểm</TableHead>
                 <TableHead>Thể loại</TableHead>
+                <TableHead>Địa chỉ</TableHead>
                 <TableHead>Vĩ / Kinh độ</TableHead>
                 <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
@@ -111,9 +106,16 @@ export default function PlacesManagementPage() {
                 filteredLocations.map((location, index) => (
                   <TableRow key={`${location.id}-${index}`}>
                     <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
-                    <TableCell>{location.name}</TableCell>
-                    <TableCell>{location.category}</TableCell>
+                    <TableCell className="font-medium">{location.name}</TableCell>
                     <TableCell>
+                      <span className="inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
+                        {location.category}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {location.address}
+                    </TableCell>
+                    <TableCell className="text-sm">
                       {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                     </TableCell>
                     <TableCell className="text-right">
@@ -125,18 +127,18 @@ export default function PlacesManagementPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    Không tìm thấy địa điểm nào
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Không tìm thấy vị trí nào
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={5}>
+                <TableCell colSpan={6}>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-sm text-muted-foreground">
-                      Hiển thị {filteredLocations.length} trên tổng {meta.total} địa điểm
+                      Hiển thị {filteredLocations.length} trên tổng {meta.total} vị trí
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       <Button

@@ -3,7 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   getLocationsByCategory, 
-  getLocationsByGeo, 
+  getLocationsByGeo,
+  getAllLocations,
   getPlaceDetail, 
   createPlaceReview,
   createPlace,
@@ -44,6 +45,17 @@ export function usePlaceDetail(placeId) {
     queryFn: () => getPlaceDetail(placeId),
     enabled: !!placeId,
     staleTime: 3 * 60 * 1000, // Cache 3 phút
+  });
+}
+
+/**
+ * 2.5. Hook lấy tất cả locations với phân trang (dành cho admin)
+ */
+export function useAllLocations(page = 1, limit = 20) {
+  return useQuery({
+    queryKey: ["locations", "all", page, limit],
+    queryFn: () => getAllLocations(page, limit),
+    staleTime: 1 * 60 * 1000, // Cache 1 phút
   });
 }
 

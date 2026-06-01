@@ -20,6 +20,7 @@ export function mapDbLocationToFe(dbLoc) {
     lng: Number(dbLoc.lng),
     address: dbLoc.address || "",
     iconMarker: dbLoc.place?.category?.icon_marker || "",
+    markerColor: dbLoc.place?.category?.color || "#3b82f6",
   };
 }
 
@@ -30,12 +31,15 @@ export function mapDbLocationToFe(dbLoc) {
  */
 export async function getLocationsByGeo(bbox, limit = 50) {
   try {
+    const payload = { bbox, limit };
+    console.log("📡 Fetching locations with payload:", payload);
+    
     const res = await fetch(`${BASE_URL}/location/geo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ bbox, limit }),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
@@ -43,11 +47,12 @@ export async function getLocationsByGeo(bbox, limit = 50) {
     }
 
     const result = await res.json();
+    console.log("✅ Locations fetched successfully:", result);
     // Giả sử API trả về định dạng { success: true, data: [...] }
     const list = result.data || [];
     return list.map(mapDbLocationToFe);
   } catch (error) {
-    console.error("Lỗi khi fetch getLocationsByGeo:", error);
+    console.error("❌ Lỗi khi fetch getLocationsByGeo:", error);
     throw error;
   }
 }
@@ -69,6 +74,34 @@ export async function getLocationsByCategory(categoryId) {
     return list.map(mapDbLocationToFe);
   } catch (error) {
     console.error(`Lỗi khi fetch getLocationsByCategory (${categoryId}):`, error);
+    throw error;
+  }
+}
+
+/**
+ * 2.5. Lấy tất cả locations với phân trang (dành cho admin)
+ * @param {number} page Số trang (mặc định 1)
+ * @param {number} limit Số items trên mỗi trang (mặc định 20)
+ */
+export async function getAllLocations(page = 1, limit = 20) {
+  try {
+    const query = new URLSearchParams({ page, limit });
+    const res = await fetch(`${BASE_URL}/location?${query.toString()}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    console.log("✅ All locations fetched:", result);
+    
+    const list = result.data || [];
+    return {
+      data: list.map(mapDbLocationToFe),
+      meta: result.meta || { total: 0, page: 1, limit: 20, totalPages: 0 },
+    };
+  } catch (error) {
+    console.error(`Lỗi khi fetch getAllLocations:`, error);
     throw error;
   }
 }
@@ -183,15 +216,21 @@ export async function createPlace(placeData) {
  */
 export async function getCategories() {
   try {
+    console.log("📡 Fetching categories from:", `${BASE_URL}/category`);
     const res = await fetch(`${BASE_URL}/category`);
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
 
-    return await res.json();
+    const result = await res.json();
+    console.log("✅ Categories fetched successfully:", result);
+    // Backend trả về array trực tiếp hoặc object có `.data` property
+    const data = Array.isArray(result) ? result : (result.data || []);
+    console.log("📦 Categories after mapping:", data);
+    return data;
   } catch (error) {
-    console.error("Lỗi khi fetch getCategories:", error);
+    console.error("❌ Lỗi khi fetch getCategories:", error);
     throw error;
   }
 }
