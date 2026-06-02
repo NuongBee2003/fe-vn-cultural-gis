@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useAllLocations } from "@/api/useLocationQuery";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { useAllLocations, useAllLocationsByCategory, useCategories } from "@/api/useLocationQuery";
 import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
@@ -13,38 +13,61 @@ import {
   TableRow,
 } from "@/components/ui/table-data/table";
 import LocationFormModal from "@/components/dashboard/LocationFormModal";
+import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
+import { ImageOff, Filter, X } from "lucide-react";
 
 const PAGE_SIZES = [5, 10, 15, 20];
+
+const DEFAULT_CATEGORY = { id: null, name: "all" };
 
 export default function PlacesManagementPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [categoryFilter, setCategoryFilter] = useState(DEFAULT_CATEGORY);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null); // null = tạo mới
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
-  // API Data
-  const { data: apiData, isLoading, error } = useAllLocations(page, pageSize);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryTitle, setGalleryTitle] = useState("");
+  const [galleryInitialIndex, setGalleryInitialIndex] = useState(0);
+
+  // ── API ───────────────────────────────────────────────
+  const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
+
+  const isFiltering = categoryFilter.name !== "all";
+
+  // Cả hai query đều nhận page + pageSize để phân trang hoạt động đúng
+  const allQuery = useAllLocations(page, pageSize);
+  const byCategoryQuery = useAllLocationsByCategory(
+    page,
+    pageSize,
+    categoryFilter.id,
+    { enabled: isFiltering } // chỉ fetch khi đang filter, tránh request thừa
+  );
+
+  const { data: apiData, isLoading, error } = isFiltering ? byCategoryQuery : allQuery;
+
+  const locations = apiData?.data || [];
+  const meta = apiData?.meta || { total: 0, page: 1, limit: pageSize, totalPages: 0 };
+
   const createMutation = useCreateLocation();
   const updateMutation = useUpdateLocation();
   const deleteMutation = useDeleteLocation();
 
-  const locations = apiData?.data || [];
-  const meta = apiData?.meta || { total: 0, page: 1, limit: 20, totalPages: 0 };
+  // ── Client-side search (chỉ lọc trên trang hiện tại) ──
+  const isClientSearching = search.trim().length > 0;
 
-  // Lọc client-side
   const filteredLocations = useMemo(() => {
+    if (!isClientSearching) return locations;
     const query = search.trim().toLowerCase();
-    if (!query) return locations;
-    return locations.filter(
-      (loc) =>
-        (loc.name || "").toLowerCase().includes(query) ||
-        (loc.category || "").toLowerCase().includes(query) ||
-        (loc.address || "").toLowerCase().includes(query)
+    return locations.filter((loc) =>
+      (loc.name || "").toLowerCase().includes(query)
     );
-  }, [locations, search]);
+  }, [locations, search, isClientSearching]);
 
   // ── Handlers ──────────────────────────────────────────
   const handleCreate = () => {
@@ -85,8 +108,50 @@ export default function PlacesManagementPage() {
     setPage(1);
   };
 
+  const handleViewImages = (location) => {
+    if (!location.images || location.images.length === 0) return;
+    setGalleryImages(location.images);
+    setGalleryTitle(location.name);
+    setGalleryInitialIndex(0);
+    setIsGalleryOpen(true);
+  };
+
+  const handleCategorySelect = (cat) => {
+    setCategoryFilter(cat === "all" ? DEFAULT_CATEGORY : { id: cat.id, name: cat.name });
+    setIsFilterOpen(false);
+    setPage(1); // reset về trang 1 khi đổi category
+    setSearch(""); // optional: clear search khi đổi category
+  };
+
+  const handleClearCategory = (e) => {
+    e.stopPropagation();
+    setCategoryFilter(DEFAULT_CATEGORY);
+    setPage(1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    // Không reset page vì search là client-side trên trang hiện tại
+    // Nếu muốn search toàn bộ thì cần chuyển sang server-side search
+  };
+
+  // Close dropdown khi click ngoài
+  const filterRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const isMutating =
     createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+
+  // Tính totalPages an toàn
+  const totalPages = meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
 
   return (
     <main className="px-6 py-5">
@@ -100,20 +165,100 @@ export default function PlacesManagementPage() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          {/* Search + Page Size */}
-          <div className="grid gap-3 sm:grid-cols-[minmax(200px,1fr)_auto]">
+          <div className="grid gap-3 sm:grid-cols-[minmax(200px,1fr)_auto_auto]">
+            {/* Search */}
             <label className="flex flex-col gap-1.5">
               <span className="text-sm text-muted-foreground">Tìm kiếm</span>
               <Input
-                placeholder="Tên, thể loại hoặc địa chỉ..."
+                placeholder="Nhập tên địa điểm"
                 value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
+                onChange={handleSearchChange}
               />
             </label>
 
+            {/* Category Filter Dropdown */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm text-muted-foreground">Danh mục</span>
+              <div className="relative" ref={filterRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className={`h-9 rounded-lg border bg-background px-3 text-sm flex items-center gap-2 min-w-[140px] justify-between transition-colors
+                    ${isFilterOpen ? "border-ring ring-3 ring-ring/50" : "border-input hover:border-ring/50"}`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Filter size={14} />
+                    <span className="truncate">
+                      {categoryFilter.name === "all" ? "Tất cả" : categoryFilter.name}
+                    </span>
+                  </span>
+                  {isFiltering && (
+                    <X
+                      size={14}
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={handleClearCategory}
+                    />
+                  )}
+                </button>
+
+                {isFilterOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-64 bg-background border border-input rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
+                    {isLoadingCategories ? (
+                      <div className="p-3 text-sm text-muted-foreground text-center">
+                        Đang tải...
+                      </div>
+                    ) : (
+                      <div className="py-1">
+                        <button
+                          type="button"
+                          onClick={() => handleCategorySelect("all")}
+                          className={`w-full px-3 py-2 text-left text-sm hover:bg-secondary transition-colors flex items-center gap-2
+                            ${!isFiltering ? "bg-secondary font-medium" : ""}`}
+                        >
+                          <div className="w-5 h-5 flex items-center justify-center">
+                            {!isFiltering && (
+                              <div className="w-2 h-2 rounded-full bg-[#B8922E]" />
+                            )}
+                          </div>
+                          Tất cả
+                        </button>
+
+                        {categories.map((cat) => {
+                          const isSelected = categoryFilter.id === cat.id;
+                          return (
+                            <button
+                              key={cat.id}
+                              type="button"
+                              onClick={() => handleCategorySelect(cat)}
+                              className={`w-full px-3 py-2 text-left text-sm hover:bg-secondary transition-colors flex items-center gap-2
+                                ${isSelected ? "bg-secondary font-medium" : ""}`}
+                            >
+                              <div className="w-5 h-5 flex items-center justify-center">
+                                {isSelected ? (
+                                  <div
+                                    className="w-2 h-2 rounded-full"
+                                    style={{ backgroundColor: cat.color || "#B8922E" }}
+                                  />
+                                ) : cat.icon_marker ? (
+                                  <img
+                                    src={cat.icon_marker}
+                                    alt=""
+                                    className="w-4 h-4 object-contain opacity-70"
+                                  />
+                                ) : null}
+                              </div>
+                              <span className="truncate">{cat.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </label>
+
+            {/* Page Size */}
             <label className="flex flex-col gap-1.5">
               <span className="text-sm text-muted-foreground">Hàng / trang</span>
               <select
@@ -130,7 +275,6 @@ export default function PlacesManagementPage() {
             </label>
           </div>
 
-          {/* Create Button */}
           <Button
             onClick={handleCreate}
             className="bg-[#B8922E] hover:bg-[#a67d22] h-9 whitespace-nowrap"
@@ -162,6 +306,8 @@ export default function PlacesManagementPage() {
                 <TableHead>Tên địa điểm</TableHead>
                 <TableHead>Danh mục</TableHead>
                 <TableHead>Địa chỉ</TableHead>
+                <TableHead>Mô tả</TableHead>
+                <TableHead>Hình ảnh</TableHead>
                 <TableHead>Vĩ / Kinh độ</TableHead>
                 <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
@@ -186,6 +332,37 @@ export default function PlacesManagementPage() {
 
                     <TableCell className="text-sm text-muted-foreground max-w-[240px]">
                       <span className="line-clamp-2">{location.address || "—"}</span>
+                    </TableCell>
+
+                    <TableCell className="text-sm text-muted-foreground max-w-[240px]">
+                      <span className="line-clamp-2 text-center">{location.description || "—"}</span>
+                    </TableCell>
+
+                    <TableCell>
+                      {location.images && location.images.length > 0 ? (
+                        <button
+                          type="button"
+                          onClick={() => handleViewImages(location)}
+                          className="group relative block w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent hover:border-[#B8922E] transition-all hover:shadow-lg"
+                          title={`Xem ${location.images.length} ảnh`}
+                        >
+                          <img
+                            src={location.images[0]}
+                            alt={location.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                          {location.images.length > 1 && (
+                            <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm">
+                              {location.images.length} ảnh
+                            </div>
+                          )}
+                        </button>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-linear-to-br from-gray-100 to-gray-200 border-2 border-dashed border-gray-300">
+                          <ImageOff size={20} className="text-gray-400 mb-1" />
+                          <span className="text-[9px] text-gray-500 font-medium text-center px-1">Chưa có ảnh</span>
+                        </div>
+                      )}
                     </TableCell>
 
                     <TableCell className="text-xs font-mono whitespace-nowrap">
@@ -218,9 +395,11 @@ export default function PlacesManagementPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
-                    {search
-                      ? `Không tìm thấy địa điểm nào khớp với "${search}"`
+                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                    {isClientSearching
+                      ? `Không tìm thấy địa điểm nào khớp với "${search}" trên trang này`
+                      : isFiltering
+                      ? `Không có địa điểm nào trong danh mục "${categoryFilter.name}"`
                       : "Chưa có dữ liệu địa điểm"}
                   </TableCell>
                 </TableRow>
@@ -228,30 +407,59 @@ export default function PlacesManagementPage() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={6}>
+                <TableCell colSpan={8}>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    {/* Hiển thị đúng số lượng tùy theo trạng thái */}
                     <div className="text-sm text-muted-foreground">
-                      Hiển thị {filteredLocations.length} trên tổng {meta.total} địa điểm
+                      {isClientSearching ? (
+                        <>
+                          Tìm thấy{" "}
+                          <span className="font-medium text-foreground">
+                            {filteredLocations.length}
+                          </span>{" "}
+                          trên trang này
+                          {isFiltering && (
+                            <span> · Danh mục: <span className="font-medium text-foreground">{categoryFilter.name}</span></span>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          Hiển thị{" "}
+                          <span className="font-medium text-foreground">
+                            {locations.length}
+                          </span>{" "}
+                          trên tổng{" "}
+                          <span className="font-medium text-foreground">
+                            {meta.total}
+                          </span>{" "}
+                          địa điểm
+                          {isFiltering && (
+                            <span> trong danh mục <span className="font-medium text-foreground">{categoryFilter.name}</span></span>
+                          )}
+                        </>
+                      )}
                     </div>
+
+                    {/* Pagination — luôn hoạt động dù đang filter hay không */}
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        disabled={page === 1}
+                        disabled={page <= 1}
                         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                       >
                         Trang trước
                       </Button>
-                      <span className="text-sm text-foreground">
-                        {page} / {meta.totalPages || 1}
+                      <span className="text-sm text-foreground min-w-[60px] text-center">
+                        {page} / {totalPages}
                       </span>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        disabled={page === meta.totalPages || meta.totalPages === 0}
-                        onClick={() => setPage((prev) => Math.min(prev + 1, meta.totalPages))}
+                        disabled={page >= totalPages}
+                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
                       >
                         Trang sau
                       </Button>
@@ -271,6 +479,15 @@ export default function PlacesManagementPage() {
         onSubmit={handleModalSubmit}
         initialData={selectedPlace}
         isLoading={createMutation.isPending || updateMutation.isPending}
+      />
+
+      {/* ── Image Gallery Modal ───────────────────────────── */}
+      <ImageMasonryGallery
+        open={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        images={galleryImages}
+        title={galleryTitle}
+        initialIndex={galleryInitialIndex}
       />
     </main>
   );

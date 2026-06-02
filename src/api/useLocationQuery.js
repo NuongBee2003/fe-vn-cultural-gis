@@ -9,7 +9,8 @@ import {
   createPlaceReview,
   createPlace,
   getCategories,
-  getAssetsByPlaceId
+  getAssetsByPlaceId,
+  getAllLocationsByCategory
 } from "./locationApi";
 
 /**
@@ -65,7 +66,13 @@ export function useAllLocations(page = 1, limit = 20) {
     staleTime: 1 * 60 * 1000, // Cache 1 phút
   });
 }
-
+export function useAllLocationsByCategory(page = 1, limit = 20, categoryId) {
+  return useQuery({
+    queryKey: ["locations", "category", categoryId, page, limit],
+    queryFn: () => getAllLocationsByCategory(page, limit, categoryId),
+    staleTime: 1 * 60 * 1000, // Cache 1 phút
+  });
+}
 /**
  * 4. Mutation Hook để viết đánh giá địa điểm (Review)
  * Tự động xóa cache (invalidate) của place chi tiết để hiển thị review mới ngay lập tức.

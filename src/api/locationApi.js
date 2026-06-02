@@ -11,17 +11,31 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3002/api/v1";
  */
 export function mapDbLocationToFe(dbLoc) {
   if (!dbLoc) return null;
+  
+  // Extract images từ place.assets, sắp xếp theo is_primary
+  const assets = dbLoc.place?.assets || [];
+  const sortedAssets = [...assets].sort((a, b) => {
+    // is_primary = true (1) lên đầu
+    if (a.is_primary && !b.is_primary) return -1;
+    if (!a.is_primary && b.is_primary) return 1;
+    return a.id - b.id; // Sau đó sort theo id
+  });
+  const images = sortedAssets.map(asset => asset.url);
+  
   return {
     id: dbLoc.id,
     placeId: dbLoc.place_id,
     name: dbLoc.place?.name || "Địa điểm không tên",
     description: dbLoc.place?.description || "",
     category: dbLoc.place?.category?.name || "Khác",
+    category_id: dbLoc.place?.category?.id || null,
+    categoryId: dbLoc.place?.category_id || null,
     lat: Number(dbLoc.lat),
     lng: Number(dbLoc.lng),
     address: dbLoc.address || "",
     iconMarker: dbLoc.place?.category?.icon_marker || "",
     markerColor: dbLoc.place?.category?.color || "#3b82f6",
+    images: images, // Thêm images array
   };
 }
 
@@ -34,7 +48,7 @@ export async function getLocationsByGeo(bbox, limit = 50) {
   try {
     const payload = { bbox, limit };
     console.log("📡 Fetching locations with payload:", payload);
-    
+
     const res = await fetch(`${BASE_URL}/location/geo`, {
       method: "POST",
       headers: {
@@ -95,7 +109,29 @@ export async function getAllLocations(page = 1, limit = 20) {
 
     const result = await res.json();
     console.log("✅ All locations fetched:", result);
-    
+
+    const list = result.data || [];
+    return {
+      data: list.map(mapDbLocationToFe),
+      meta: result.meta || { total: 0, page: 1, limit: 20, totalPages: 0 },
+    };
+  } catch (error) {
+    console.error(`Lỗi khi fetch getAllLocations:`, error);
+    throw error;
+  }
+}
+export async function getAllLocationsByCategory(page = 1, limit = 20, categoryId) {
+  try {
+    const query = new URLSearchParams({ page, limit, categoryId });
+    const res = await fetch(`${BASE_URL}/location/getALL/categories/${categoryId}?${query.toString()}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    console.log("✅ All locations fetched:", result);
+
     const list = result.data || [];
     return {
       data: list.map(mapDbLocationToFe),

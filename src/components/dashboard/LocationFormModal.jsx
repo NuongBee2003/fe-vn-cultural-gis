@@ -367,6 +367,24 @@ export default function LocationFormModal({
               </span>
             </h3>
 
+            {/* Hiển thị số lượng ảnh hiện có khi đang update */}
+            {initialData && (
+              <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg px-3 py-2">
+                {imagePreviews.length > 0 ? (
+                  <span>
+                    📷 Đang có <strong className="text-foreground">{imagePreviews.length}</strong> ảnh 
+                    {initialData.images && initialData.images.length > 0 && (
+                      <span className="ml-1">
+                        (ban đầu: {initialData.images.length} ảnh)
+                      </span>
+                    )}
+                  </span>
+                ) : (
+                  <span>⚠️ Chưa có ảnh nào. Thêm ảnh để hiển thị địa điểm tốt hơn.</span>
+                )}
+              </div>
+            )}
+
             {/* Upload trigger */}
             <div>
               <input
@@ -399,58 +417,83 @@ export default function LocationFormModal({
 
             {/* Preview grid */}
             {imagePreviews.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {imagePreviews.map((item, index) => (
-                  <div
-                    key={item.url + index}
-                    className={`relative group aspect-square rounded-lg overflow-hidden border-2 bg-secondary
-                      ${index === 0 ? "border-[#B8922E]" : "border-transparent"}`}
-                  >
-                    <img
-                      src={item.url}
-                      alt={`Ảnh ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {imagePreviews.length} ảnh
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/70">
+                    Kéo thả để sắp xếp | Click để xem lớn
+                  </p>
+                </div>
+                <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                  {imagePreviews.map((item, index) => (
+                    <div
+                      key={item.url + index}
+                      className={`relative group aspect-square rounded-lg overflow-hidden border-2 bg-secondary
+                        ${index === 0 ? "border-[#B8922E] ring-2 ring-[#B8922E]/30" : "border-transparent"}`}
+                    >
+                      <img
+                        src={item.url}
+                        alt={`Ảnh ${index + 1}`}
+                        className="w-full h-full object-cover cursor-pointer"
+                        onClick={() => window.open(item.url, '_blank')}
+                        title="Click để xem ảnh gốc"
+                      />
 
-                    {/* Primary badge */}
-                    {index === 0 && (
-                      <div className="absolute top-1 left-1 bg-[#B8922E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                        PRIMARY
-                      </div>
-                    )}
+                      {/* Primary badge */}
+                      {index === 0 && (
+                        <div className="absolute top-1 left-1 bg-[#B8922E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                          ẢNH CHÍNH
+                        </div>
+                      )}
+                      
+                      {/* Existing image badge */}
+                      {!item.file && (
+                        <div className="absolute top-1 right-1 bg-blue-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                          ĐÃ CÓ
+                        </div>
+                      )}
 
-                    {/* Hover actions */}
-                    <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      {index !== 0 && (
+                      {/* Hover actions */}
+                      <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        {index !== 0 && (
+                          <button
+                            type="button"
+                            onClick={() => handleSetPrimary(index)}
+                            title="Đặt làm ảnh chính"
+                            className="rounded-full bg-[#B8922E] p-1.5 text-white hover:bg-[#a67d22] transition-colors"
+                          >
+                            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7 7 7" />
+                            </svg>
+                          </button>
+                        )}
                         <button
                           type="button"
-                          onClick={() => handleSetPrimary(index)}
-                          title="Đặt làm ảnh chính"
-                          className="rounded-full bg-[#B8922E] p-1.5 text-white hover:bg-[#a67d22] transition-colors"
+                          onClick={() => handleRemoveImage(index)}
+                          title="Xóa ảnh này"
+                          className="rounded-full bg-red-500 p-1.5 text-white hover:bg-red-600 transition-colors"
                         >
                           <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7 7 7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        title="Xóa ảnh này"
-                        className="rounded-full bg-red-500 p-1.5 text-white hover:bg-red-600 transition-colors"
-                      >
-                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             ) : (
-              <p className="text-xs italic text-muted-foreground">
-                Chưa có ảnh nào được chọn
-              </p>
+              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-secondary/30">
+                <svg className="h-12 w-12 text-muted-foreground/40 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-sm text-muted-foreground font-medium">Chưa có ảnh nào</p>
+                <p className="text-xs text-muted-foreground/70 mt-1">
+                  Click "Thêm ảnh" ở trên để tải lên
+                </p>
+              </div>
             )}
           </section>
 
@@ -492,7 +535,7 @@ export default function LocationFormModal({
 
       {/* ── Notification toast ───────────────────────────── */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-[70]">
+        <div className="fixed bottom-6 right-6 z-70">
           <div
             className={`flex items-start gap-3 rounded-xl p-4 shadow-xl max-w-sm border
               ${notification.type === "success"
@@ -501,11 +544,11 @@ export default function LocationFormModal({
               }`}
           >
             {notification.type === "success" ? (
-              <svg className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5 text-green-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             ) : (
-              <svg className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             )}

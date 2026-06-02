@@ -1,5 +1,4 @@
 import { useCategories } from "@/api/useLocationQuery";
-import { FILTER_ACTIVE_STYLE } from "@/constants/mapFilters";
 
 export default function FilterChips({ activeFilter, setActiveFilter }) {
   const { data: categories = [], isLoading } = useCategories();
