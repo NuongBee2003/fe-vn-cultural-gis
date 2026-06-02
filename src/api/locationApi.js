@@ -15,6 +15,7 @@ export function mapDbLocationToFe(dbLoc) {
     id: dbLoc.id,
     placeId: dbLoc.place_id,
     name: dbLoc.place?.name || "Địa điểm không tên",
+    description: dbLoc.place?.description || "",
     category: dbLoc.place?.category?.name || "Khác",
     lat: Number(dbLoc.lat),
     lng: Number(dbLoc.lng),
@@ -231,6 +232,28 @@ export async function getCategories() {
     return data;
   } catch (error) {
     console.error("❌ Lỗi khi fetch getCategories:", error);
+    throw error;
+  }
+}
+
+/**
+ * 8. Lấy danh sách assets (hình ảnh) theo place_id
+ * @param {number} placeId ID của place cần lấy assets
+ */
+export async function getAssetsByPlaceId(placeId) {
+  try {
+    console.log("📡 Fetching assets for placeId:", placeId);
+    const res = await fetch(`${BASE_URL}/location/assets/${placeId}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    console.log("✅ Assets fetched successfully:", result);
+    return result.data || [];
+  } catch (error) {
+    console.error(`❌ Lỗi khi fetch getAssetsByPlaceId (${placeId}):`, error);
     throw error;
   }
 }

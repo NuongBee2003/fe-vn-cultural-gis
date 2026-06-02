@@ -8,7 +8,8 @@ import {
   getPlaceDetail, 
   createPlaceReview,
   createPlace,
-  getCategories
+  getCategories,
+  getAssetsByPlaceId
 } from "./locationApi";
 
 /**
@@ -105,6 +106,18 @@ export function useCategories() {
     queryKey: ["categories"],
     queryFn: getCategories,
     staleTime: 30 * 60 * 1000, // Cache 30 phút vì danh mục ít khi thay đổi
+  });
+}
+
+/**
+ * 7. Hook lấy danh sách assets (hình ảnh) theo place_id
+ */
+export function useAssetsByPlaceId(placeId) {
+  return useQuery({
+    queryKey: ["assets", "place", placeId],
+    queryFn: () => getAssetsByPlaceId(placeId),
+    enabled: !!placeId,
+    staleTime: 5 * 60 * 1000, // Cache 5 phút
   });
 }
 

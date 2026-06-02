@@ -1,18 +1,8 @@
 import { useState } from "react";
-import { MapPin, Navigation, Route, X } from "lucide-react";
+import { MapPin, Navigation, Route, X, ImageOff } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
-
-const GALLERY_IMAGES = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=900&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=900&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=750&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=650&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=850&auto=format&fit=crop",
-];
+import { useAssetsByPlaceId } from "@/api/useLocationQuery";
 
 export default function LocationDetailPanel({
   location,
@@ -27,7 +17,15 @@ export default function LocationDetailPanel({
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
+  // Lấy danh sách hình ảnh từ API theo place_id
+  const { data: assets = [], isLoading: isLoadingAssets } = useAssetsByPlaceId(location.placeId);
+  
+  // Chuyển đổi assets thành array URL
+  const galleryImages = assets.length > 0 ? assets.map(asset => asset.url) : [];
+  const hasImages = galleryImages.length > 0;
+
   const openGallery = (index = 0) => {
+    if (!hasImages) return;
     setGalleryIndex(index);
     setGalleryOpen(true);
   };
@@ -48,27 +46,42 @@ export default function LocationDetailPanel({
       </button>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <button
-          type="button"
-          onClick={() => openGallery(0)}
-          className="relative h-[140px] w-full shrink-0 cursor-pointer md:h-[160px]"
-          aria-label="Xem tất cả hình ảnh"
+        <div
+          className="relative h-[140px] w-full shrink-0 md:h-[160px]"
         >
-          <img
-            src={GALLERY_IMAGES[0]}
-            alt=""
-            className="h-full w-full object-cover"
-          />
-          <span className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
-            {GALLERY_IMAGES.length} ảnh
-          </span>
+          {isLoadingAssets ? (
+            <div className="h-full w-full bg-gray-200 animate-pulse flex items-center justify-center">
+              <span className="text-sm text-gray-400">Đang tải...</span>
+            </div>
+          ) : hasImages ? (
+            <button
+              type="button"
+              onClick={() => openGallery(0)}
+              className="h-full w-full cursor-pointer"
+              aria-label="Xem tất cả hình ảnh"
+            >
+              <img
+                src={galleryImages[0]}
+                alt={location.name}
+                className="h-full w-full object-cover"
+              />
+              <span className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+                {galleryImages.length} ảnh
+              </span>
+            </button>
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center gap-2">
+              <ImageOff size={32} className="text-gray-400" />
+              <span className="text-xs text-gray-500 font-medium">Địa điểm chưa được cập nhật hình ảnh</span>
+            </div>
+          )}
           <div
             className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md"
             style={{ background: style.bg, color: style.color }}
           >
             {location.category}
           </div>
-        </button>
+        </div>
 
         <div className="p-4 pt-3">
           <h3 className="m-0 pr-8 text-[17px] font-bold leading-tight text-gray-900">
@@ -123,32 +136,34 @@ export default function LocationDetailPanel({
             uống ngon và nhân viên thân thiện.
           </p>
 
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-            {GALLERY_IMAGES.slice(1, 5).map((img, idx) => (
-              <button
-                key={img}
-                type="button"
-                onClick={() => openGallery(idx + 1)}
-                className="shrink-0 overflow-hidden rounded-xl ring-2 ring-transparent transition hover:ring-blue-400 focus:outline-none focus:ring-blue-500"
-                aria-label={`Xem ảnh ${idx + 2}`}
-              >
-                <img
-                  src={img}
-                  alt=""
-                  className="h-[64px] w-[64px] object-cover"
-                />
-              </button>
-            ))}
-            {GALLERY_IMAGES.length > 5 && (
-              <button
-                type="button"
-                onClick={() => openGallery(0)}
-                className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-xl bg-gray-100 text-[12px] font-semibold text-gray-600 hover:bg-gray-200"
-              >
-                +{GALLERY_IMAGES.length - 5}
-              </button>
-            )}
-          </div>
+          {hasImages && (
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+              {galleryImages.slice(1, 5).map((img, idx) => (
+                <button
+                  key={`${img}-${idx}`}
+                  type="button"
+                  onClick={() => openGallery(idx + 1)}
+                  className="shrink-0 overflow-hidden rounded-xl ring-2 ring-transparent transition hover:ring-blue-400 focus:outline-none focus:ring-blue-500"
+                  aria-label={`Xem ảnh ${idx + 2}`}
+                >
+                  <img
+                    src={img}
+                    alt=""
+                    className="h-[64px] w-[64px] object-cover"
+                  />
+                </button>
+              ))}
+              {galleryImages.length > 5 && (
+                <button
+                  type="button"
+                  onClick={() => openGallery(0)}
+                  className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-xl bg-gray-100 text-[12px] font-semibold text-gray-600 hover:bg-gray-200"
+                >
+                  +{galleryImages.length - 5}
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="mt-4 space-y-3 border-t border-gray-100 pt-3">
             {[
@@ -200,13 +215,15 @@ export default function LocationDetailPanel({
         </button>
       </div>
 
-      <ImageMasonryGallery
-        open={galleryOpen}
-        onClose={() => setGalleryOpen(false)}
-        images={GALLERY_IMAGES}
-        title={location.name}
-        initialIndex={galleryIndex}
-      />
+      {hasImages && (
+        <ImageMasonryGallery
+          open={galleryOpen}
+          onClose={() => setGalleryOpen(false)}
+          images={galleryImages}
+          title={location.name}
+          initialIndex={galleryIndex}
+        />
+      )}
     </div>
   );
 }
