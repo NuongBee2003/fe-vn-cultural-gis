@@ -1,6 +1,6 @@
 
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { 
   getLocationsByCategory, 
   getLocationsByGeo,
@@ -33,6 +33,7 @@ export function useLocationsByGeo(bbox, limit = 50) {
     queryFn: () => getLocationsByGeo(bbox, limit),
     enabled: !!bbox, // Chỉ fetch khi có bbox hợp lệ từ bản đồ
     staleTime: 1 * 60 * 1000, // Cache trong 1 phút vì người dùng di chuyển bản đồ thường xuyên
+    placeholderData: keepPreviousData, // Giữ dữ liệu cũ khi bbox thay đổi → markers không biến mất gây flicker
   });
 }
 

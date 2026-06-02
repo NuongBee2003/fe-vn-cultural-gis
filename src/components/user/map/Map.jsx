@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -21,10 +21,6 @@ import {
 import FitRouteBounds from "@/components/user/map/FitRouteBounds";
 import FlyToSelected from "@/components/user/map/FlyToSelected";
 import LocationDetailPanel from "@/components/user/map/LocationDetailPanel";
-
-function locationKey(location, index) {
-  return `${location.id}-${index}`;
-}
 
 // Utility: Tính bbox từ map bounds dạng "minLng,minLat,maxLng,maxLat"
 function getBboxFromBounds(bounds) {
@@ -61,9 +57,10 @@ export default function Map({ activeFilter = "all", search = "" }) {
 
   // Lọc locations theo search text
   const filtered = useMemo(() => {
+    if (!search) return apiLocations; // Không có search → hiển thị tất cả, tránh filter lỗi
     return apiLocations.filter((loc) => {
-      const matchSearch = loc.name.toLowerCase().includes(search.toLowerCase());
-      return matchSearch;
+      const name = (loc.name || "").toLowerCase();
+      return name.includes(search.toLowerCase());
     });
   }, [apiLocations, search]);
 
@@ -75,7 +72,7 @@ export default function Map({ activeFilter = "all", search = "" }) {
   const [routeDestination, setRouteDestination] = useState(null);
   const [routeLoading, setRouteLoading] = useState(false);
   const [selected, setSelected] = useState(
-    /** @type {{ location: typeof ALL_LOCATIONS[0]; index: number } | null} */ (null)
+    /** @type {{ location: object } | null} */ (null)
   );
 
   const clearRoute = useCallback(() => {
@@ -146,19 +143,15 @@ export default function Map({ activeFilter = "all", search = "" }) {
     [userPosition, getCurrentPosition, clearRoute]
   );
 
-  const selectLocation = useCallback((location, index) => {
-    setSelected({ location, index });
+  const selectLocation = useCallback((location) => {
+    setSelected({ location });
   }, []);
 
   useEffect(() => {
     if (!selected) return;
     const { location } = selected;
-    const stillVisible = filtered.some(
-      (loc) =>
-        loc.name === location.name &&
-        loc.lat === location.lat &&
-        loc.lng === location.lng
-    );
+    // Dùng id để so sánh: chính xác hơn, không bị ảnh hưởng bởi thay đổi thứ tự list
+    const stillVisible = filtered.some((loc) => loc.id === location.id);
     if (!stillVisible) {
       setSelected(null);
       clearRoute();
@@ -197,15 +190,18 @@ export default function Map({ activeFilter = "all", search = "" }) {
   };
 
   // Lắng nghe sự kiện di chuyển/zoom bản đồ để cập nhật bbox
+  // Debounce 500ms: tránh gọi API liên tục khi pan/zoom → giảm flicker
+  const bboxTimerRef = useRef(null);
   useEffect(() => {
     if (!mapInstance) return;
 
     const handleMapMove = () => {
-      const bounds = mapInstance.getBounds();
-      const newBbox = getBboxFromBounds(bounds);
-      if (newBbox) {
-        setBbox(newBbox);
-      }
+      if (bboxTimerRef.current) clearTimeout(bboxTimerRef.current);
+      bboxTimerRef.current = setTimeout(() => {
+        const bounds = mapInstance.getBounds();
+        const newBbox = getBboxFromBounds(bounds);
+        if (newBbox) setBbox(newBbox);
+      }, 500); // chờ 500ms sau khi dừng pan/zoom mới gọi API
     };
 
     mapInstance.on("moveend", handleMapMove);
@@ -214,6 +210,7 @@ export default function Map({ activeFilter = "all", search = "" }) {
     return () => {
       mapInstance.off("moveend", handleMapMove);
       mapInstance.off("zoomend", handleMapMove);
+      if (bboxTimerRef.current) clearTimeout(bboxTimerRef.current);
     };
   }, [mapInstance]);
 
@@ -261,11 +258,11 @@ export default function Map({ activeFilter = "all", search = "" }) {
           </>
         )}
 
-        {filtered.map((location, index) => {
-          const key = locationKey(location, index);
+        {filtered.map((location) => {
+          const key = location.id;
           const isActive =
             selected &&
-            locationKey(selected.location, selected.index) === key;
+            selected.location.id === location.id;
 
           return (
             <Marker
@@ -274,7 +271,7 @@ export default function Map({ activeFilter = "all", search = "" }) {
               icon={createCustomIcon(location.markerColor || "#3b82f6", location.iconMarker || "", { active: isActive })}
               zIndexOffset={isActive ? 1000 : 0}
               eventHandlers={{
-                click: () => selectLocation(location, index),
+                click: () => selectLocation(location, key),
               }}
             />
           );
