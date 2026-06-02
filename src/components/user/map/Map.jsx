@@ -162,9 +162,9 @@ export default function Map({ activeFilter = "all", search = "" }) {
     }
   }, [filtered, selected, clearRoute]);
 
-  const selectedFlyPosition = selected
-    ? [selected.location.lat, selected.location.lng]
-    : null;
+  const selectedFlyPosition = useMemo(() => {
+    return selected ? [selected.location.lat, selected.location.lng] : null;
+  }, [selected]);
 
   const isRouteForSelected =
     selected &&
