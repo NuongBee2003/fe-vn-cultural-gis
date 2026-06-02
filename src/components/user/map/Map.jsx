@@ -199,6 +199,10 @@ export default function Map({ activeFilter = "all", search = "" }) {
   useEffect(() => {
     if (!mapInstance) return;
 
+    const handleMapMoveStart = () => {
+      if (bboxTimerRef.current) clearTimeout(bboxTimerRef.current);
+    };
+
     const handleMapMove = () => {
       if (bboxTimerRef.current) clearTimeout(bboxTimerRef.current);
       bboxTimerRef.current = setTimeout(() => {
@@ -208,10 +212,14 @@ export default function Map({ activeFilter = "all", search = "" }) {
       }, 500); // chờ 500ms sau khi dừng pan/zoom mới gọi API
     };
 
+    mapInstance.on("movestart", handleMapMoveStart);
+    mapInstance.on("zoomstart", handleMapMoveStart);
     mapInstance.on("moveend", handleMapMove);
     mapInstance.on("zoomend", handleMapMove);
 
     return () => {
+      mapInstance.off("movestart", handleMapMoveStart);
+      mapInstance.off("zoomstart", handleMapMoveStart);
       mapInstance.off("moveend", handleMapMove);
       mapInstance.off("zoomend", handleMapMove);
       if (bboxTimerRef.current) clearTimeout(bboxTimerRef.current);
