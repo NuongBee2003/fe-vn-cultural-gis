@@ -43,17 +43,21 @@ export default function Map({ activeFilter = "all", search = "" }) {
   // Gọi API theo filter: 
   // - Nếu "all" → gọi getLocationsByGeo (theo bbox)
   // - Nếu có category → gọi getLocationsByCategory
-  const { data: geoLocations = [], isLoading: isLoadingGeo } = useLocationsByGeo(
-    activeFilter === "all" ? bbox : null,
-    50
-  );
-  const { data: categoryLocations = [], isLoading: isLoadingCategory } = useLocationsByCategory(
-    selectedCategoryId
-  );
+  const {
+    data: geoLocations = [],
+    isFetching: isFetchingGeo,
+  } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 50);
+
+  const {
+    data: categoryLocations = [],
+    isFetching: isFetchingCategory,
+  } = useLocationsByCategory(selectedCategoryId);
 
   // Chọn data tùy theo filter
   const apiLocations = activeFilter === "all" ? geoLocations : categoryLocations;
-  const isLoadingLocations = activeFilter === "all" ? isLoadingGeo : isLoadingCategory;
+
+  // isFetching: true mỗi lần gọi API kể cả background refetch → dùng để lock map + show skeleton
+  const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
 
   // Lọc locations theo search text
   const filtered = useMemo(() => {
@@ -214,8 +218,41 @@ export default function Map({ activeFilter = "all", search = "" }) {
     };
   }, [mapInstance]);
 
+  // ── Lock / unlock mọi tương tác của bản đồ khi đang fetch ──
+  useEffect(() => {
+    if (!mapInstance) return;
+    const handlers = [
+      mapInstance.dragging,
+      mapInstance.scrollWheelZoom,
+      mapInstance.doubleClickZoom,
+      mapInstance.touchZoom,
+      mapInstance.boxZoom,
+      mapInstance.keyboard,
+    ];
+    if (isFetchingLocations) {
+      handlers.forEach((h) => h?.disable());
+    } else {
+      handlers.forEach((h) => h?.enable());
+    }
+  }, [mapInstance, isFetchingLocations]);
+
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" style={{ cursor: isFetchingLocations ? "wait" : "unset" }}>
+      {/* ── Pointer blocker & overlay: ngăn mọi touch/click xuống Leaflet khi đang fetch và hiển thị nền xám ── */}
+      {isFetchingLocations && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 998,
+            cursor: "wait",
+            backgroundColor: "rgba(0, 0, 0, 0.15)",
+            backdropFilter: "blur(2px)",
+            transition: "all 0.3s ease",
+          }}
+        />
+      )}
+
       <MapContainer
         center={[10.79, 106.68]}
         zoom={12}
@@ -315,10 +352,63 @@ export default function Map({ activeFilter = "all", search = "" }) {
         </button>
       </div>
 
-      {/* Loading indicator */}
-      {isLoadingLocations && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-white px-4 py-2 rounded-lg shadow-md text-sm text-gray-600">
-          Đang tải markers...
+      {/* ── Skeleton loading overlay — hiện khi isFetching (cả lần đầu lẫn background refetch) ── */}
+      {isFetchingLocations && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 40,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "rgba(36, 18, 9, 0.82)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            border: "1px solid rgba(201,168,76,0.35)",
+            borderRadius: 14,
+            padding: "9px 16px 9px 12px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.28), 0 0 0 1px rgba(201,168,76,0.12)",
+            minWidth: 210,
+            pointerEvents: "none",
+          }}
+        >
+          {/* Spinner vòng tròn */}
+          <svg
+            width={20} height={20} viewBox="0 0 24 24" fill="none"
+            style={{ flexShrink: 0, animation: "_map_spin 0.85s linear infinite" }}
+          >
+            <circle cx="12" cy="12" r="9" stroke="rgba(201,168,76,0.2)" strokeWidth="3" />
+            <path d="M12 3a9 9 0 0 1 9 9" stroke="#c9a84c" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+
+          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+            <div style={{ height: 3, borderRadius: 99, background: "rgba(201,168,76,0.15)", overflow: "hidden" }}>
+              <div
+                style={{
+                  height: "100%",
+                  width: "55%",
+                  borderRadius: 99,
+                  background: "linear-gradient(90deg, transparent, #c9a84c, #f0d98a, #c9a84c, transparent)",
+                  backgroundSize: "300% 100%",
+                  animation: "_map_shimmer 1.6s ease-in-out infinite",
+                }}
+              />
+            </div>
+            <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "#f5edd6", whiteSpace: "nowrap" }}>
+              Đang tải địa điểm…
+            </p>
+          </div>
+
+          <style>{`
+            @keyframes _map_spin   { to { transform: rotate(360deg); } }
+            @keyframes _map_shimmer {
+              0%   { background-position: 200% center; }
+              100% { background-position: -200% center; }
+            }
+          `}</style>
         </div>
       )}
     </div>

@@ -31,9 +31,14 @@ export function useLocationsByGeo(bbox, limit = 50) {
   return useQuery({
     queryKey: ["locations", "geo", bbox, limit],
     queryFn: () => getLocationsByGeo(bbox, limit),
-    enabled: !!bbox, // Chỉ fetch khi có bbox hợp lệ từ bản đồ
-    staleTime: 1 * 60 * 1000, // Cache trong 1 phút vì người dùng di chuyển bản đồ thường xuyên
-    placeholderData: keepPreviousData, // Giữ dữ liệu cũ khi bbox thay đổi → markers không biến mất gây flicker
+    enabled: !!bbox,
+    staleTime: 1 * 60 * 1000,
+    // Giữ data cũ trong khi fetch mới → markers không biến mất (chống flicker)
+    placeholderData: keepPreviousData,
+    // Tránh refetch tự động khi user alt-tab → request mới đè lên response chưa render xong
+    refetchOnWindowFocus: false,
+    // Chỉ retry 1 lần nếu lỗi, tránh flood request gây race condition
+    retry: 1,
   });
 }
 
