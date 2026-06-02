@@ -1,6 +1,7 @@
 // Các bucket names trong Supabase
 export const SUPABASE_BUCKETS = {
-  ICON_LOCATION: 'icon_location',
+  ICON_LOCATION: 'icon_location',   // Icon marker cho category
+  LOCATION_IMAGES: 'image_location', // Ảnh minh họa cho địa điểm
 };
 
 // Cấu hình tải ảnh
