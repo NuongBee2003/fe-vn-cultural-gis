@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
-import { useCategories } from "@/api/useLocationQuery";
+import { useCategories, useAssetsByPlaceId } from "@/api/useLocationQuery";
 
 const EMPTY_FORM = {
   name: "",
@@ -48,11 +48,43 @@ export default function LocationFormModal({
   // file = File  → chưa upload, sẽ upload khi submit
   const [imagePreviews, setImagePreviews] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  // Đánh dấu đã sync ảnh từ API (tránh overwrite khi user đã thêm ảnh mới)
+  const [assetsSynced, setAssetsSynced] = useState(false);
   const fileInputRef = useRef(null);
 
   // ── Danh mục ─────────────────────────────────────────────
   const { data: rawCategories = [] } = useCategories();
   const categories = Array.isArray(rawCategories) ? rawCategories : [];
+
+  // ── Fetch ảnh hiện có từ API khi edit ────────────────────
+  const isEditMode = isOpen && !!initialData;
+  const placeId = initialData?.placeId ?? null;
+
+  // Chỉ fetch khi modal đang mở ở chế độ edit
+  const { data: fetchedAssets = [], isLoading: isLoadingAssets } = useAssetsByPlaceId(
+    isEditMode ? placeId : null
+  );
+
+  // Khi fetch assets xong → sync vào imagePreviews
+  useEffect(() => {
+    if (!isEditMode || isLoadingAssets || assetsSynced) return;
+
+    // Sort: is_primary lên đầu
+    const sorted = [...fetchedAssets].sort((a, b) => {
+      if (a.is_primary && !b.is_primary) return -1;
+      if (!a.is_primary && b.is_primary) return 1;
+      return (a.id || 0) - (b.id || 0);
+    });
+
+    const fromApi = sorted.map((asset) => ({ file: null, url: asset.url }));
+
+    // Giữ lại ảnh mới (có file) user đã chọn trước khi API load xong
+    setImagePreviews((prev) => {
+      const newFiles = prev.filter((item) => item.file !== null);
+      return [...fromApi, ...newFiles];
+    });
+    setAssetsSynced(true);
+  }, [fetchedAssets, isLoadingAssets, isEditMode, assetsSynced]);
 
   // ── Reset khi mở / đóng ──────────────────────────────────
   useEffect(() => {
@@ -68,15 +100,17 @@ export default function LocationFormModal({
         lat: initialData.lat != null ? String(initialData.lat) : "",
         lng: initialData.lng != null ? String(initialData.lng) : "",
       });
-      // Ảnh hiện có (nếu initialData.images tồn tại)
+      // Tạm populate từ initialData.images trong khi API fetch ảnh mới nhất
       const existing = (initialData.images || []).map((url) => ({
         file: null,
         url,
       }));
       setImagePreviews(existing);
+      setAssetsSynced(false); // Reset để trigger fetch lại ảnh từ API
     } else {
       setFormData(EMPTY_FORM);
       setImagePreviews([]);
+      setAssetsSynced(false);
     }
     setErrors({});
     setNotification(null);
@@ -368,22 +402,6 @@ export default function LocationFormModal({
             </h3>
 
             {/* Hiển thị số lượng ảnh hiện có khi đang update */}
-            {initialData && (
-              <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg px-3 py-2">
-                {imagePreviews.length > 0 ? (
-                  <span>
-                    📷 Đang có <strong className="text-foreground">{imagePreviews.length}</strong> ảnh 
-                    {initialData.images && initialData.images.length > 0 && (
-                      <span className="ml-1">
-                        (ban đầu: {initialData.images.length} ảnh)
-                      </span>
-                    )}
-                  </span>
-                ) : (
-                  <span>⚠️ Chưa có ảnh nào. Thêm ảnh để hiển thị địa điểm tốt hơn.</span>
-                )}
-              </div>
-            )}
 
             {/* Upload trigger */}
             <div>

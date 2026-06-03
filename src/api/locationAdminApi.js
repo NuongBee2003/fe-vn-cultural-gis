@@ -84,10 +84,11 @@ export async function deleteLocation(id) {
 
 // ─── React Query Hooks ────────────────────────────────────
 
-const INVALIDATE_KEYS = [["locations", "all"], ["locations", "geo"]];
-
 function invalidateLocations(queryClient) {
-  INVALIDATE_KEYS.forEach((key) => queryClient.invalidateQueries({ queryKey: key }));
+  // Invalidate tất cả queries bắt đầu bằng "locations" (prefix match)
+  // → bao gồm ["locations","all",page,limit], ["locations","geo",bbox,...], v.v.
+  queryClient.invalidateQueries({ queryKey: ["locations"] });
+  queryClient.invalidateQueries({ queryKey: ["assets"] });
 }
 
 export function useCreateLocation() {
