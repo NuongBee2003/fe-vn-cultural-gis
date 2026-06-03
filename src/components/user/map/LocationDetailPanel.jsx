@@ -132,8 +132,7 @@ export default function LocationDetailPanel({
           )}
 
           <p className="mt-3 text-[13px] leading-relaxed text-gray-600">
-            Không gian cực chill với view đẹp, thích hợp check-in cuối tuần, đồ
-            uống ngon và nhân viên thân thiện.
+            {location.description ? location.description : "Chưa có mô tả"}
           </p>
 
           {hasImages && (
