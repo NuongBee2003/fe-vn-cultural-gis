@@ -59,8 +59,17 @@ export default function Map({ activeFilter = "all", onSelectFromSearch }) {
   // isFetching: true mỗi lần gọi API kể cả background refetch → dùng để lock map + show skeleton
   const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
 
-  // Hiển thị tất cả markers theo filter (không lọc client-side, search dùng dropdown)
-  const filtered = apiLocations;
+  // Location được pin từ search (có thể nằm ngoài bbox hiện tại)
+  const [pinnedLocation, setPinnedLocation] = useState(null);
+
+  // Merge: nếu có pinnedLocation và chưa có trong apiLocations thì thêm vào để marker luôn hiển thị
+  const filtered = useMemo(() => {
+    if (!pinnedLocation) return apiLocations;
+    const alreadyLoaded = apiLocations.some((loc) => loc.id === pinnedLocation.id);
+    if (alreadyLoaded) return apiLocations; // đã có trong viewport, bỏ pin
+    // Chưa load được → gửi thêm vào đầu list để render marker
+    return [pinnedLocation, ...apiLocations];
+  }, [apiLocations, pinnedLocation]);
 
   const [mapInstance, setMapInstance] = useState(null);
   const [userPosition, setUserPosition] = useState(null);
@@ -146,18 +155,44 @@ export default function Map({ activeFilter = "all", onSelectFromSearch }) {
   }, []);
 
   // Expose selectLocation cho SearchBar (qua HomePage ref pattern)
+  // Khi search chọn 1 kết quả: pin marker + fly + cập nhật bbox vùng đó
+  const selectFromSearch = useCallback((location) => {
+    if (!location?.lat || !location?.lng) return;
+
+    // Đánh dấu để không bị effect filter ép close
+    const pinned = { ...location, _fromSearch: true };
+    setPinnedLocation(pinned);
+    setSelected({ location: pinned });
+
+    // Cập nhật bbox xung quanh vị trí được chọn → trigger load markers mới
+    const delta = 0.01; // ~1km
+    const newBbox = `${location.lng - delta},${location.lat - delta},${location.lng + delta},${location.lat + delta}`;
+    setBbox(newBbox);
+  }, []);
+
   useEffect(() => {
-    onSelectFromSearch?.(selectLocation);
-  }, [onSelectFromSearch, selectLocation]);
+    onSelectFromSearch?.(selectFromSearch);
+  }, [onSelectFromSearch, selectFromSearch]);
 
-  // Khi SearchBar chọn 1 kết quả → fly đến vị trí và mở panel
+  // Dọn pin khi location đã có trong apiLocations (bbox đã load xong vùng mới)
+  useEffect(() => {
+    if (!pinnedLocation) return;
+    const loaded = apiLocations.some((loc) => loc.id === pinnedLocation.id);
+    if (loaded) {
+      setPinnedLocation(null);
+      // Cập nhật selected để dùng object mới từ apiLocations (không có _fromSearch)
+      const fresh = apiLocations.find((loc) => loc.id === pinnedLocation.id);
+      if (fresh) setSelected({ location: fresh });
+    }
+  }, [apiLocations, pinnedLocation]);
 
+  // Đóng panel nếu location không còn trong filtered (do filter category thay đổi, v.v.)
   useEffect(() => {
     if (!selected) return;
     const { location } = selected;
-    // Với location từ search, id có thể không có trong filtered → không cần close
+    if (location._fromSearch) return; // đang pin, không đóng
     const stillVisible = filtered.some((loc) => loc.id === location.id);
-    if (!stillVisible && !location._fromSearch) {
+    if (!stillVisible) {
       setSelected(null);
       clearRoute();
     }

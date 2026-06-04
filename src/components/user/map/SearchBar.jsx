@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, X, MapPin, Loader2 } from "lucide-react";
 import { useSearchLocations } from "@/api/useLocationQuery";
+import { useTranslation } from "react-i18next";
 
 /**
  * SearchBar với dropdown gợi ý địa điểm.
@@ -8,6 +9,7 @@ import { useSearchLocations } from "@/api/useLocationQuery";
  *  - onSelectLocation(location) → gọi khi user click vào 1 kết quả
  */
 export default function SearchBar({ onSelectLocation }) {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -85,7 +87,7 @@ export default function SearchBar({ onSelectLocation }) {
           onFocus={() => {
             if (debouncedQuery.trim().length >= 1) setIsOpen(true);
           }}
-          placeholder="Tìm địa điểm..."
+          placeholder={t('map.searchPlaceholder')}
           className="flex-1 border-none outline-none text-[13.5px] text-gray-800 bg-transparent min-w-0"
         />
         {inputValue && (
@@ -104,11 +106,11 @@ export default function SearchBar({ onSelectLocation }) {
           {isFetching && results.length === 0 ? (
             <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400">
               <Loader2 size={14} className="animate-spin" />
-              Đang tìm kiếm...
+              {t('map.searching')}
             </div>
           ) : results.length === 0 ? (
             <div className="px-4 py-3 text-sm text-gray-400">
-              Không tìm thấy địa điểm nào
+              {t('map.noResults')}
             </div>
           ) : (
             <ul className="max-h-[320px] overflow-y-auto">
@@ -170,7 +172,7 @@ export default function SearchBar({ onSelectLocation }) {
           {/* Divider + hint */}
           {results.length > 0 && (
             <div className="border-t border-gray-100 px-4 py-2 text-[11px] text-gray-400">
-              {results.length} kết quả · Nhấn để xem trên bản đồ
+              {results.length} {t('map.resultsHint')}
             </div>
           )}
         </div>

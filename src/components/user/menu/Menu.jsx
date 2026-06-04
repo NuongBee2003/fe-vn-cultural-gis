@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   UserPlus,
   LogIn,
-  Star,
   PanelLeftClose,
   PanelLeftOpen,
   Menu as MenuIcon,
@@ -12,8 +12,10 @@ import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
 import { MENU_NAV_ITEMS } from "@/constants/menuNav";
 import { PATHS } from "@/constants/paths";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 export default function Menu() {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -75,7 +77,7 @@ export default function Menu() {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          title={collapsed ? "Mở sidebar" : "Đóng sidebar"}
+          title={collapsed ? t("nav.openSidebar", "Mở sidebar") : t("nav.closeSidebar", "Đóng sidebar")}
           className="hidden md:flex w-7 h-7 rounded-md items-center justify-center shrink-0 cursor-pointer transition-all duration-150
             bg-white/5 border border-[var(--brand-primary-18)] text-[var(--muted-1)]
             hover:bg-[var(--brand-primary-12)] hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary-50)]"
@@ -92,31 +94,44 @@ export default function Menu() {
       <nav className="flex-1 overflow-y-auto overflow-x-hidden px-1.5 py-2.5 flex flex-col gap-0.5">
         {!collapsed && (
           <div className="text-[9px] tracking-widest uppercase text-[var(--brand-primary-50)] font-semibold px-2.5 pb-2 pt-1 whitespace-nowrap">
-            Điều hướng
+            {t("nav.navigation", "Điều hướng")}
           </div>
         )}
         {MENU_NAV_ITEMS.map((item) => (
-          <NavItem key={item.label} item={item} collapsed={collapsed} />
+          <NavItem key={item.labelKey || item.label} item={item} collapsed={collapsed} />
         ))}
       </nav>
+
+      {/* Language Switcher */}
+      <div className="relative z-50 px-1.5 py-2 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
+        {collapsed ? (
+          <div className="flex justify-center">
+            <LanguageSwitcher collapsed={collapsed} />
+          </div>
+        ) : (
+          <div className="px-1">
+            <LanguageSwitcher variant="menu" />
+          </div>
+        )}
+      </div>
 
       {/* Login and Register */}
       <div className="relative z-50 px-1.5 py-2.5 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
         {collapsed ? (
           <>
             <div className="flex justify-center">
-              <div
-                title="Đăng ký"
+              <NavLink
+                to={PATHS.REGISTER}
+                title={t("auth.register", "Đăng ký")}
                 className="w-10 h-10 rounded-lg flex items-center justify-center text-[var(--brand-primary)] bg-transparent border border-[var(--brand-primary-35)] cursor-pointer hover:bg-[var(--brand-primary-10)] transition-all"
               >
                 <UserPlus size={15} />
-              </div>
+              </NavLink>
             </div>
             <div className="flex justify-center">
               <NavLink  
-              onClick={()=>{console.log("Nhan")}}
-              to={PATHS.LOGIN}
-                title="Đăng nhập"
+                to={PATHS.LOGIN}
+                title={t("auth.login", "Đăng nhập")}
                 className="w-10 h-10 rounded-lg flex items-center justify-center text-[var(--brand-on-primary)] bg-[var(--brand-primary)] border-none cursor-pointer hover:bg-[var(--brand-primary-variant)] transition-all"
               >
                 <LogIn size={15} />
@@ -129,13 +144,13 @@ export default function Menu() {
               to={PATHS.REGISTER}
               className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-[var(--brand-primary)] bg-transparent border border-[var(--brand-primary-35)] cursor-pointer transition-all hover:bg-[var(--brand-primary-10)] no-underline"
             >
-              <UserPlus size={13} /> Đăng ký
+              <UserPlus size={13} /> {t("auth.register", "Đăng ký")}
             </NavLink>
             <NavLink
               to={PATHS.LOGIN}
               className="flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold text-[var(--brand-on-primary)] bg-[var(--brand-primary)] border-none cursor-pointer transition-all hover:bg-[var(--brand-primary-variant)] no-underline"
             >
-              <LogIn size={13} /> Đăng nhập
+              <LogIn size={13} /> {t("auth.login", "Đăng nhập")}
             </NavLink>
           </>
         )}

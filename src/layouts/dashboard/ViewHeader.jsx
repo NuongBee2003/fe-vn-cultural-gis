@@ -1,13 +1,14 @@
 import { cn } from "@/lib/utils";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export default function ViewHeader({
   logo,
-  title,
-  description,
   className,
   name,
 }) {
+  const { t } = useTranslation();
   return (
     <header
       className={cn(
@@ -20,17 +21,16 @@ export default function ViewHeader({
           {logo ? <div className="shrink-0">{logo}</div> : null}
           <div className="min-w-0">
             <div className="truncate text-lg font-semibold leading-none">
-              {title}
+              {t('app.title')}
             </div>
-            {description ? (
-              <div className="mt-1 truncate text-sm text-muted-foreground">
-                {description}
-              </div>
-            ) : null}
+            <div className="mt-1 truncate text-sm text-muted-foreground">
+              {t('app.subtitle')}
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <ProfileMenu name={name} />
         </div>
       </div>

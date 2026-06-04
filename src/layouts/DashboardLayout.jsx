@@ -31,8 +31,6 @@ export default function DashboardLayout() {
             className="h-10 w-auto max-w-[180px] object-contain"
           />
         }
-        title="VietCulture Map"
-        description="Bản đồ văn hóa Việt Nam"
         name={username}
       />
 

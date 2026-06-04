@@ -17,46 +17,53 @@ import {
 export const DASHBOARD_NAV_ITEMS = [
   {
     label: "Quản lý địa điểm",
+    labelKey: "dashboard.nav.places",
     icon: MapPinned,
     to: "/dashboard/places",
   },
   {
     label: "Quản lý nội dung cộng đồng",
+    labelKey: "dashboard.nav.community",
     icon: MessageSquareText,
     children: [
-      { label: "Quản lý bài viết", to: "/dashboard/community/posts" },
-      { label: "Quản lý đánh giá", to: "/dashboard/community/reviews" },
+      { label: "Quản lý bài viết", labelKey: "dashboard.nav.posts", to: "/dashboard/community/posts" },
+      { label: "Quản lý đánh giá", labelKey: "dashboard.nav.reviews", to: "/dashboard/community/reviews" },
     ],
   },
   {
     label: "Quản lý người dùng",
+    labelKey: "dashboard.nav.users",
     icon: Users,
     base: "/dashboard/users",
     children: [
-      { label: "Quản lý quyền", to: "/dashboard/users/roles" },
-      { label: "Quản lý tài khoản", to: "/dashboard/users/accounts" },
+      { label: "Quản lý quyền", labelKey: "dashboard.nav.roles", to: "/dashboard/users/roles" },
+      { label: "Quản lý tài khoản", labelKey: "dashboard.nav.accounts", to: "/dashboard/users/accounts" },
     ],
   },
   {
     label: "Quản lý danh mục địa điểm",
+    labelKey: "dashboard.nav.categories",
     icon: Tags,
     to: "/dashboard/categories",
   },
   {
     label: "Quản lý trải nghiệm",
+    labelKey: "dashboard.nav.experiences",
     icon: LayoutGrid,
     to: "/dashboard/experiences",
   },
   {
     label: "Quản lý sự kiện",
+    labelKey: "dashboard.nav.events",
     icon: CalendarDays,
     to: "/dashboard/events",
   },
   {
     label: "Báo cáo",
+    labelKey: "dashboard.nav.reports",
     icon: BarChart3,
     base: "/dashboard/reports",
-    children: [{ label: "Địa điểm hot", to: "/dashboard/reports/hot-places" }],
+    children: [{ label: "Địa điểm hot", labelKey: "dashboard.nav.hotPlaces", to: "/dashboard/reports/hot-places" }],
   },
 ];
 

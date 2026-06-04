@@ -1,0 +1,230 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "noData": "Chưa có dữ liệu",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo mới",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "all": "Tất cả",
+    "actions": "Hành động",
+    "yes": "Có",
+    "no": "Không",
+    "success": "Thành công",
+    "rowsPerPage": "Hàng / trang",
+    "page": "Trang",
+    "of": "trên",
+    "prevPage": "Trang trước",
+    "nextPage": "Trang sau",
+    "total": "Tổng",
+    "showing": "Hiển thị",
+    "results": "kết quả",
+    "locations": "địa điểm",
+    "noResults": "Không tìm thấy kết quả"
+  },
+
+  "app": {
+    "title": "VietCulture Map",
+    "subtitle": "Bản đồ văn hóa Việt Nam"
+  },
+
+  "nav": {
+    "home": "Trang chủ",
+    "holiday": "Lịch lễ",
+    "experience": "Trải nghiệm",
+    "exhibition": "Triển lãm ảo",
+    "studio": "Tạo ảnh",
+    "community": "Cộng đồng",
+    "history": "Hành trình lịch sử Việt Nam",
+    "culture": "Văn hóa",
+    "cultureFood": "Ẩm thực",
+    "cultureCustoms": "Phong tục tập quán",
+    "cultureFolkArt": "Nghệ thuật dân gian",
+    "navigation": "Điều hướng",
+    "openSidebar": "Mở sidebar",
+    "closeSidebar": "Đóng sidebar"
+  },
+
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "username": "Tên người dùng",
+    "fullName": "Họ và tên",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "hasAccount": "Đã có tài khoản?",
+    "loginSuccess": "Đăng nhập thành công",
+    "loginError": "Email hoặc mật khẩu không đúng",
+    "adminLogin": "Đăng nhập Admin",
+    "adminLoginDesc": "Nhập thông tin để truy cập trang quản trị",
+    "passwordPlaceholder": "Nhập mật khẩu...",
+    "emailPlaceholder": "Nhập email..."
+  },
+
+  "map": {
+    "searchPlaceholder": "Tìm địa điểm...",
+    "searching": "Đang tìm kiếm...",
+    "noResults": "Không tìm thấy địa điểm nào",
+    "resultsHint": "kết quả · Nhấn để xem trên bản đồ",
+    "loadingPlaces": "Đang tải địa điểm…",
+    "myLocation": "Vị trí của tôi",
+    "directions": "Chỉ đường",
+    "clearRoute": "Xóa tuyến đường",
+    "route": "Tuyến đường",
+    "distance": "Khoảng cách",
+    "duration": "Thời gian",
+    "straightLine": "Đường thẳng",
+    "openInMaps": "Mở trong Google Maps",
+    "streetMap": "Bản đồ Đường phố",
+    "satelliteMap": "Bản đồ Vệ tinh",
+    "locationError": "Không thể lấy vị trí của bạn. Vui lòng kiểm tra quyền truy cập vị trí.",
+    "routeError": "Không thể tính tuyến đường. Hãy bật quyền vị trí và thử lại.",
+    "category": "Danh mục",
+    "address": "Địa chỉ",
+    "description": "Mô tả",
+    "reviews": "Đánh giá",
+    "rating": "Xếp hạng",
+    "images": "Hình ảnh",
+    "noImages": "Chưa có ảnh",
+    "writeReview": "Viết đánh giá",
+    "reviewPlaceholder": "Chia sẻ trải nghiệm của bạn...",
+    "submitReview": "Gửi đánh giá",
+    "noReviews": "Chưa có đánh giá nào",
+    "closeDetail": "Đóng chi tiết"
+  },
+
+  "dashboard": {
+    "title": "Bảng quản trị",
+    "nav": {
+      "places": "Quản lý địa điểm",
+      "community": "Quản lý nội dung cộng đồng",
+      "posts": "Quản lý bài viết",
+      "reviews": "Quản lý đánh giá",
+      "users": "Quản lý người dùng",
+      "roles": "Quản lý quyền",
+      "accounts": "Quản lý tài khoản",
+      "categories": "Quản lý danh mục địa điểm",
+      "experiences": "Quản lý trải nghiệm",
+      "events": "Quản lý sự kiện",
+      "reports": "Báo cáo",
+      "hotPlaces": "Địa điểm hot"
+    },
+    "places": {
+      "title": "Quản lý địa điểm",
+      "description": "Tạo mới, chỉnh sửa và quản lý toàn bộ địa điểm trong hệ thống.",
+      "createBtn": "+ Tạo địa điểm",
+      "searchPlaceholder": "Nhập tên địa điểm",
+      "categoryLabel": "Danh mục",
+      "table": {
+        "no": "#",
+        "name": "Tên địa điểm",
+        "category": "Danh mục",
+        "address": "Địa chỉ",
+        "description": "Mô tả",
+        "images": "Hình ảnh",
+        "coordinates": "Vĩ / Kinh độ",
+        "actions": "Hành động"
+      },
+      "confirmDelete": "Bạn có chắc chắn muốn xóa địa điểm \"{{name}}\"?\nHành động này không thể hoàn tác.",
+      "noImages": "Chưa có ảnh",
+      "showingOf": "Hiển thị {{count}} trên tổng {{total}} địa điểm",
+      "showingInCategory": "trong danh mục {{category}}",
+      "searchFound": "Tìm thấy {{count}} kết quả cho \"{{query}}\"",
+      "noPlaceInCategory": "Không có địa điểm nào trong danh mục \"{{category}}\"",
+      "noSearchResult": "Không tìm thấy địa điểm nào khớp với \"{{query}}\"",
+      "noData": "Chưa có dữ liệu địa điểm",
+      "viewImages": "Xem {{count}} ảnh"
+    },
+    "categories": {
+      "title": "Quản lý danh mục",
+      "description": "Tạo mới, chỉnh sửa và quản lý danh mục địa điểm.",
+      "createBtn": "+ Tạo danh mục",
+      "searchPlaceholder": "Tìm danh mục...",
+      "table": {
+        "no": "#",
+        "name": "Tên danh mục",
+        "icon": "Icon",
+        "color": "Màu sắc",
+        "actions": "Hành động"
+      },
+      "confirmDelete": "Bạn có chắc chắn muốn xóa danh mục \"{{name}}\"?",
+      "noData": "Chưa có danh mục nào"
+    },
+    "locations": {
+      "title": "Quản lý vị trí",
+      "description": "Quản lý tọa độ và địa chỉ của các địa điểm."
+    }
+  },
+
+  "community": {
+    "title": "Cộng đồng",
+    "subtitle": "Khám phá và chia sẻ những trải nghiệm văn hóa",
+    "search": "Tìm bài viết, địa điểm...",
+    "filterByCategory": "Lọc theo danh mục",
+    "sortBy": "Sắp xếp",
+    "sortNewest": "Mới nhất",
+    "sortOldest": "Cũ nhất",
+    "sortMostLiked": "Nhiều thích nhất",
+    "dateFrom": "Từ ngày",
+    "dateTo": "Đến ngày",
+    "noPost": "Không có bài viết nào",
+    "likes": "lượt thích",
+    "comments": "bình luận",
+    "share": "Chia sẻ",
+    "viewDetail": "Xem chi tiết"
+  },
+
+  "culture": {
+    "food": {
+      "title": "Ẩm thực",
+      "subtitle": "Khám phá nền ẩm thực phong phú của Việt Nam"
+    },
+    "folkArt": {
+      "title": "Nghệ thuật dân gian",
+      "subtitle": "Di sản văn hóa phi vật thể của dân tộc"
+    },
+    "customs": {
+      "title": "Phong tục tập quán",
+      "subtitle": "Nét đặc sắc trong đời sống văn hóa người Việt"
+    }
+  },
+
+  "history": {
+    "title": "Lịch sử",
+    "subtitle": "Hành trình lịch sử hào hùng của dân tộc Việt Nam"
+  },
+
+  "holiday": {
+    "title": "Lễ hội",
+    "subtitle": "Những lễ hội truyền thống đặc sắc của Việt Nam",
+    "search": "Tìm lễ hội...",
+    "region": "Vùng miền",
+    "north": "Miền Bắc",
+    "central": "Miền Trung",
+    "south": "Miền Nam",
+    "all": "Tất cả",
+    "time": "Thời gian",
+    "location": "Địa điểm"
+  },
+
+  "exhibition": {
+    "title": "Triển lãm",
+    "subtitle": "Khám phá các triển lãm văn hóa đặc sắc"
+  },
+
+  "studio": {
+    "title": "Studio AI",
+    "subtitle": "Công cụ sáng tạo nội dung với AI"
+  }
+}

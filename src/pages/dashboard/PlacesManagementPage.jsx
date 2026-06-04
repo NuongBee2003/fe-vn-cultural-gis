@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLocations } from "@/api/useLocationQuery";
 import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -21,6 +22,7 @@ const PAGE_SIZES = [5, 10, 15, 20];
 const DEFAULT_CATEGORY = { id: null, name: "all" };
 
 export default function PlacesManagementPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -61,7 +63,10 @@ export default function PlacesManagementPage() {
   // ── Server-side search (tìm toàn bộ DB, hỗ trợ tiếng Việt) ──
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 400);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(1); // reset trang khi search thay đổi
+    }, 400);
     return () => clearTimeout(timer);
   }, [search]);
 
@@ -69,14 +74,19 @@ export default function PlacesManagementPage() {
   const {
     data: searchResults = [],
     isFetching: isSearchFetching,
-  } = useSearchLocations(debouncedSearch, 50);
+  } = useSearchLocations(debouncedSearch, 100); // lấy nhiều để phân trang client-side
 
-  // Kết quả hiển thị: nếu đang search → dùng searchResults, ngược lại dùng locations từ API
-  const displayLocations = isServerSearching ? searchResults : locations;
+  // Phân trang client-side cho search results
+  const searchTotalPages = isServerSearching
+    ? Math.max(1, Math.ceil(searchResults.length / pageSize))
+    : 1;
+  const pagedSearchResults = isServerSearching
+    ? searchResults.slice((page - 1) * pageSize, page * pageSize)
+    : [];
+
+  // Kết quả hiển thị: nếu đang search → dùng pagedSearchResults, ngược lại dùng locations từ API
+  const filteredLocations = isServerSearching ? pagedSearchResults : locations;
   const displayTotal = isServerSearching ? searchResults.length : meta.total;
-
-  // Giữ filteredLocations alias cho tương thích với render bên dưới
-  const filteredLocations = displayLocations;
 
   // ── Handlers ──────────────────────────────────────────
   const handleCreate = () => {
@@ -92,7 +102,7 @@ export default function PlacesManagementPage() {
   const handleDelete = (location) => {
     if (
       window.confirm(
-        `Bạn có chắc chắn muốn xóa địa điểm "${location.name}"?\nHành động này không thể hoàn tác.`
+        t('dashboard.places.confirmDelete', { name: location.name })
       )
     ) {
       deleteMutation.mutate(location.id);
@@ -158,19 +168,19 @@ export default function PlacesManagementPage() {
   const isMutating =
     createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
-  // Tính totalPages an toàn (chỉ dùng khi không search)
+  // Tính totalPages an toàn
   const totalPages = isServerSearching
-    ? 1
+    ? searchTotalPages
     : meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
 
   return (
     <main className="px-6 py-5">
-      {/* ── Header ───────────────────────────────────────── */}
+      {/* ── Header ─────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold">Quản lý địa điểm</h1>
+          <h1 className="text-xl font-semibold">{t('dashboard.places.title')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Tạo mới, chỉnh sửa và quản lý toàn bộ địa điểm trong hệ thống.
+            {t('dashboard.places.description')}
           </p>
         </div>
 
@@ -178,9 +188,9 @@ export default function PlacesManagementPage() {
           <div className="grid gap-3 sm:grid-cols-[minmax(200px,1fr)_auto_auto]">
             {/* Search */}
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-muted-foreground">Tìm kiếm</span>
+              <span className="text-sm text-muted-foreground">{t('common.search')}</span>
               <Input
-                placeholder="Nhập tên địa điểm"
+                placeholder={t('dashboard.places.searchPlaceholder')}
                 value={search}
                 onChange={handleSearchChange}
               />
@@ -188,7 +198,7 @@ export default function PlacesManagementPage() {
 
             {/* Category Filter Dropdown */}
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-muted-foreground">Danh mục</span>
+              <span className="text-sm text-muted-foreground">{t('dashboard.places.categoryLabel')}</span>
               <div className="relative" ref={filterRef}>
                 <button
                   type="button"
@@ -199,7 +209,7 @@ export default function PlacesManagementPage() {
                   <span className="flex items-center gap-2">
                     <Filter size={14} />
                     <span className="truncate">
-                      {categoryFilter.name === "all" ? "Tất cả" : categoryFilter.name}
+                      {categoryFilter.name === "all" ? t('common.all') : categoryFilter.name}
                     </span>
                   </span>
                   {isFiltering && (
@@ -230,7 +240,7 @@ export default function PlacesManagementPage() {
                               <div className="w-2 h-2 rounded-full bg-[#B8922E]" />
                             )}
                           </div>
-                          Tất cả
+                          {t('common.all')}
                         </button>
 
                         {categories.map((cat) => {
@@ -290,7 +300,7 @@ export default function PlacesManagementPage() {
             className="bg-[#B8922E] hover:bg-[#a67d22] h-9 whitespace-nowrap"
             disabled={isMutating}
           >
-            + Tạo địa điểm
+            {t('dashboard.places.createBtn')}
           </Button>
         </div>
       </div>
@@ -319,14 +329,14 @@ export default function PlacesManagementPage() {
           <Table className="min-w-full">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-10">#</TableHead>
-                <TableHead>Tên địa điểm</TableHead>
-                <TableHead>Danh mục</TableHead>
-                <TableHead>Địa chỉ</TableHead>
-                <TableHead>Mô tả</TableHead>
-                <TableHead>Hình ảnh</TableHead>
-                <TableHead>Vĩ / Kinh độ</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead className="w-10">{t('dashboard.places.table.no')}</TableHead>
+                <TableHead>{t('dashboard.places.table.name')}</TableHead>
+                <TableHead>{t('dashboard.places.table.category')}</TableHead>
+                <TableHead>{t('dashboard.places.table.address')}</TableHead>
+                <TableHead>{t('dashboard.places.table.description')}</TableHead>
+                <TableHead>{t('dashboard.places.table.images')}</TableHead>
+                <TableHead>{t('dashboard.places.table.coordinates')}</TableHead>
+                <TableHead className="text-right">{t('dashboard.places.table.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -396,7 +406,7 @@ export default function PlacesManagementPage() {
                         onClick={() => handleEdit(location)}
                         disabled={isMutating}
                       >
-                        Sửa
+                        {t('common.edit')}
                       </Button>
                       <Button
                         variant="destructive"
@@ -405,7 +415,7 @@ export default function PlacesManagementPage() {
                         onClick={() => handleDelete(location)}
                         disabled={deleteMutation.isPending}
                       >
-                        {deleteMutation.isPending ? "..." : "Xóa"}
+                        {deleteMutation.isPending ? "..." : t('common.delete')}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -414,10 +424,10 @@ export default function PlacesManagementPage() {
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                     {isServerSearching
-                      ? `Không tìm thấy địa điểm nào khớp với "${debouncedSearch}"`
+                      ? t('dashboard.places.noSearchResult', { query: debouncedSearch })
                       : isFiltering
-                      ? `Không có địa điểm nào trong danh mục "${categoryFilter.name}"`
-                      : "Chưa có dữ liệu địa điểm"}
+                      ? t('dashboard.places.noPlaceInCategory', { category: categoryFilter.name })
+                      : t('dashboard.places.noData')}
                   </TableCell>
                 </TableRow>
               )}
@@ -430,32 +440,32 @@ export default function PlacesManagementPage() {
                     <div className="text-sm text-muted-foreground">
                       {isServerSearching ? (
                         <>
-                          Tìm thấy{" "}
+                          {t('map.resultsHint').split('·')[0].trim()}{" "}
                           <span className="font-medium text-foreground">
                             {searchResults.length}
                           </span>{" "}
-                          kết quả cho “{debouncedSearch}”
+                          {t('common.results')} "{debouncedSearch}"
                         </>
                       ) : (
                         <>
-                          Hiển thị{" "}
+                          {t('common.showing')}{" "}
                           <span className="font-medium text-foreground">
                             {locations.length}
                           </span>{" "}
-                          trên tổng{" "}
+                          {t('common.of')}{" "}
                           <span className="font-medium text-foreground">
                             {meta.total}
                           </span>{" "}
-                          địa điểm
+                          {t('common.locations')}
                           {isFiltering && (
-                            <span> trong danh mục <span className="font-medium text-foreground">{categoryFilter.name}</span></span>
+                            <span> {t('dashboard.places.showingInCategory', { category: categoryFilter.name })}</span>
                           )}
                         </>
                       )}
                     </div>
 
-                    {/* Pagination — ẩn khi đang search */}
-                    {!isServerSearching && (
+                    {/* Pagination — hiện cả khi search (client-side) lẫn khi phân trang bình thường */}
+                    {totalPages > 1 && (
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
                         type="button"
@@ -464,7 +474,7 @@ export default function PlacesManagementPage() {
                         disabled={page <= 1}
                         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                       >
-                        Trang trước
+                        {t('common.prevPage')}
                       </Button>
                       <span className="text-sm text-foreground min-w-[60px] text-center">
                         {page} / {totalPages}
@@ -476,7 +486,7 @@ export default function PlacesManagementPage() {
                         disabled={page >= totalPages}
                         onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
                       >
-                        Trang sau
+                        {t('common.nextPage')}
                       </Button>
                     </div>
                     )}

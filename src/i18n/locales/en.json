@@ -1,0 +1,230 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noData": "No data available",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
+    "success": "Success",
+    "rowsPerPage": "Rows / page",
+    "page": "Page",
+    "of": "of",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "total": "Total",
+    "showing": "Showing",
+    "results": "results",
+    "locations": "locations",
+    "noResults": "No results found"
+  },
+
+  "app": {
+    "title": "VietCulture Map",
+    "subtitle": "Vietnamese Cultural Map"
+  },
+
+  "nav": {
+    "home": "Home",
+    "holiday": "Festival Schedule",
+    "experience": "Experiences",
+    "exhibition": "Virtual Exhibition",
+    "studio": "AI Studio",
+    "community": "Community",
+    "history": "Vietnam History Journey",
+    "culture": "Culture",
+    "cultureFood": "Cuisine",
+    "cultureCustoms": "Customs & Traditions",
+    "cultureFolkArt": "Folk Art",
+    "navigation": "Navigation",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar"
+  },
+
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "register": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Login successful",
+    "loginError": "Invalid email or password",
+    "adminLogin": "Admin Login",
+    "adminLoginDesc": "Enter your credentials to access the admin panel",
+    "passwordPlaceholder": "Enter password...",
+    "emailPlaceholder": "Enter email..."
+  },
+
+  "map": {
+    "searchPlaceholder": "Search places...",
+    "searching": "Searching...",
+    "noResults": "No places found",
+    "resultsHint": "results · Click to view on map",
+    "loadingPlaces": "Loading places…",
+    "myLocation": "My Location",
+    "directions": "Get Directions",
+    "clearRoute": "Clear Route",
+    "route": "Route",
+    "distance": "Distance",
+    "duration": "Duration",
+    "straightLine": "Straight line",
+    "openInMaps": "Open in Google Maps",
+    "streetMap": "Street Map",
+    "satelliteMap": "Satellite Map",
+    "locationError": "Unable to get your location. Please check location permissions.",
+    "routeError": "Unable to calculate route. Please enable location and try again.",
+    "category": "Category",
+    "address": "Address",
+    "description": "Description",
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "images": "Images",
+    "noImages": "No images yet",
+    "writeReview": "Write a review",
+    "reviewPlaceholder": "Share your experience...",
+    "submitReview": "Submit Review",
+    "noReviews": "No reviews yet",
+    "closeDetail": "Close details"
+  },
+
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "nav": {
+      "places": "Manage Places",
+      "community": "Manage Community Content",
+      "posts": "Manage Posts",
+      "reviews": "Manage Reviews",
+      "users": "Manage Users",
+      "roles": "Manage Roles",
+      "accounts": "Manage Accounts",
+      "categories": "Manage Categories",
+      "experiences": "Manage Experiences",
+      "events": "Manage Events",
+      "reports": "Reports",
+      "hotPlaces": "Hot Places"
+    },
+    "places": {
+      "title": "Manage Places",
+      "description": "Create, edit and manage all places in the system.",
+      "createBtn": "+ Create Place",
+      "searchPlaceholder": "Enter place name",
+      "categoryLabel": "Category",
+      "table": {
+        "no": "#",
+        "name": "Place Name",
+        "category": "Category",
+        "address": "Address",
+        "description": "Description",
+        "images": "Images",
+        "coordinates": "Lat / Lng",
+        "actions": "Actions"
+      },
+      "confirmDelete": "Are you sure you want to delete \"{{name}}\"?\nThis action cannot be undone.",
+      "noImages": "No images",
+      "showingOf": "Showing {{count}} of {{total}} places",
+      "showingInCategory": "in category {{category}}",
+      "searchFound": "Found {{count}} results for \"{{query}}\"",
+      "noPlaceInCategory": "No places found in category \"{{category}}\"",
+      "noSearchResult": "No places found matching \"{{query}}\"",
+      "noData": "No place data available",
+      "viewImages": "View {{count}} image(s)"
+    },
+    "categories": {
+      "title": "Manage Categories",
+      "description": "Create, edit and manage place categories.",
+      "createBtn": "+ Create Category",
+      "searchPlaceholder": "Search categories...",
+      "table": {
+        "no": "#",
+        "name": "Category Name",
+        "icon": "Icon",
+        "color": "Color",
+        "actions": "Actions"
+      },
+      "confirmDelete": "Are you sure you want to delete category \"{{name}}\"?",
+      "noData": "No categories available"
+    },
+    "locations": {
+      "title": "Manage Locations",
+      "description": "Manage coordinates and addresses of places."
+    }
+  },
+
+  "community": {
+    "title": "Community",
+    "subtitle": "Discover and share cultural experiences",
+    "search": "Search posts, places...",
+    "filterByCategory": "Filter by category",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortMostLiked": "Most liked",
+    "dateFrom": "From date",
+    "dateTo": "To date",
+    "noPost": "No posts found",
+    "likes": "likes",
+    "comments": "comments",
+    "share": "Share",
+    "viewDetail": "View details"
+  },
+
+  "culture": {
+    "food": {
+      "title": "Cuisine",
+      "subtitle": "Explore the rich culinary heritage of Vietnam"
+    },
+    "folkArt": {
+      "title": "Folk Art",
+      "subtitle": "Intangible cultural heritage of the nation"
+    },
+    "customs": {
+      "title": "Customs & Traditions",
+      "subtitle": "The unique aspects of Vietnamese cultural life"
+    }
+  },
+
+  "history": {
+    "title": "History",
+    "subtitle": "The glorious historical journey of the Vietnamese people"
+  },
+
+  "holiday": {
+    "title": "Festivals",
+    "subtitle": "Vietnam's unique traditional festivals",
+    "search": "Search festivals...",
+    "region": "Region",
+    "north": "Northern",
+    "central": "Central",
+    "south": "Southern",
+    "all": "All",
+    "time": "Time",
+    "location": "Location"
+  },
+
+  "exhibition": {
+    "title": "Exhibition",
+    "subtitle": "Explore outstanding cultural exhibitions"
+  },
+
+  "studio": {
+    "title": "AI Studio",
+    "subtitle": "AI-powered content creation tools"
+  }
+}

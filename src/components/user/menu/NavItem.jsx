@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function isInternalHref(href) {
   return typeof href === "string" && href.startsWith("/");
@@ -18,6 +19,7 @@ const childLinkClass = ({ isActive }) =>
   }`;
 
 export default function NavItem({ item, collapsed }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const hasActiveChild =
     item.children?.some((child) =>
@@ -30,12 +32,14 @@ export default function NavItem({ item, collapsed }) {
     if (hasActiveChild) setOpen(true);
   }, [hasActiveChild]);
 
+  const translatedLabel = t(item.labelKey, item.label);
+
   if (collapsed) {
     const href = item.href || "#";
     const internal = isInternalHref(href) && !item.children;
 
     return (
-      <div title={item.label} className="flex justify-center">
+      <div title={translatedLabel} className="flex justify-center">
         {internal ? (
           <NavLink
             to={href}
@@ -76,7 +80,7 @@ export default function NavItem({ item, collapsed }) {
             }`}
         >
           <Icon size={15} className="shrink-0 opacity-80" />
-          <span className="flex-1">{item.label}</span>
+          <span className="flex-1">{translatedLabel}</span>
           <ChevronDown
             size={12}
             className={`opacity-60 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -85,10 +89,11 @@ export default function NavItem({ item, collapsed }) {
 
         {open && (
           <div className="ml-3.5 border-l border-[var(--brand-primary-18)] pl-2.5 mt-0.5">
-            {item.children.map((child) => (
-              isInternalHref(child.href) ? (
+            {item.children.map((child) => {
+              const childLabel = t(child.labelKey, child.label);
+              return isInternalHref(child.href) ? (
                 <NavLink
-                  key={child.label}
+                  key={child.labelKey || child.label}
                   to={child.href}
                   className={childLinkClass}
                 >
@@ -98,7 +103,7 @@ export default function NavItem({ item, collapsed }) {
                       : "bg-[var(--brand-primary-45)]"
                     }`}
                   />
-                  {child.label}
+                  {childLabel}
                   {child.badge ? (
                     <span className="text-[9px] font-semibold px-1 py-px rounded bg-[var(--brand-primary)] text-[var(--brand-on-primary)] ml-0.5">
                       {child.badge}
@@ -107,20 +112,20 @@ export default function NavItem({ item, collapsed }) {
                 </NavLink>
               ) : (
                 <a
-                  key={child.label}
+                  key={child.labelKey || child.label}
                   href={child.href}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] text-[var(--muted-1)] no-underline transition-all duration-150 mb-px hover:text-[var(--muted-2)] hover:bg-[var(--brand-primary-07)]"
                 >
                   <span className="w-1 h-1 rounded-full bg-[var(--brand-primary-45)] shrink-0" />
-                  {child.label}
+                  {childLabel}
                   {child.badge ? (
                     <span className="text-[9px] font-semibold px-1 py-px rounded bg-[var(--brand-primary)] text-[var(--brand-on-primary)] ml-0.5">
                       {child.badge}
                     </span>
                   ) : null}
                 </a>
-              )
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -135,7 +140,7 @@ export default function NavItem({ item, collapsed }) {
         className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[13px] no-underline transition-all duration-150 text-[var(--muted-1)] border-l-2 border-transparent hover:bg-white/5 hover:text-[var(--muted-2)]"
       >
         <Icon size={15} />
-        {item.label}
+        {translatedLabel}
       </a>
     );
   }
@@ -152,7 +157,7 @@ export default function NavItem({ item, collapsed }) {
       }
     >
       <Icon size={15} />
-      {item.label}
+      {translatedLabel}
     </NavLink>
   );
 }

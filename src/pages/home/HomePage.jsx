@@ -3,6 +3,7 @@ import Map from "@/components/user/map/Map";
 import SearchBar from "@/components/user/map/SearchBar";
 import FilterChips from "@/components/user/map/FilterChips";
 import UserProfile from "@/components/user/map/UserProfile";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { SlidersHorizontal, X } from "lucide-react";
 
 export default function HomePage() {
@@ -64,7 +65,8 @@ export default function HomePage() {
           />
         </div>
         {!showFiltersMobile && (
-          <div className="shrink-0 pointer-events-auto hidden md:block">
+          <div className="shrink-0 pointer-events-auto hidden md:flex items-center gap-2">
+            <LanguageSwitcher />
             <UserProfile />
           </div>
         )}

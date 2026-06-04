@@ -67,11 +67,13 @@ export function useAllLocations(page = 1, limit = 20) {
     staleTime: 1 * 60 * 1000, // Cache 1 phút
   });
 }
-export function useAllLocationsByCategory(page = 1, limit = 20, categoryId) {
+export function useAllLocationsByCategory(page = 1, limit = 20, categoryId, options = {}) {
   return useQuery({
     queryKey: ["locations", "category", categoryId, page, limit],
     queryFn: () => getAllLocationsByCategory(page, limit, categoryId),
     staleTime: 1 * 60 * 1000, // Cache 1 phút
+    placeholderData: keepPreviousData,
+    enabled: options.enabled !== false && !!categoryId,
   });
 }
 /**

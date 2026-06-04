@@ -1,11 +1,14 @@
 import * as React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboardNav";
 
-function NavItemLink({ to, icon: Icon, label }) {
+function NavItemLink({ to, icon: Icon, label, labelKey }) {
+  const { t } = useTranslation();
+  const displayLabel = labelKey ? t(labelKey, { defaultValue: label }) : label;
   return (
     <NavLink
       to={to}
@@ -19,16 +22,17 @@ function NavItemLink({ to, icon: Icon, label }) {
       }
     >
       {Icon ? <Icon className="size-4 shrink-0" /> : null}
-      <span className="truncate">{label}</span>
+      <span className="truncate">{displayLabel}</span>
     </NavLink>
   );
 }
 
 function NavGroup({ item, pathname, open, onOpenChange }) {
+  const { t } = useTranslation();
   const isInGroup = item.base ? pathname.startsWith(item.base) : false;
   const navigate = useNavigate();
-
   const Icon = item.icon;
+  const displayLabel = item.labelKey ? t(item.labelKey, { defaultValue: item.label }) : item.label;
 
   return (
     <div>
@@ -49,7 +53,7 @@ function NavGroup({ item, pathname, open, onOpenChange }) {
           className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
           {Icon ? <Icon className="size-4 shrink-0" /> : null}
-          <span className="truncate">{item.label}</span>
+          <span className="truncate">{displayLabel}</span>
         </button>
 
         <button
@@ -69,22 +73,25 @@ function NavGroup({ item, pathname, open, onOpenChange }) {
 
       {open ? (
         <div className="ml-4 mt-1 flex flex-col gap-1 border-l border-border pl-3">
-          {item.children.map((child) => (
-            <NavLink
-              key={child.to}
-              to={child.to}
-              className={({ isActive }) =>
-                cn(
-                  "rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
-                  isActive
-                    ? "bg-muted text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )
-              }
-            >
-              {child.label}
-            </NavLink>
-          ))}
+          {item.children.map((child) => {
+            const childLabel = child.labelKey ? t(child.labelKey, { defaultValue: child.label }) : child.label;
+            return (
+              <NavLink
+                key={child.to}
+                to={child.to}
+                className={({ isActive }) =>
+                  cn(
+                    "rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
+                    isActive
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )
+                }
+              >
+                {childLabel}
+              </NavLink>
+            );
+          })}
         </div>
       ) : null}
     </div>
@@ -109,7 +116,7 @@ export default function DashboardSidebar() {
           {DASHBOARD_NAV_ITEMS.map((item) =>
             item.children ? (
               <NavGroup
-                key={item.label}
+                key={item.labelKey || item.label}
                 item={item}
                 pathname={pathname}
                 open={openBase === item.base}
@@ -121,6 +128,7 @@ export default function DashboardSidebar() {
                 to={item.to}
                 icon={item.icon}
                 label={item.label}
+                labelKey={item.labelKey}
               />
             ),
           )}
