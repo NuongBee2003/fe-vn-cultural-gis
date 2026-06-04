@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Map from "@/components/user/map/Map";
 import SearchBar from "@/components/user/map/SearchBar";
 import FilterChips from "@/components/user/map/FilterChips";
@@ -7,12 +7,27 @@ import { SlidersHorizontal, X } from "lucide-react";
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [search, setSearch] = useState("");
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
+
+  // Ref để gọi selectLocation bên trong Map từ SearchBar
+  const selectLocationRef = useRef(null);
+
+  // Map expose hàm selectLocation ra ngoài qua callback này
+  const handleRegisterSelectLocation = useCallback((fn) => {
+    selectLocationRef.current = fn;
+  }, []);
+
+  // Khi user click vào kết quả search → gọi selectLocation của Map
+  const handleSelectFromSearch = useCallback((location) => {
+    selectLocationRef.current?.(location);
+  }, []);
 
   return (
     <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden">
-      <Map activeFilter={activeFilter} search={search} />
+      <Map
+        activeFilter={activeFilter}
+        onSelectFromSearch={handleRegisterSelectLocation}
+      />
 
       {/* Mobile Top Controls */}
       <div className="md:hidden absolute top-3 right-3 z-[1500] flex items-center gap-2 pointer-events-auto">
@@ -36,7 +51,7 @@ export default function HomePage() {
         `}
       >
         <div className={`shrink-0 pointer-events-auto ${showFiltersMobile ? "w-full" : ""}`}>
-          <SearchBar search={search} setSearch={setSearch} />
+          <SearchBar onSelectLocation={handleSelectFromSearch} />
         </div>
         <div
           className={`flex-1 overflow-hidden pointer-events-auto ${

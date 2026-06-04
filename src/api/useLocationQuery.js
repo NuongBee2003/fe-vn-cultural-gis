@@ -10,7 +10,8 @@ import {
   createPlace,
   getCategories,
   getAssetsByPlaceId,
-  getAllLocationsByCategory
+  getAllLocationsByCategory,
+  searchPlaceLocationsByDB,
 } from "./locationApi";
 
 /**
@@ -128,3 +129,18 @@ export function useAssetsByPlaceId(placeId) {
   });
 }
 
+/**
+ * 8. Hook tìm kiếm địa điểm bằng DB (hỗ trợ tiếng Việt có/không dấu)
+ * @param {string} query - Từ khóa tìm kiếm
+ * @param {number} [limit=10]
+ */
+export function useSearchLocations(query, limit = 10) {
+  const trimmed = (query || "").trim();
+  return useQuery({
+    queryKey: ["search", "db", trimmed, limit],
+    queryFn: () => searchPlaceLocationsByDB(trimmed, limit),
+    enabled: trimmed.length >= 1,
+    staleTime: 30 * 1000, // Cache 30 giây
+    placeholderData: [],
+  });
+}

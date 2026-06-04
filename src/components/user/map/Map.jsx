@@ -29,7 +29,7 @@ function getBboxFromBounds(bounds) {
   return `${_southWest.lng},${_southWest.lat},${_northEast.lng},${_northEast.lat}`;
 }
 
-export default function Map({ activeFilter = "all", search = "" }) {
+export default function Map({ activeFilter = "all", onSelectFromSearch }) {
   const { data: categories = [] } = useCategories();
   const [bbox, setBbox] = useState("106.68,10.76,106.70,10.79");
   
@@ -59,14 +59,8 @@ export default function Map({ activeFilter = "all", search = "" }) {
   // isFetching: true mỗi lần gọi API kể cả background refetch → dùng để lock map + show skeleton
   const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
 
-  // Lọc locations theo search text
-  const filtered = useMemo(() => {
-    if (!search) return apiLocations; // Không có search → hiển thị tất cả, tránh filter lỗi
-    return apiLocations.filter((loc) => {
-      const name = (loc.name || "").toLowerCase();
-      return name.includes(search.toLowerCase());
-    });
-  }, [apiLocations, search]);
+  // Hiển thị tất cả markers theo filter (không lọc client-side, search dùng dropdown)
+  const filtered = apiLocations;
 
   const [mapInstance, setMapInstance] = useState(null);
   const [userPosition, setUserPosition] = useState(null);
@@ -151,12 +145,19 @@ export default function Map({ activeFilter = "all", search = "" }) {
     setSelected({ location });
   }, []);
 
+  // Expose selectLocation cho SearchBar (qua HomePage ref pattern)
+  useEffect(() => {
+    onSelectFromSearch?.(selectLocation);
+  }, [onSelectFromSearch, selectLocation]);
+
+  // Khi SearchBar chọn 1 kết quả → fly đến vị trí và mở panel
+
   useEffect(() => {
     if (!selected) return;
     const { location } = selected;
-    // Dùng id để so sánh: chính xác hơn, không bị ảnh hưởng bởi thay đổi thứ tự list
+    // Với location từ search, id có thể không có trong filtered → không cần close
     const stillVisible = filtered.some((loc) => loc.id === location.id);
-    if (!stillVisible) {
+    if (!stillVisible && !location._fromSearch) {
       setSelected(null);
       clearRoute();
     }

@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from "react";
-import { useAllLocations, useAllLocationsByCategory, useCategories } from "@/api/useLocationQuery";
+import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLocations } from "@/api/useLocationQuery";
 import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
@@ -58,16 +58,25 @@ export default function PlacesManagementPage() {
   const updateMutation = useUpdateLocation();
   const deleteMutation = useDeleteLocation();
 
-  // ── Client-side search (chỉ lọc trên trang hiện tại) ──
-  const isClientSearching = search.trim().length > 0;
+  // ── Server-side search (tìm toàn bộ DB, hỗ trợ tiếng Việt) ──
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [search]);
 
-  const filteredLocations = useMemo(() => {
-    if (!isClientSearching) return locations;
-    const query = search.trim().toLowerCase();
-    return locations.filter((loc) =>
-      (loc.name || "").toLowerCase().includes(query)
-    );
-  }, [locations, search, isClientSearching]);
+  const isServerSearching = debouncedSearch.length > 0;
+  const {
+    data: searchResults = [],
+    isFetching: isSearchFetching,
+  } = useSearchLocations(debouncedSearch, 50);
+
+  // Kết quả hiển thị: nếu đang search → dùng searchResults, ngược lại dùng locations từ API
+  const displayLocations = isServerSearching ? searchResults : locations;
+  const displayTotal = isServerSearching ? searchResults.length : meta.total;
+
+  // Giữ filteredLocations alias cho tương thích với render bên dưới
+  const filteredLocations = displayLocations;
 
   // ── Handlers ──────────────────────────────────────────
   const handleCreate = () => {
@@ -131,8 +140,7 @@ export default function PlacesManagementPage() {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-    // Không reset page vì search là client-side trên trang hiện tại
-    // Nếu muốn search toàn bộ thì cần chuyển sang server-side search
+    setPage(1); // reset về trang 1 khi tìm kiếm mới
   };
 
   // Close dropdown khi click ngoài
@@ -150,8 +158,10 @@ export default function PlacesManagementPage() {
   const isMutating =
     createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
-  // Tính totalPages an toàn
-  const totalPages = meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
+  // Tính totalPages an toàn (chỉ dùng khi không search)
+  const totalPages = isServerSearching
+    ? 1
+    : meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
 
   return (
     <main className="px-6 py-5">
@@ -298,6 +308,13 @@ export default function PlacesManagementPage() {
           <div className="flex h-64 items-center justify-center">
             <p className="text-red-500 text-sm">Lỗi khi tải dữ liệu: {error.message}</p>
           </div>
+        ) : isSearchFetching ? (
+          <div className="flex h-64 items-center justify-center">
+            <div className="flex flex-col items-center gap-3 text-muted-foreground">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B8922E]" />
+              <p className="text-sm">Đang tìm kiếm...</p>
+            </div>
+          </div>
         ) : (
           <Table className="min-w-full">
             <TableHeader>
@@ -396,8 +413,8 @@ export default function PlacesManagementPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
-                    {isClientSearching
-                      ? `Không tìm thấy địa điểm nào khớp với "${search}" trên trang này`
+                    {isServerSearching
+                      ? `Không tìm thấy địa điểm nào khớp với "${debouncedSearch}"`
                       : isFiltering
                       ? `Không có địa điểm nào trong danh mục "${categoryFilter.name}"`
                       : "Chưa có dữ liệu địa điểm"}
@@ -411,16 +428,13 @@ export default function PlacesManagementPage() {
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     {/* Hiển thị đúng số lượng tùy theo trạng thái */}
                     <div className="text-sm text-muted-foreground">
-                      {isClientSearching ? (
+                      {isServerSearching ? (
                         <>
                           Tìm thấy{" "}
                           <span className="font-medium text-foreground">
-                            {filteredLocations.length}
+                            {searchResults.length}
                           </span>{" "}
-                          trên trang này
-                          {isFiltering && (
-                            <span> · Danh mục: <span className="font-medium text-foreground">{categoryFilter.name}</span></span>
-                          )}
+                          kết quả cho “{debouncedSearch}”
                         </>
                       ) : (
                         <>
@@ -440,7 +454,8 @@ export default function PlacesManagementPage() {
                       )}
                     </div>
 
-                    {/* Pagination — luôn hoạt động dù đang filter hay không */}
+                    {/* Pagination — ẩn khi đang search */}
+                    {!isServerSearching && (
                     <div className="flex flex-wrap items-center gap-2">
                       <Button
                         type="button"
@@ -464,6 +479,7 @@ export default function PlacesManagementPage() {
                         Trang sau
                       </Button>
                     </div>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

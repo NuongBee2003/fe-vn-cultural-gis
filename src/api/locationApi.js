@@ -294,3 +294,46 @@ export async function getAssetsByPlaceId(placeId) {
   }
 }
 
+/**
+ * 9. Tìm kiếm địa điểm theo tên/địa chỉ bằng DB (hỗ trợ tiếng Việt có/không dấu)
+ * @param {string} query Từ khóa tìm kiếm
+ * @param {number} [limit=10] Số kết quả tối đa
+ */
+export async function searchPlaceLocationsByDB(query, limit = 10) {
+  try {
+    const params = new URLSearchParams({ query, limit });
+    const res = await fetch(`${BASE_URL}/search/place-locations-db?${params.toString()}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    const items = result.data || [];
+
+    // Map sang cấu trúc FE (tương thích với Map.jsx + LocationDetailPanel)
+    return items.map((item) => {
+      const firstLoc = (item.locations || [])[0] || {};
+      return {
+        id: firstLoc.location_id || item.place_id,
+        placeId: item.place_id,
+        name: item.name || "Địa điểm không tên",
+        description: item.description || "",
+        category: item.category?.name || "Khác",
+        category_id: item.category?.id || null,
+        categoryId: item.category?.id || null,
+        lat: firstLoc.lat ? Number(firstLoc.lat) : null,
+        lng: firstLoc.lng ? Number(firstLoc.lng) : null,
+        address: firstLoc.address || "",
+        iconMarker: item.category?.icon_marker || "",
+        markerColor: item.category?.color || "#3b82f6",
+        thumbnail: item.thumbnail || null,
+        images: item.thumbnail ? [item.thumbnail] : [],
+        allLocations: item.locations || [],
+      };
+    });
+  } catch (error) {
+    console.error("❌ Lỗi khi tìm kiếm địa điểm:", error);
+    throw error;
+  }
+}
