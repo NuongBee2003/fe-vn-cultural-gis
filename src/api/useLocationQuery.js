@@ -146,3 +146,32 @@ export function useSearchLocations(query, limit = 10) {
     placeholderData: [],
   });
 }
+
+/**
+ * 9. Hook lấy reviews + rating_avg của một Place
+ * Dùng GET /api/v1/place/:id (trả về locations[].reviews[])
+ */
+export function usePlaceReviews(placeId) {
+  return useQuery({
+    queryKey: ["place-reviews", placeId],
+    queryFn: () => getPlaceDetail(placeId),
+    enabled: !!placeId,
+    staleTime: 2 * 60 * 1000,
+    select: (data) => {
+      // Gom tất cả reviews từ locations[]
+      const allReviews = [];
+      for (const loc of data?.locations || []) {
+        if (Array.isArray(loc.reviews)) allReviews.push(...loc.reviews);
+      }
+      // Sắp xếp mới nhất lên đầu
+      allReviews.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      return {
+        reviews: allReviews,
+        rating_avg: data?.rating_avg ?? null,
+        total: allReviews.length,
+      };
+    },
+  });
+}

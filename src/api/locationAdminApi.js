@@ -114,3 +114,28 @@ export function useDeleteLocation() {
     onSuccess: () => invalidateLocations(queryClient),
   });
 }
+
+/**
+ * Xóa một review (admin hoặc chủ review)
+ * @param {number} placeId   Place ID
+ * @param {number} reviewId  Review ID
+ */
+export async function deleteReview(placeId, reviewId) {
+  const token = localStorage.getItem("adminToken") || localStorage.getItem("token") || "";
+  const res = await fetch(`${API_URL}/place/${placeId}/review/${reviewId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse(res);
+}
+
+export function useDeleteReview() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ placeId, reviewId }) => deleteReview(placeId, reviewId),
+    onSuccess: (_data, { placeId }) => {
+      queryClient.invalidateQueries({ queryKey: ["place-reviews", placeId] });
+      queryClient.invalidateQueries({ queryKey: ["place", placeId] });
+    },
+  });
+}

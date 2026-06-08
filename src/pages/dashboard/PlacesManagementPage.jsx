@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table-data/table";
 import LocationFormModal from "@/components/dashboard/LocationFormModal";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
+import ReviewsManagementModal from "@/components/dashboard/ReviewsManagementModal";
 import { ImageOff, Filter, X } from "lucide-react";
 
 const PAGE_SIZES = [5, 10, 15, 20];
@@ -36,6 +37,9 @@ export default function PlacesManagementPage() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryTitle, setGalleryTitle] = useState("");
   const [galleryInitialIndex, setGalleryInitialIndex] = useState(0);
+
+  const [showReviews, setShowReviews] = useState(false);
+  const [selectedPlaceForReviews, setSelectedPlaceForReviews] = useState(null);
 
   // ── API ───────────────────────────────────────────────
   const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
@@ -133,6 +137,16 @@ export default function PlacesManagementPage() {
     setGalleryTitle(location.name);
     setGalleryInitialIndex(0);
     setIsGalleryOpen(true);
+  };
+
+  const handleViewReviews = (location) => {
+    setSelectedPlaceForReviews(location);
+    setShowReviews(true);
+  };
+
+  const handleCloseReviews = () => {
+    setShowReviews(false);
+    setSelectedPlaceForReviews(null);
   };
 
   const handleCategorySelect = (cat) => {
@@ -403,6 +417,14 @@ export default function PlacesManagementPage() {
                         variant="outline"
                         size="sm"
                         type="button"
+                        onClick={() => handleViewReviews(location)}
+                      >
+                        {t('map.reviews')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
                         onClick={() => handleEdit(location)}
                         disabled={isMutating}
                       >
@@ -515,6 +537,16 @@ export default function PlacesManagementPage() {
         title={galleryTitle}
         initialIndex={galleryInitialIndex}
       />
+
+      {/* ── Reviews Management Modal ─────────────────────── */}
+      {selectedPlaceForReviews && (
+        <ReviewsManagementModal
+          isOpen={showReviews}
+          onClose={handleCloseReviews}
+          placeId={selectedPlaceForReviews.placeId}
+          placeName={selectedPlaceForReviews.name}
+        />
+      )}
     </main>
   );
 }

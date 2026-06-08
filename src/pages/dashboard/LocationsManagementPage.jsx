@@ -4,6 +4,7 @@ import { useAssetsByPlaceId } from "@/api/useLocationQuery";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { X } from "lucide-react";
+import ReviewsManagementModal from "@/components/dashboard/ReviewsManagementModal";
 import {
   Table,
   TableBody,
@@ -85,6 +86,7 @@ export default function LocationsManagementPage() {
   const [pageSize, setPageSize] = useState(10);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showImages, setShowImages] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
 
   // Gọi API với pagination
   const { data: apiData, isLoading, error } = useAllLocations(page, pageSize);
@@ -116,6 +118,16 @@ export default function LocationsManagementPage() {
 
   const handleCloseImages = () => {
     setShowImages(false);
+    setSelectedLocation(null);
+  };
+
+  const handleViewReviews = (location) => {
+    setSelectedLocation(location);
+    setShowReviews(true);
+  };
+
+  const handleCloseReviews = () => {
+    setShowReviews(false);
     setSelectedLocation(null);
   };
 
@@ -208,8 +220,13 @@ export default function LocationsManagementPage() {
                         >
                           Xem ảnh
                         </Button>
-                        <Button variant="outline" size="sm" type="button">
-                          Chi tiết
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => handleViewReviews(location)}
+                        >
+                          Đánh giá
                         </Button>
                       </div>
                     </TableCell>
@@ -265,6 +282,15 @@ export default function LocationsManagementPage() {
         <ImageGalleryModal
           isOpen={showImages}
           onClose={handleCloseImages}
+          placeId={selectedLocation.placeId}
+          placeName={selectedLocation.name}
+        />
+      )}
+
+      {selectedLocation && (
+        <ReviewsManagementModal
+          isOpen={showReviews}
+          onClose={handleCloseReviews}
           placeId={selectedLocation.placeId}
           placeName={selectedLocation.name}
         />

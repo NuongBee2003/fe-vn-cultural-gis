@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MapPin, Navigation, Route, X, ImageOff } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
+import ReviewSection from "@/components/user/map/ReviewSection";
 import { useAssetsByPlaceId } from "@/api/useLocationQuery";
 
 export default function LocationDetailPanel({
@@ -87,11 +88,7 @@ export default function LocationDetailPanel({
           <h3 className="m-0 pr-8 text-[17px] font-bold leading-tight text-gray-900">
             {location.name}
           </h3>
-          <div className="mt-1 flex items-center gap-1 text-[12px] text-gray-500">
-            <span className="text-yellow-500">★</span>
-            <span className="font-semibold text-gray-800">4.8</span>
-            <span>(128 reviews)</span>
-          </div>
+
 
           {location.address && (
             <div className="mt-3 flex items-start gap-1.5 text-[12px] text-gray-600">
@@ -164,36 +161,7 @@ export default function LocationDetailPanel({
             </div>
           )}
 
-          <div className="mt-4 space-y-3 border-t border-gray-100 pt-3">
-            {[
-              {
-                avatar: "https://i.pravatar.cc/40?img=12",
-                name: "Nguyễn Minh",
-                comment: "View siêu đẹp, rất đáng thử!",
-              },
-              {
-                avatar: "https://i.pravatar.cc/40?img=32",
-                name: "Hoàng Anh",
-                comment: "Decor đẹp kiểu Hàn, khá chill.",
-              },
-            ].map((item, idx) => (
-              <div key={idx} className="flex gap-2">
-                <img
-                  src={item.avatar}
-                  alt=""
-                  className="h-8 w-8 rounded-full object-cover"
-                />
-                <div>
-                  <p className="m-0 text-[12px] font-semibold text-gray-800">
-                    {item.name}
-                  </p>
-                  <p className="m-0 mt-0.5 text-[11px] text-gray-500">
-                    &ldquo;{item.comment}&rdquo;
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ReviewSection placeId={location.placeId} />
 
           <div className="mt-3 flex items-center gap-1 text-[11px] text-gray-400">
             <MapPin size={11} />
