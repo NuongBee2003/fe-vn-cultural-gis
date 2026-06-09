@@ -27,7 +27,7 @@ export const authApi = {
   // Register
   register: async (username, email, password, avatar) => {
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

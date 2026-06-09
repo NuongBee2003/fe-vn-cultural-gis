@@ -8,9 +8,15 @@ export default function UserProfile() {
   const navigate = useNavigate();
 
   const isLogin = localStorage.getItem("isLogin") === "true";
+  const userRaw = localStorage.getItem("user");
+  const user = userRaw ? JSON.parse(userRaw) : null;
 
   const handleLogout = () => {
     localStorage.removeItem("isLogin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("adminUser");
     setIsOpen(false);
     navigate(PATHS.HOME);
   };
@@ -19,15 +25,21 @@ export default function UserProfile() {
     return null;
   }
 
+  const initial = user?.username ? user.username.charAt(0).toUpperCase() : "U";
+
   return (
     <div className="relative flex items-center gap-2 pointer-events-auto">
 
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-11 h-11 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-lg font-medium shadow-md hover:ring-2 hover:ring-offset-2 hover:ring-[#5D4037] transition-all"
+        className="w-11 h-11 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-lg font-medium shadow-md hover:ring-2 hover:ring-offset-2 hover:ring-[#5D4037] transition-all overflow-hidden"
       >
-        D
+        {user?.avatar ? (
+          <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+        ) : (
+          initial
+        )}
       </button>
 
       {/* Popup Menu */}
@@ -44,16 +56,20 @@ export default function UserProfile() {
 
             {/* Email */}
             <p className="text-sm font-medium text-gray-800 mt-2 mb-6">
-              nquyenyenvy@gmail.com
+              {user?.email || "Chưa cập nhật email"}
             </p>
 
             {/* Big Avatar */}
-            <div className="w-20 h-20 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-3xl font-medium shadow-sm mb-4">
-              D
+            <div className="w-20 h-20 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-3xl font-medium shadow-sm mb-4 overflow-hidden">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+              ) : (
+                initial
+              )}
             </div>
 
             <h3 className="text-xl font-medium text-gray-900 mb-1">
-              Xin chào, Demo!
+              Xin chào, {user?.username || "Người dùng"}!
             </h3>
             
             <button className="mt-4 px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 bg-white transition-colors">

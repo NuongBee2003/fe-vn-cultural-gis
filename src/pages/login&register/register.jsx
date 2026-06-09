@@ -7,13 +7,58 @@ import {
   User,
   Phone,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
+import { authApi } from "@/api/authApi";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [agree, setAgree] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!username || !email || !password) {
+      setError("Vui lòng điền đầy đủ họ và tên, email và mật khẩu.");
+      return;
+    }
+
+    if (!agree) {
+      setError("Bạn phải đồng ý với điều khoản sử dụng.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await authApi.register(username.trim(), email.trim(), password);
+      if (res && res.token) {
+        localStorage.setItem("isLogin", "true");
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("adminToken", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        localStorage.setItem("adminUser", JSON.stringify(res.user));
+        
+        alert("Đăng ký thành công!");
+        navigate(PATHS.HOME);
+      } else {
+        setError("Đăng ký thất bại. Không tìm thấy thông tin xác thực.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err?.message || "Đăng ký không thành công. Email có thể đã được sử dụng.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="h-screen w-full bg-white flex overflow-hidden">
       <div className="w-full h-full grid lg:grid-cols-2 bg-white">
@@ -67,7 +112,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Form */}
-            <form className="space-y-5">
+            <form onSubmit={handleRegister} className="space-y-5">
 
               {/* Fullname */}
               <div>
@@ -85,6 +130,8 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Nhập họ và tên"
                     className="flex-1 outline-none bg-transparent text-sm"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
               </div>
@@ -105,6 +152,8 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Nhập số điện thoại"
                     className="flex-1 outline-none bg-transparent text-sm"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
               </div>
@@ -125,6 +174,8 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="Nhập email của bạn"
                     className="flex-1 outline-none bg-transparent text-sm"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -145,6 +196,8 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Nhập mật khẩu"
                     className="flex-1 outline-none bg-transparent text-sm"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
 
                   <button
@@ -163,7 +216,12 @@ export default function RegisterPage() {
 
               {/* Terms */}
               <div className="flex items-start gap-2 text-sm">
-                <input type="checkbox" className="mt-1" />
+                <input
+                  type="checkbox"
+                  className="mt-1"
+                  checked={agree}
+                  onChange={(e) => setAgree(e.target.checked)}
+                />
 
                 <p className="text-[#7A5C12]">
                   Tôi đồng ý với{" "}
@@ -173,12 +231,19 @@ export default function RegisterPage() {
                 </p>
               </div>
 
+              {error && (
+                <p className="text-sm text-red-500 font-medium">
+                  {error}
+                </p>
+              )}
+
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full h-12 rounded-xl bg-[#C9A646] hover:bg-[#B8922E] text-white text-lg font-bold shadow-lg transition-all"
+                disabled={loading}
+                className="w-full h-12 rounded-xl bg-[#C9A646] hover:bg-[#B8922E] text-white text-lg font-bold shadow-lg transition-all disabled:opacity-60 flex items-center justify-center"
               >
-                Đăng ký
+                {loading ? "Đang đăng ký..." : "Đăng ký"}
               </button>
             </form>
 

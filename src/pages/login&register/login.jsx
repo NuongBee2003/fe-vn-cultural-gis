@@ -1,29 +1,48 @@
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { NavLink,useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
+import { authApi } from "@/api/authApi";
 
 
 export default function LoginPage() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const handleLogin = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    
-    const demoEmail = "nquyenyenvy@gmail.com";
-    const demoPassword = "123";
+    if (!email || !password) {
+      setError("Vui lòng nhập đầy đủ email và mật khẩu.");
+      return;
+    }
 
-    if (email === demoEmail && password === demoPassword) {
-      alert("Đăng nhập thành công!");
-
-      localStorage.setItem("isLogin", true);
-      navigate(PATHS.HOME);
-    } else {
-      alert("Sai email hoặc mật khẩu!");
+    try {
+      setLoading(true);
+      const res = await authApi.login(email.trim(), password);
+      if (res && res.token) {
+        localStorage.setItem("isLogin", "true");
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("adminToken", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        localStorage.setItem("adminUser", JSON.stringify(res.user));
+        
+        alert("Đăng nhập thành công!");
+        navigate(PATHS.HOME);
+      } else {
+        setError("Đăng nhập thất bại. Không tìm thấy thông tin xác thực.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err?.message || "Sai email hoặc mật khẩu!");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -79,7 +98,7 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <form className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-5">
               {/* Email */}
               <div>
                 <label className="block text-sm font-semibold text-[#B8922E] mb-2">
@@ -153,13 +172,19 @@ export default function LoginPage() {
                 </label>
               </div>
 
+              {error && (
+                <p className="text-sm text-red-500 font-medium mt-2">
+                  {error}
+                </p>
+              )}
+
               {/* Submit */}
               <button
-              onClick={handleLogin}
                 type="submit"
-                className="w-full h-12 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-variant)] text-white font-semibold transition-all"
+                disabled={loading}
+                className="w-full h-12 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-variant)] text-white font-semibold transition-all disabled:opacity-60 flex items-center justify-center"
               >
-                Đăng nhập
+                {loading ? "Đang đăng nhập..." : "Đăng nhập"}
               </button>
             </form>
 

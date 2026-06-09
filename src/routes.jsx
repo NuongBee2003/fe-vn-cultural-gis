@@ -50,9 +50,16 @@ export const routeConfig = [
   {
     path: PATHS.LOGIN,
     element: (
-        <LoginPage/>
+      <LoginPage />
     ),
     title: "ĐĂNG NHẬP",
+  },
+  {
+    path: PATHS.REGISTER,
+    element: (
+      <RegisterPage />
+    ),
+    title: "ĐĂNG KÝ",
   },
   {
     path: PATHS.ADMIN_LOGIN,

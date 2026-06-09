@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send } from "lucide-react";
 import { usePlaceReviews, useCreateReview } from "@/api/useLocationQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { PATHS } from "@/constants/paths";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -200,8 +202,22 @@ const PAGE_SIZE = 5;
 export default function ReviewSection({ placeId }) {
   const [showAll, setShowAll] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const navigate = useNavigate();
 
   const { data, isLoading } = usePlaceReviews(placeId);
+
+  const handleWriteReviewClick = () => {
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("adminToken") ||
+      "";
+    if (!token) {
+      setShowLoginPrompt(true);
+    } else {
+      setShowForm((v) => !v);
+    }
+  };
 
   const reviews = data?.reviews ?? [];
   const total = data?.total ?? 0;
@@ -267,7 +283,7 @@ export default function ReviewSection({ placeId }) {
       {/* ── Write review toggle ── */}
       <button
         type="button"
-        onClick={() => setShowForm((v) => !v)}
+        onClick={handleWriteReviewClick}
         className="mt-2.5 w-full rounded-xl border border-dashed border-blue-300 py-2 text-[12px] font-medium text-blue-600 hover:bg-blue-50 transition-colors"
       >
         {showForm ? "Ẩn form đánh giá" : "✏️  Viết đánh giá"}
@@ -278,6 +294,45 @@ export default function ReviewSection({ placeId }) {
           placeId={placeId}
           onSuccess={() => setShowForm(false)}
         />
+      )}
+
+      {/* ── Login Prompt Modal ── */}
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 flex flex-col items-center text-center transition-all duration-200 transform scale-100">
+            {/* Elegant info icon */}
+            <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+              <UserCircle2 size={28} />
+            </div>
+
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              Yêu cầu đăng nhập
+            </h3>
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              Bạn cần đăng nhập tài khoản để thực hiện đánh giá địa điểm này.
+            </p>
+
+            <div className="flex items-center gap-3 w-full">
+              <button
+                type="button"
+                onClick={() => setShowLoginPrompt(false)}
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLoginPrompt(false);
+                  navigate(PATHS.LOGIN);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white shadow-md transition-colors cursor-pointer"
+              >
+                Đăng nhập
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ── Reviews list ── */}
