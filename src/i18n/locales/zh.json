@@ -40,7 +40,7 @@
     "holiday": "节日日程",
     "experience": "体验",
     "exhibition": "虚拟展览",
-    "studio": "AI 工作室",
+    "shop": "文创商城",
     "community": "社区",
     "history": "越南历史之旅",
     "culture": "文化",
@@ -221,10 +221,5 @@
   "exhibition": {
     "title": "展览",
     "subtitle": "探索杰出的文化展览"
-  },
-
-  "studio": {
-    "title": "AI 工作室",
-    "subtitle": "AI 辅助内容创作工具"
   }
 }

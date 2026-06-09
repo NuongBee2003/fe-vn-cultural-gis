@@ -3,7 +3,6 @@ import {
   X,
   Heart,
   MapPin,
-  Sparkles,
   User,
   Calendar,
 } from "lucide-react";
@@ -70,12 +69,7 @@ export default function ExhibitionLightbox({ item, onClose }) {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2">
-            {item.source === "studio" && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200">
-                <Sparkles size={12} />
-                Studio AI
-              </span>
-            )}
+
             {item.styleTag && (
               <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-700 border border-stone-200">
                 {item.styleTag}

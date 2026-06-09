@@ -47,7 +47,7 @@ export default function ExhibitionPage() {
               Không gian văn hóa số
             </h1>
             <p className="mt-3 text-sm leading-6 text-stone-500 max-w-2xl">
-              Khám phá tác phẩm từ cộng đồng và Studio AI — ảnh minh họa dữ liệu
+              Khám phá tác phẩm từ cộng đồng — ảnh minh họa dữ liệu
               mẫu, sẽ kết nối API sau.
             </p>
           </header>

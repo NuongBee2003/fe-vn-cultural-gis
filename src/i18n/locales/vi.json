@@ -40,7 +40,7 @@
     "holiday": "Lịch lễ",
     "experience": "Trải nghiệm",
     "exhibition": "Triển lãm ảo",
-    "studio": "Tạo ảnh",
+    "shop": "Mua sắm",
     "community": "Cộng đồng",
     "history": "Hành trình lịch sử Việt Nam",
     "culture": "Văn hóa",
@@ -221,10 +221,5 @@
   "exhibition": {
     "title": "Triển lãm",
     "subtitle": "Khám phá các triển lãm văn hóa đặc sắc"
-  },
-
-  "studio": {
-    "title": "Studio AI",
-    "subtitle": "Công cụ sáng tạo nội dung với AI"
   }
 }

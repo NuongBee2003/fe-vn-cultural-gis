@@ -23,7 +23,7 @@ export const MENU_NAV_ITEMS = [
     icon: Sparkles,
     children: [
       { label: "Triển lãm ảo", labelKey: "nav.exhibition", href: PATHS.EXHIBITION },
-      { label: "Tạo ảnh", labelKey: "nav.studio", href: PATHS.STUDIO },
+      { label: "Mua sắm", labelKey: "nav.shop", href: PATHS.SHOP },
     ],
   },
   { label: "Cộng đồng", labelKey: "nav.community", icon: Users, href: PATHS.COMMUNITY },

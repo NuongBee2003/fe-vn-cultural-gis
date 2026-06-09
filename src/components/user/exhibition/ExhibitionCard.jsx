@@ -1,4 +1,4 @@
-import { Heart, Sparkles, MapPin } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 
 export default function ExhibitionCard({ item, onClick }) {
   return (
@@ -24,12 +24,7 @@ export default function ExhibitionCard({ item, onClick }) {
       </div>
 
       <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-        {item.source === "studio" && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/90 text-white">
-            <Sparkles size={10} />
-            Studio AI
-          </span>
-        )}
+
         {item.styleTag && (
           <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/50 text-white backdrop-blur-sm">
             {item.styleTag}

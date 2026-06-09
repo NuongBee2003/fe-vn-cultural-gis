@@ -40,7 +40,7 @@
     "holiday": "Festival Schedule",
     "experience": "Experiences",
     "exhibition": "Virtual Exhibition",
-    "studio": "AI Studio",
+    "shop": "Shopping",
     "community": "Community",
     "history": "Vietnam History Journey",
     "culture": "Culture",
@@ -221,10 +221,5 @@
   "exhibition": {
     "title": "Exhibition",
     "subtitle": "Explore outstanding cultural exhibitions"
-  },
-
-  "studio": {
-    "title": "AI Studio",
-    "subtitle": "AI-powered content creation tools"
   }
 }

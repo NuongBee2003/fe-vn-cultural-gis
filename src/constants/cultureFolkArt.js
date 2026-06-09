@@ -1,5 +1,4 @@
-import tranhDongHo from "@/assets/img/generate-picture/tranhdongho.webp";
-import tetVietNam from "@/assets/img/generate-picture/tetvietnam.jpg";
+import tranhDongHo from "@/assets/img/exhibition/tranhdongho.webp";
 
 import CaTru from "@/assets/img/cuisine/CaTru.jpg";
 import ChauVan from "@/assets/img/cuisine/ChauVan.jpg";
@@ -40,7 +39,6 @@ export const CULTURE_FOLK_ART_ITEMS = [
       description:
         "Tranh Đông Hồ dùng giấy điệp, màu từ đất, than, lá… Chủ đề lợn đàn, chăn trâu, chữ Phúc Lộc Thọ rất phổ biến.",
       highlights: ["In khắc gỗ", "Màu tự nhiên", "Trang trí Tết"],
-      studioStyle: "Tranh Đông Hồ",
       province: "Làng Đông Hồ, Bắc Ninh",
     },
   },
@@ -193,7 +191,6 @@ export const CULTURE_FOLK_ART_ITEMS = [
         "Chợ tranh Tết",
         "Bảo tàng làng nghề",
       ],
-      studioStyle: "Tranh Đông Hồ",
       province: "Thuận Thành, Bắc Ninh",
     },
   },

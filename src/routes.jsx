@@ -8,8 +8,8 @@ import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
-import StudioPage from "@/pages/studio/StudioPage";
 import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
+import ShopPage from "@/pages/shop/ShopPage";
 import CultureFoodPage from "@/pages/culture/CultureFoodPage";
 import CultureCustomsPage from "@/pages/culture/CultureCustomsPage";
 import CultureFolkArtPage from "@/pages/culture/CultureFolkArtPage";
@@ -76,15 +76,6 @@ export const routeConfig = [
     title: "Hành trình lịch sử Việt Nam",
   },
   {
-    path: PATHS.STUDIO,
-    element: (
-      <MapLayout>
-        <StudioPage />
-      </MapLayout>
-    ),
-    title: "Studio Văn Hóa",
-  },
-  {
     path: PATHS.EXHIBITION,
     element: (
       <MapLayout>
@@ -92,6 +83,15 @@ export const routeConfig = [
       </MapLayout>
     ),
     title: "Triển lãm ảo",
+  },
+  {
+    path: PATHS.SHOP,
+    element: (
+      <MapLayout>
+        <ShopPage />
+      </MapLayout>
+    ),
+    title: "Mua sắm văn hóa",
   },
   {
     path: PATHS.CULTURE_FOOD,

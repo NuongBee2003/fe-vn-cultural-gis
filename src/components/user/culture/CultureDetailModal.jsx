@@ -1,7 +1,5 @@
 import { useEffect } from "react";
-import { X, MapPin, Sparkles, ListOrdered } from "lucide-react";
-import { Link } from "react-router-dom";
-import { PATHS } from "@/constants/paths";
+import { X, MapPin, ListOrdered } from "lucide-react";
 
 export default function CultureDetailModal({
   item,
@@ -161,18 +159,6 @@ export default function CultureDetailModal({
             </div>
           )}
 
-          {detail.studioStyle && (
-            <div className="mt-6 pt-5 border-t border-stone-100">
-              <Link
-                to={PATHS.STUDIO}
-                onClick={onClose}
-                className="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:text-amber-900 no-underline"
-              >
-                <Sparkles size={15} />
-                Thử phong cách Studio: {detail.studioStyle}
-              </Link>
-            </div>
-          )}
         </div>
       </div>
     </div>
