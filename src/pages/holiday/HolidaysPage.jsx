@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { HOLIDAYS } from "@/constants/holiday";
 import InfoHoliday from "@/components/user/holiday/InfoHoliday";
+import HolidayDetailModal from "@/components/user/holiday/HolidayDetailModal";
 
 export default function HolidaysPage() {
+  const [selectedHoliday, setSelectedHoliday] = useState(null);
+
   return (
     <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden bg-slate-50">
       <div className="h-full overflow-y-auto px-6 py-8">
@@ -16,7 +20,7 @@ export default function HolidaysPage() {
               Các ngày lễ & kỷ niệm quan trọng
             </h1>
             <p className="mt-3 text-sm leading-6 text-slate-500 max-w-2xl">
-              Tổng hợp những ngày lễ chính và các ngày kỷ niệm phổ biến tại Việt Nam.
+              Tổng hợp những ngày lễ chính và các ngày kỷ niệm phổ biến tại Việt Nam. Nhấp vào mỗi ngày lễ để xem ý nghĩa, hoạt động và các gợi ý du lịch, ẩm thực chi tiết.
             </p>
           </header>
 
@@ -30,7 +34,11 @@ export default function HolidaysPage() {
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {group.items.map((item) => (
-                    <InfoHoliday key={item.label} item={item} />
+                    <InfoHoliday 
+                      key={item.label} 
+                      item={item} 
+                      onClick={setSelectedHoliday}
+                    />
                   ))}
                 </div>
               </section>
@@ -38,6 +46,13 @@ export default function HolidaysPage() {
           </div>
         </div>
       </div>
+
+      {selectedHoliday && (
+        <HolidayDetailModal
+          item={selectedHoliday}
+          onClose={() => setSelectedHoliday(null)}
+        />
+      )}
     </div>
   );
 }

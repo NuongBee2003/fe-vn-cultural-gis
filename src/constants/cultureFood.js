@@ -68,6 +68,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Quế, hồi",
         "Nước mắm",
       ],
+      restaurants: [
+        { name: "Phở Hòa Pasteur", address: "260C Pasteur, Phường Võ Thị Sáu, Quận 3, TP.HCM", price: "75.000đ - 90.000đ" },
+        { name: "Phở Lệ", address: "415 Nguyễn Trãi, Phường 7, Quận 5, TP.HCM", price: "80.000đ - 95.000đ" },
+        { name: "Phở Phú Vương", address: "339 Lê Văn Sỹ, Phường 1, Quận Tân Bình, TP.HCM", price: "70.000đ - 85.000đ" }
+      ]
     },
   },
 
@@ -95,6 +100,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Tỏi",
         "Ớt",
       ],
+      restaurants: [
+        { name: "Bún chả Hoa Đông", address: "121 Lý Tự Trọng, Phường Bến Thành, Quận 1, TP.HCM", price: "60.000đ - 80.000đ" },
+        { name: "Bún chả Ánh Hồng", address: "140B Lý Chính Thắng, Phường 7, Quận 3, TP.HCM", price: "55.000đ - 75.000đ" }
+      ]
     },
   },
 
@@ -120,6 +129,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Lá sen",
         "Hạt sen",
       ],
+      restaurants: [
+        { name: "Cốm Mộc Sài Gòn", address: "Chợ hoa Hồ Thị Kỷ, Quận 10, TP.HCM", price: "40.000đ - 60.000đ" },
+        { name: "Tiệm Trà & Cốm Hà Nội", address: "18 Lê Thị Riêng, Phường Bến Thành, Quận 1, TP.HCM", price: "35.000đ - 50.000đ" }
+      ]
     },
   },
 
@@ -147,6 +160,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Ớt",
         "Mắm ruốc",
       ],
+      restaurants: [
+        { name: "Bún bò Nhân Trí", address: "295 Lê Hồng Phong, Phường 2, Quận 10, TP.HCM", price: "55.000đ - 75.000đ" },
+        { name: "Bún bò Út Hưng", address: "113 Bà Huyện Thanh Quan, Phường Võ Thị Sáu, Quận 3, TP.HCM", price: "60.000đ - 80.000đ" },
+        { name: "Bún bò Huế Tây Đô", address: "24 Nguyễn Văn Tiết, Lái Thiêu, Thuận An, Bình Dương", price: "45.000đ - 60.000đ" }
+      ]
     },
   },
 
@@ -173,6 +191,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Thịt heo",
         "Nghệ",
       ],
+      restaurants: [
+        { name: "Mì Quảng Sâm", address: "8 Ca Văn Thỉnh, Phường 11, Quận Tân Bình, TP.HCM", price: "40.000đ - 55.000đ" },
+        { name: "Mì Quảng Mỹ Sơn", address: "38 Đinh Tiên Hoàng, Phường Đa Kao, Quận 1, TP.HCM", price: "45.000đ - 65.000đ" }
+      ]
     },
   },
 
@@ -198,143 +220,168 @@ export const CULTURE_FOOD_ITEMS = [
         "Tôm khô",
         "Mỡ hành",
       ],
+      restaurants: [
+        { name: "Bánh bèo Thanh Nga", address: "43 Rạch Bùng Binh, Phường 9, Quận 3, TP.HCM", price: "25.000đ - 40.000đ" },
+        { name: "Bánh bèo chén Ngọc Dung", address: "65 Lâm Văn Bền, Phường Tân Kiểng, Quận 7, TP.HCM", price: "30.000đ - 50.000đ" }
+      ]
     },
   },
   {
-  id: "food-20",
-  title: "Bún mắm",
-  summary:
-    "Món bún miền Tây với nước lèo mắm cá đậm đà và hải sản phong phú.",
-  image: BunMam,
-  region: "south",
-  province: "Sóc Trăng",
-  tags: ["Món nước", "Miền Tây"],
-  detail: {
-    description:
-      "Bún mắm là đặc sản miền Tây Nam Bộ nổi bật với hương vị mắm cá đặc trưng.",
-    highlights: [
-      "Nước lèo đậm vị",
-      "Ăn cùng hải sản",
-      "Rau sống phong phú",
-    ],
-    ingredients: [
-      "Bún",
-      "Mắm cá",
-      "Tôm",
-      "Mực",
-      "Cà tím",
-      "Rau sống",
-    ],
+    id: "food-20",
+    title: "Bún mắm",
+    summary:
+      "Món bún miền Tây với nước lèo mắm cá đậm đà và hải sản phong phú.",
+    image: BunMam,
+    region: "south",
+    province: "Sóc Trăng",
+    tags: ["Món nước", "Miền Tây"],
+    detail: {
+      description:
+        "Bún mắm là đặc sản miền Tây Nam Bộ nổi bật với hương vị mắm cá đặc trưng.",
+      highlights: [
+        "Nước lèo đậm vị",
+        "Ăn cùng hải sản",
+        "Rau sống phong phú",
+      ],
+      ingredients: [
+        "Bún",
+        "Mắm cá",
+        "Tôm",
+        "Mực",
+        "Cà tím",
+        "Rau sống",
+      ],
+      restaurants: [
+        { name: "Bún mắm Cô Ba Chợ Lớn", address: "444 Nguyễn Tri Phương, Phường 4, Quận 10, TP.HCM", price: "65.000đ - 85.000đ" },
+        { name: "Bún mắm 444", address: "375 Lê Quang Định, Phường 5, Quận Bình Thạnh, TP.HCM", price: "70.000đ - 90.000đ" }
+      ]
+    },
   },
-},
 
-{
-  id: "food-21",
-  title: "Bánh canh cua",
-  summary:
-    "Sợi bánh canh dai mềm ăn cùng nước cua đậm đà.",
-  image: BanhCanhCua,
-  region: "south",
-  province: "TP. Hồ Chí Minh",
-  tags: ["Món nước", "Hải sản"],
-  detail: {
-    description:
-      "Bánh canh cua nổi tiếng với nước dùng sánh và topping phong phú.",
-    highlights: [
-      "Nước dùng cua",
-      "Sợi bánh dai",
-      "Chả cua hấp dẫn",
-    ],
-    ingredients: [
-      "Bánh canh",
-      "Cua",
-      "Tôm",
-      "Trứng cút",
-      "Hành ngò",
-    ],
+  {
+    id: "food-21",
+    title: "Bánh canh cua",
+    summary:
+      "Sợi bánh canh dai mềm ăn cùng nước cua đậm đà.",
+    image: BanhCanhCua,
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Món nước", "Hải sản"],
+    detail: {
+      description:
+        "Bánh canh cua nổi tiếng với nước dùng sánh và topping phong phú.",
+      highlights: [
+        "Nước dùng cua",
+        "Sợi bánh dai",
+        "Chả cua hấp dẫn",
+      ],
+      ingredients: [
+        "Bánh canh",
+        "Cua",
+        "Tôm",
+        "Trứng cút",
+        "Hành ngò",
+      ],
+      restaurants: [
+        { name: "Bánh canh cua Út Lệ", address: "210 Tô Hiến Thành, Phường 15, Quận 10, TP.HCM", price: "50.000đ - 70.000đ" },
+        { name: "Bánh canh cua Hoàng Lan", address: "484 Vĩnh Viễn, Phường 8, Quận 10, TP.HCM", price: "60.000đ - 85.000đ" },
+        { name: "Bánh canh cua Bà Ba", address: "Bình Dương Đại Lộ, Phú Hòa, Thủ Dầu Một, Bình Dương", price: "45.000đ - 60.000đ" }
+      ]
+    },
   },
-},
 
-{
-  id: "food-22",
-  title: "Bánh bột lọc",
-  summary:
-    "Bánh trong suốt nhân tôm thịt nổi tiếng xứ Huế.",
-  image: BanhBotLoc,
-  region: "central",
-  province: "Thừa Thiên Huế",
-  tags: ["Ăn vặt", "Huế"],
-  detail: {
-    description:
-      "Bánh bột lọc được làm từ bột năng với nhân tôm thịt đậm đà.",
-    highlights: [
-      "Vỏ bánh dai",
-      "Nhân tôm thịt",
-      "Ăn với nước mắm cay",
-    ],
-    ingredients: [
-      "Bột năng",
-      "Tôm",
-      "Thịt ba chỉ",
-      "Nước mắm",
-      "Ớt",
-    ],
+  {
+    id: "food-22",
+    title: "Bánh bột lọc",
+    summary:
+      "Bánh trong suốt nhân tôm thịt nổi tiếng xứ Huế.",
+    image: BanhBotLoc,
+    region: "central",
+    province: "Thừa Thiên Huế",
+    tags: ["Ăn vặt", "Huế"],
+    detail: {
+      description:
+        "Bánh bột lọc được làm từ bột năng với nhân tôm thịt đậm đà.",
+      highlights: [
+        "Vỏ bánh dai",
+        "Nhân tôm thịt",
+        "Ăn với nước mắm cay",
+      ],
+      ingredients: [
+        "Bột năng",
+        "Tôm",
+        "Thịt ba chỉ",
+        "Nước mắm",
+        "Ớt",
+      ],
+      restaurants: [
+        { name: "Bánh lọc O Xuân", address: "22 Nguyễn Hữu Cầu, Phường Tân Định, Quận 1, TP.HCM", price: "30.000đ - 50.000đ" },
+        { name: "Chè & Bánh Huế Cố Đô", address: "25 Lê Hồng Phong, Biên Hòa, Đồng Nai", price: "25.000đ - 40.000đ" }
+      ]
+    },
   },
-},
 
-{
-  id: "food-23",
-  title: "Hủ tiếu gõ",
-  summary:
-    "Món ăn đêm quen thuộc trên đường phố Sài Gòn.",
-  image: HuTieuGo,
-  region: "south",
-  province: "TP. Hồ Chí Minh",
-  tags: ["Đường phố", "Ăn khuya"],
-  detail: {
-    description:
-      "Hủ tiếu gõ gắn liền với văn hóa ăn đêm của người Sài Gòn.",
-    highlights: [
-      "Xe đẩy ven đường",
-      "Nước lèo thanh",
-      "Giá bình dân",
-    ],
-    ingredients: [
-      "Hủ tiếu",
-      "Thịt heo",
-      "Gan",
-      "Hẹ",
-      "Hành phi",
-    ],
+  {
+    id: "food-23",
+    title: "Hủ tiếu gõ",
+    summary:
+      "Món ăn đêm quen thuộc trên đường phố Sài Gòn.",
+    image: HuTieuGo,
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Đường phố", "Ăn khuya"],
+    detail: {
+      description:
+        "Hủ tiếu gõ gắn liền với văn hóa ăn đêm của người Sài Gòn.",
+      highlights: [
+        "Xe đẩy ven đường",
+        "Nước lèo thanh",
+        "Giá bình dân",
+      ],
+      ingredients: [
+        "Hủ tiếu",
+        "Thịt heo",
+        "Gan",
+        "Hẹ",
+        "Hành phi",
+      ],
+      restaurants: [
+        { name: "Xe hủ tiếu gõ Hẻm 150", address: "150 Nguyễn Trãi, Quận 1, TP.HCM", price: "20.000đ - 30.000đ" },
+        { name: "Hủ tiếu gõ Bình Dân", address: "Bờ kè Trường Sa, Quận 3, TP.HCM", price: "20.000đ - 25.000đ" }
+      ]
+    },
   },
-},
 
-{
-  id: "food-24",
-  title: "Bò nhúng giấm",
-  summary:
-    "Món bò nóng hổi ăn kèm rau sống và bánh tráng.",
-  image: BoNhungGiam,
-  region: "south",
-  province: "TP. Hồ Chí Minh",
-  tags: ["Lẩu", "Cuốn"],
-  detail: {
-    description:
-      "Bò nhúng giấm có vị chua thanh đặc trưng từ nước dùng giấm.",
-    highlights: [
-      "Thịt bò mềm",
-      "Cuốn bánh tráng",
-      "Nước chấm đậm vị",
-    ],
-    ingredients: [
-      "Thịt bò",
-      "Giấm",
-      "Rau sống",
-      "Bánh tráng",
-      "Bún",
-    ],
+  {
+    id: "food-24",
+    title: "Bò nhúng giấm",
+    summary:
+      "Món bò nóng hổi ăn kèm rau sống và bánh tráng.",
+    image: BoNhungGiam,
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Lẩu", "Cuốn"],
+    detail: {
+      description:
+        "Bò nhúng giấm có vị chua thanh đặc trưng từ nước dùng giấm.",
+      highlights: [
+        "Thịt bò mềm",
+        "Cuốn bánh tráng",
+        "Nước chấm đậm vị",
+      ],
+      ingredients: [
+        "Thịt bò",
+        "Giấm",
+        "Rau sống",
+        "Bánh tráng",
+        "Bún",
+      ],
+      restaurants: [
+        { name: "Bò nhúng giấm 555 Sài Gòn", address: "229 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, TP.HCM", price: "150.000đ - 250.000đ" },
+        { name: "Bò nhúng giấm Cô Ba", address: "42 Trương Công Định, Phường 3, Vũng Tàu", price: "120.000đ - 220.000đ" }
+      ]
+    },
   },
-},
 
   {
     id: "food-7",
@@ -358,6 +405,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Tôm",
         "Thịt heo",
       ],
+      restaurants: [
+        { name: "Hủ tiếu Nhân Quán", address: "122D Nguyễn Trãi, Phường 3, Quận 5, TP.HCM", price: "70.000đ - 90.000đ" },
+        { name: "Hủ tiếu Quỳnh", address: "84 Nguyễn Trãi, Phường Bến Thành, Quận 1, TP.HCM", price: "80.000đ - 110.000đ" },
+        { name: "Hủ tiếu Nam Vang Mỹ Tho", address: "45 Lê Lợi, Biên Hòa, Đồng Nai", price: "50.000đ - 70.000đ" }
+      ]
     },
   },
 
@@ -383,6 +435,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Nước cốt dừa",
         "Tôm",
       ],
+      restaurants: [
+        { name: "Bánh xèo Ăn Là Ghiền", address: "74 Sương Nguyệt Ánh, Phường Bến Thành, Quận 1, TP.HCM", price: "80.000đ - 150.000đ" },
+        { name: "Bánh xèo Mười Xiềm", address: "190 Nam Kỳ Khởi Nghĩa, Phường Võ Thị Sáu, Quận 3, TP.HCM", price: "90.000đ - 160.000đ" }
+      ]
     },
   },
 
@@ -408,6 +464,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Sườn heo",
         "Bì",
       ],
+      restaurants: [
+        { name: "Cơm tấm Ba Ghiền", address: "84 Đặng Văn Ngữ, Phường 10, Quận Phú Nhuận, TP.HCM", price: "70.000đ - 120.000đ" },
+        { name: "Cơm tấm Thuận Kiều", address: "54 Thuận Kiều, Phường 4, Quận 11, TP.HCM", price: "60.000đ - 100.000đ" },
+        { name: "Cơm tấm Hướng Dương", address: "34 Nguyễn Văn Tiết, Thủ Dầu Một, Bình Dương", price: "45.000đ - 70.000đ" }
+      ]
     },
   },
 
@@ -433,6 +494,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Ống tre",
         "Muối vừng",
       ],
+      restaurants: [
+        { name: "Ẩm thực Pleiku Quán", address: "10A Trường Sơn, Phường 2, Quận Tân Bình, TP.HCM", price: "50.000đ - 150.000đ" },
+        { name: "Tây Nguyên Quán", address: "15 Song Hành, Thảo Điền, Quận 2, TP.HCM", price: "60.000đ - 180.000đ" }
+      ]
     },
   },
 
@@ -458,9 +523,13 @@ export const CULTURE_FOOD_ITEMS = [
         "Lá é",
         "Muối ớt",
       ],
+      restaurants: [
+        { name: "Gà nướng Núi Rừng", address: "22 Song Hành, Thảo Điền, Quận 2, TP.HCM", price: "180.000đ - 250.000đ" },
+        { name: "Quán Gà nướng Tây Nguyên", address: "305 Võ Thị Sáu, Biên Hòa, Đồng Nai", price: "150.000đ - 220.000đ" }
+      ]
     },
   },
-    {
+  {
     id: "food-13",
     title: "Bánh mì Việt Nam",
     summary:
@@ -484,6 +553,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Đồ chua",
         "Rau ngò",
       ],
+      restaurants: [
+        { name: "Bánh mì Huỳnh Hoa", address: "26 Lê Thị Riêng, Phường Bến Thành, Quận 1, TP.HCM", price: "45.000đ - 65.000đ" },
+        { name: "Bánh mì Hồng Hoa", address: "54 Nguyễn Văn Tráng, Phường Bến Thành, Quận 1, TP.HCM", price: "30.000đ - 45.000đ" },
+        { name: "Bánh mì Tuấn Mập", address: "12 Cách Mạng Tháng Tám, Biên Hòa, Đồng Nai", price: "25.000đ - 35.000đ" }
+      ]
     },
   },
 
@@ -511,6 +585,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Bún",
         "Rau sống",
       ],
+      restaurants: [
+        { name: "Gỏi cuốn Cô Hạnh", address: "420 Hòa Hảo, Phường 5, Quận 10, TP.HCM", price: "8.000đ - 12.000đ/cuốn" },
+        { name: "Gỏi cuốn Minh Lâm", address: "25 Trần Hưng Đạo, Phường 1, Vũng Tàu", price: "6.000đ - 10.000đ/cuốn" }
+      ]
     },
   },
 
@@ -537,6 +615,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Rau sống",
         "Da heo chiên",
       ],
+      restaurants: [
+        { name: "Cao lầu nướng Đo Đo", address: "10/14 Lương Hữu Khánh, Phường Phạm Ngũ Lão, Quận 1, TP.HCM", price: "45.000đ - 60.000đ" },
+        { name: "Hội An Quán", address: "285/12 CMT8, Phường 12, Quận 10, TP.HCM", price: "50.000đ - 70.000đ" }
+      ]
     },
   },
 
@@ -564,6 +646,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Thịt luộc",
         "Rau thơm",
       ],
+      restaurants: [
+        { name: "Bún đậu Homemade", address: "6 Hồng Hà, Phường 2, Quận Tân Bình, TP.HCM", price: "65.000đ - 90.000đ" },
+        { name: "Bún đậu A Vừng", address: "53AB Nguyễn Du, Phường Bến Nghé, Quận 1, TP.HCM", price: "60.000đ - 85.000đ" },
+        { name: "Bún đậu mắm tôm Hà Nội", address: "89 Nguyễn Văn Tiết, Lái Thiêu, Bình Dương", price: "40.000đ - 65.000đ" }
+      ]
     },
   },
 
@@ -591,6 +678,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Miến",
         "Cà rốt",
       ],
+      restaurants: [
+        { name: "Nem Bắc Quán", address: "15B Lê Thánh Tôn, Phường Bến Nghé, Quận 1, TP.HCM", price: "45.000đ - 60.000đ" },
+        { name: "Bún chả & Nem Hà Nội 26", address: "26/1 Lê Thánh Tôn, Quận 1, TP.HCM", price: "35.000đ - 50.000đ" }
+      ]
     },
   },
 
@@ -618,6 +709,10 @@ export const CULTURE_FOOD_ITEMS = [
         "Thì là",
         "Bún",
       ],
+      restaurants: [
+        { name: "Chả cá Lã Vọng Hà Nội", address: "36 Tôn Thất Thiệp, Phường Bến Nghé, Quận 1, TP.HCM", price: "150.000đ - 220.000đ" },
+        { name: "Chả cá Lã Vọng Hải Vị", address: "24 Thảo Điền, Quận 2, TP.HCM", price: "180.000đ - 250.000đ" }
+      ]
     },
   },
 
@@ -643,6 +738,11 @@ export const CULTURE_FOOD_ITEMS = [
         "Sữa đặc",
         "Đá viên",
       ],
+      restaurants: [
+        { name: "Cà phê Vợt Phan Đình Phùng", address: "330 Phan Đình Phùng, Quận Phú Nhuận, TP.HCM", price: "15.000đ - 20.000đ" },
+        { name: "Cà phê bệt nhà thờ", address: "Công viên 30/4, Quận 1, TP.HCM", price: "15.000đ - 25.000đ" },
+        { name: "Cà phê Vy", address: "277 Lê Thánh Tôn, Quận 1, TP.HCM", price: "25.000đ - 45.000đ" }
+      ]
     },
   },
 
@@ -668,6 +768,183 @@ export const CULTURE_FOOD_ITEMS = [
         "Men lá",
         "Nước suối",
       ],
+      restaurants: [
+        { name: "Đặc sản Tây Nguyên Sài Gòn", address: "420 Nguyễn Tri Phương, Quận 10, TP.HCM", price: "120.000đ - 180.000đ/bình" },
+        { name: "Quán Ăn Tây Nguyên", address: "12 Võ Thị Sáu, Biên Hòa, Đồng Nai", price: "100.000đ - 150.000đ/bình" }
+      ]
     },
   },
+
+  {
+    id: "food-25",
+    title: "Bánh khọt Vũng Tàu",
+    summary: "Những chiếc bánh tròn nhỏ vàng giòn rụm, ôm trọn nhân tôm tươi roi rói, rắc thêm mỡ hành béo ngậy.",
+    image: "",
+    region: "south",
+    province: "Bà Rịa - Vũng Tàu",
+    tags: ["Chiên", "Đặc sản", "Ăn chơi"],
+    detail: {
+      description: "Bánh khọt là món ăn bình dân đặc sản nổi tiếng của Vũng Tàu, có lớp vỏ giòn tan, thơm nước cốt dừa và tôm tươi ngọt lịm.",
+      highlights: ["Vỏ giòn rụm màu nghệ", "Nhân tôm ngọt tự nhiên", "Cuốn kèm rau cải, rau xà lách và đu đủ bào"],
+      ingredients: ["Bột gạo", "Tôm tươi", "Bột nghệ", "Nước cốt dừa", "Mỡ hành", "Đu đủ bào"],
+      restaurants: [
+        { name: "Bánh khọt Cô Ba Vũng Tàu", address: "1 Hoàng Hoa Thám, Phường 3, Vũng Tàu", price: "60.000đ - 100.000đ" },
+        { name: "Bánh khọt Gốc Vú Sữa", address: "14 Nguyễn Trường Tộ, Phường 2, Vũng Tàu", price: "55.000đ - 90.000đ" },
+        { name: "Bánh khọt Cô Ba Vũng Tàu (Sài Gòn)", address: "402 Cao Thắng, Phường 12, Quận 10, TP.HCM", price: "70.000đ - 120.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-26",
+    title: "Lẩu cá đuối Vũng Tàu",
+    summary: "Nồi lẩu chua thanh cay nhẹ với những lát cá đuối tươi mềm sụn giòn sần sật.",
+    image: "",
+    region: "south",
+    province: "Bà Rịa - Vũng Tàu",
+    tags: ["Món nước", "Lẩu", "Hải sản"],
+    detail: {
+      description: "Món lẩu trứ danh của thành phố biển Vũng Tàu, nước lẩu có vị chua ngọt thanh từ măng chua, cá đuối tươi rói thịt săn mềm ăn kèm bắp chuối bào.",
+      highlights: ["Thịt cá đuối mềm ngọt kèm sụn giòn", "Nước lẩu chua cay măng chua mặn mà", "Ăn nóng kèm bún tươi bờ biển"],
+      ingredients: ["Cá đuối tươi", "Măng chua", "Cà chua", "Bắp chuối", "Bún tươi", "Rau thơm"],
+      restaurants: [
+        { name: "Lẩu cá đuối Út Mười", address: "16A Trương Công Định, Phường 3, Vũng Tàu", price: "150.000đ - 220.000đ" },
+        { name: "Lẩu cá đuối Trận", address: "42 Nguyễn Trường Tộ, Phường 3, Vũng Tàu", price: "140.000đ - 200.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-27",
+    title: "Gỏi măng cụt đất Bình Dương",
+    summary: "Sự kết hợp hoàn hảo giữa măng cụt xanh giòn ngọt chua dịu và thịt gà ta xé phay bùi ngậy.",
+    image: "",
+    region: "south",
+    province: "Bình Dương",
+    tags: ["Gỏi", "Mùa vụ", "Trái cây"],
+    detail: {
+      description: "Món gỏi đặc sản độc đáo của vùng đất Lái Thiêu (Bình Dương), chỉ có vào mùa măng cụt xanh từ tháng 4 đến tháng 6 âm lịch hàng năm.",
+      highlights: ["Măng cụt xanh giòn sần sật độc đáo", "Thịt gà ta luộc dai ngọt xé phay", "Nước mắm trộn gỏi chua ngọt thơm tỏi ớt"],
+      ingredients: ["Măng cụt xanh", "Gà ta luộc", "Đậu phộng", "Rau răm", "Hành tây", "Nước mắm chua ngọt"],
+      restaurants: [
+        { name: "Vườn măng cụt Hồng Nam", address: "Lái Thiêu 17, Bình Nhâm, Thuận An, Bình Dương", price: "250.000đ - 350.000đ/dĩa" },
+        { name: "Quán ăn Vườn Xưa", address: "An Thạnh N2, Thuận An, Bình Dương", price: "200.000đ - 300.000đ/dĩa" }
+      ]
+    }
+  },
+
+  {
+    id: "food-28",
+    title: "Lẩu cá kèo lá giang",
+    summary: "Lẩu chua lá giang đậm đà ăn kèm cá kèo tươi ngọt thịt và các loại rau sông nước.",
+    image: "",
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Món nước", "Lẩu", "Đặc sản"],
+    detail: {
+      description: "Lẩu cá kèo lá giang là món ăn vô cùng được ưa chuộng ở Sài Gòn, đặc trưng bởi vị chua thanh của lá giang, vị chát nhẹ của rau đắng và thịt cá kèo mềm ngọt béo ngậy.",
+      highlights: ["Nước lẩu chua thanh lá giang", "Cá kèo tươi ngọt thịt béo ngậy", "Ăn kèm rau đắng, rau muống và hoa thiên lý"],
+      ingredients: ["Cá kèo tươi", "Lá giang", "Rau đắng", "Bún tươi", "Nước mắm tỏi ớt"],
+      restaurants: [
+        { name: "Lẩu cá kèo Bà Huyện", address: "18 Bà Huyện Thanh Quan, Phường Võ Thị Sáu, Quận 3, TP.HCM", price: "120.000đ - 180.000đ" },
+        { name: "Lẩu cá kèo Mưa Chiều", address: "4 Bà Huyện Thanh Quan, Quận 3, TP.HCM", price: "100.000đ - 160.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-29",
+    title: "Cháo lòng Bình Dương",
+    summary: "Mâm cháo lòng nóng hổi với lòng heo làm sạch luộc chín tới giòn dai ăn kèm cháo huyết đậm vị.",
+    image: "",
+    region: "south",
+    province: "Bình Dương",
+    tags: ["Ăn sáng", "Bình dân", "Đặc sản"],
+    detail: {
+      description: "Đặc sản cháo lòng Bình Dương nổi tiếng với lòng heo tươi ngon được làm sạch tỉ mỉ, luộc chín giòn dai đặt trên mâm ăn cùng bát cháo huyết nóng hổi rắc tiêu hành thơm lừng.",
+      highlights: ["Lòng heo luộc giòn dai thơm ngọt", "Cháo huyết ninh nhừ sánh ngọt xương", "Ăn cùng bánh quẩy giòn tan"],
+      ingredients: ["Gạo tẻ", "Lòng heo thập cẩm", "Huyết heo", "Hành lá", "Tiêu", "Bánh quẩy"],
+      restaurants: [
+        { name: "Cháo lòng Phú Long", address: "Quốc lộ 13, Lái Thiêu, Thuận An, Bình Dương", price: "40.000đ - 70.000đ" },
+        { name: "Cháo lòng mâm Bình Dương", address: "Phú Cường, Thủ Dầu Một, Bình Dương", price: "35.000đ - 60.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-30",
+    title: "Bánh bông lan trứng muối",
+    summary: "Bánh bông lan nướng lò nhỏ xinh xốp mềm, vị ngọt dịu kết hợp trứng muối bùi béo và chà bông mặn mòi.",
+    image: "",
+    region: "south",
+    province: "Bà Rịa - Vũng Tàu",
+    tags: ["Ăn vặt", "Bánh ngọt", "Quà tặng"],
+    detail: {
+      description: "Bông lan trứng muối là món ăn vặt trứ danh của Vũng Tàu. Những chiếc bánh nhỏ thơm lừng mùi bơ sữa kết hợp hài hòa với vị mặn bùi của trứng muối và phô mai béo ngậy.",
+      highlights: ["Cốt bánh nướng xốp mềm thơm bơ", "Trứng muối bùi béo kết hợp chà bông mặn mòi", "Thức quà du lịch Vũng Tàu quen thuộc"],
+      ingredients: ["Bột mì", "Trứng gà", "Trứng muối", "Phô mai", "Chà bông", "Bơ nhạt"],
+      restaurants: [
+        { name: "Bánh bông lan trứng muối Gốc Cột Điện", address: "17B Nguyễn Trường Tộ, Phường 2, Vũng Tàu", price: "25.000đ - 40.000đ/hộp" },
+        { name: "Bông lan trứng muối Tấn Phát", address: "129 Lê Lai, Phường 3, Vũng Tàu", price: "20.000đ - 35.000đ/hộp" }
+      ]
+    }
+  },
+
+  {
+    id: "food-31",
+    title: "Bánh bèo bì Bình Dương",
+    summary: "Bánh bèo mềm mướt ăn kèm bì heo dai giòn trộn thính thơm và nước mắm chua ngọt đặc chế.",
+    image: "",
+    region: "south",
+    province: "Bình Dương",
+    tags: ["Ăn chơi", "Đặc sản", "Di sản"],
+    detail: {
+      description: "Bánh bèo bì Chợ Búng là di sản văn hóa phi vật thể quốc gia của tỉnh Bình Dương. Món ăn kết hợp đĩa bánh bèo nhỏ dai mịn với bì heo ram cắt sợi trộn thính gạo, rau thơm và nước mắm tỏi ớt chua ngọt.",
+      highlights: ["Bì heo trộn thính gạo rang thơm lừng", "Nước mắm chua ngọt pha tỏi ớt đặc trưng", "Bánh bèo dẻo mịn rưới mỡ hành"],
+      ingredients: ["Bột gạo", "Bì heo", "Thịt heo nạc", "Thính gạo", "Mỡ hành", "Nước mắm tỏi ớt"],
+      restaurants: [
+        { name: "Bánh bèo bì Mỹ Hương (Chợ Búng)", address: "174 Khu phố Thạnh Hòa A, An Thạnh, Thuận An, Bình Dương", price: "30.000đ - 50.000đ" },
+        { name: "Bánh bèo bì Ngọc Hương", address: "188 Tỉnh lộ 745, An Thạnh, Thuận An, Bình Dương", price: "25.000đ - 45.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-32",
+    title: "Phá lấu bò Sài Gòn",
+    summary: "Lòng bò ninh mềm trong nước cốt dừa béo ngậy, dậy mùi ngũ vị hương ăn kèm bánh mì hoặc mì gói.",
+    image: "",
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Ăn vặt", "Đường phố", "Bình dân"],
+    detail: {
+      description: "Phá lấu bò là món ăn đường phố kinh điển của học sinh, sinh viên Sài Gòn. Lòng bò được sơ chế kỹ lưỡng, hầm mềm với nước cốt dừa và các loại gia vị tạo nên nước dùng màu cam sệt, thơm béo đặc trưng chấm cùng nước mắm tắc chua ngọt.",
+      highlights: ["Lòng bò dai sần sật được ninh mềm thấm vị", "Nước phá lấu béo ngậy mùi nước cốt dừa và ngũ vị hương", "Chấm mắm tắc chua ngọt chống ngấy cực tốt"],
+      ingredients: ["Lòng bò (lá sách, tổ ong, lá mía...)", "Nước cốt dừa", "Ngũ vị hương", "Tắc (quất)", "Bánh mì hoặc mì gói"],
+      restaurants: [
+        { name: "Phá lấu bò Cô Thảo", address: "243/29G Tôn Đản, Phường 15, Quận 4, TP.HCM", price: "30.000đ - 45.000đ" },
+        { name: "Phá lấu Dì Núi", address: "243/30 Tôn Đản, Phường 15, Quận 4, TP.HCM", price: "30.000đ - 50.000đ" },
+        { name: "Phá lấu bò Marie Curie", address: "433 Ngô Thời Nhiệm, Phường 6, Quận 3, TP.HCM", price: "25.000đ - 40.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-33",
+    title: "Gỏi cá mai Vũng Tàu",
+    summary: "Cá mai phi lê trong suốt trộn thính, đậu phộng, mè rang thơm phức ăn kèm nước chấm đậu phộng béo ngậy.",
+    image: "",
+    region: "south",
+    province: "Bà Rịa - Vũng Tàu",
+    tags: ["Gỏi", "Hải sản", "Đặc sản"],
+    detail: {
+      description: "Gỏi cá mai là đặc sản vùng biển Vũng Tàu. Loài cá mai thịt trong suốt, ít tanh được rút xương, bóp tái chanh rồi trộn cùng thính, đậu phộng, mè rang. Điểm nhấn là nước sốt chấm sệt pha từ nước cốt me, đậu phộng xay nhuyễn thơm bùi béo ngọt.",
+      highlights: ["Cá mai ngọt thanh dai giòn tự nhiên", "Nước chấm mè đậu phộng béo bùi đậm đà", "Cuốn bánh tráng cùng nhiều loại rau thơm vùng biển"],
+      ingredients: ["Cá mai tươi", "Thính gạo", "Đậu phộng", "Mè rang", "Chanh", "Rau thơm các loại", "Bánh tráng"],
+      restaurants: [
+        { name: "Gỏi cá mai Vườn Xoài", address: "34/4 Hoàng Hoa Xám, Phường 2, Vũng Tàu", price: "100.000đ - 150.000đ/phần" },
+        { name: "Quán gỏi cá mai Ba Hưng", address: "A7/14 Trung tâm đô thị Chí Linh, Phường 10, Vũng Tàu", price: "80.000đ - 130.000đ/phần" }
+      ]
+    }
+  }
 ];

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { X, MapPin, ListOrdered } from "lucide-react";
+import { X, MapPin, ListOrdered, Store } from "lucide-react";
 
 export default function CultureDetailModal({
   item,
@@ -156,6 +156,38 @@ export default function CultureDetailModal({
                   </li>
                 ))}
               </ol>
+            </div>
+          )}
+
+          {detail.restaurants?.length > 0 && (
+            <div className="mt-5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-3 flex items-center gap-1.5">
+                <Store size={14} className="text-amber-600" />
+                Địa chỉ thưởng thức gợi ý
+              </h3>
+              <div className="space-y-2.5">
+                {detail.restaurants.map((res, i) => (
+                  <div
+                    key={i}
+                    className="p-3.5 rounded-xl border border-stone-100 bg-stone-50/50 hover:border-amber-250 transition-colors flex justify-between items-start gap-3"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-stone-800 leading-snug">
+                        {res.name}
+                      </h4>
+                      <p className="text-xs text-stone-500 mt-1 flex items-start gap-1">
+                        <MapPin size={11} className="shrink-0 mt-0.5 text-stone-400" />
+                        <span className="leading-relaxed">{res.address}</span>
+                      </p>
+                    </div>
+                    {res.price && (
+                      <span className="shrink-0 px-2 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-100 rounded-md">
+                        {res.price}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
