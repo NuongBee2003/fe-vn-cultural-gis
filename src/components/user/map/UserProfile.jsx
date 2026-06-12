@@ -7,8 +7,9 @@ export default function UserProfile() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const isLogin = localStorage.getItem("isLogin") === "true";
-  const userRaw = localStorage.getItem("user");
+  const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+  const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
+  const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
   const user = userRaw ? JSON.parse(userRaw) : null;
 
   const handleLogout = () => {

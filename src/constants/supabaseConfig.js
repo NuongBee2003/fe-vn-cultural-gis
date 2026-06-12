@@ -2,6 +2,7 @@
 export const SUPABASE_BUCKETS = {
   ICON_LOCATION: 'icon_location',   // Icon marker cho category
   LOCATION_IMAGES: 'image_location', // Ảnh minh họa cho địa điểm
+  POST_IMAGES: 'post',               // Ảnh bài viết của user
 };
 
 // Cấu hình tải ảnh
