@@ -47,8 +47,7 @@ export default function ExhibitionPage() {
               Không gian văn hóa số
             </h1>
             <p className="mt-3 text-sm leading-6 text-stone-500 max-w-2xl">
-              Khám phá tác phẩm từ cộng đồng — ảnh minh họa dữ liệu
-              mẫu, sẽ kết nối API sau.
+              Khám phá tác phẩm nghệ thuật từ cộng đồng — nét đẹp ẩm thực, địa điểm và lễ hội văn hóa Việt Nam.
             </p>
           </header>
 

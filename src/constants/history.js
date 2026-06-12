@@ -8,7 +8,7 @@ import ThoiKyDoDong from "@/assets/img/history/kidodong.jpg";
 import ImgNhaTanXamLuoc from "@/assets/img/history/nhatangxamluoc.jpg";
 import ImgThanhCoLoa from "@/assets/img/history/thanhcoloa.jpg";
 import ImgThoiDaiVuaHung from "@/assets/img/history/thoidaivuahung.jpg";
-import TienSu from "@/assets/img/history/tiensu-hongbang.webp";
+import TienSu from "@/assets/img/history/tiensu_hongbang.webp";
 import ImgTruyenThuyetThanhGiong from "@/assets/img/history/truyenthuyetthanhgiong.png";
 import ImgVanLang from "@/assets/img/history/vanlang.jpg";
 import ImgChampa from "@/assets/img/history/Champa.webp";
@@ -41,6 +41,91 @@ import CharLyNamDe from "@/assets/img/history-character/LyNamDe.jpg";
 import CharMaiThucLoan from "@/assets/img/history-character/MaiThucLoan.png";
 import CharNgoQuyen from "@/assets/img/history-character/NgoQuyen.jpg";
 import CharPhungHung from "@/assets/img/history-character/PhungHung.webp";
+// Auto-generated Imports for Newly Added History Images
+import ImgHistory_Auto_25 from "@/assets/img/history/ngo_quyen_tl_nha_ngo.jpg";
+import ImgHistory_Auto_26 from "@/assets/img/history/khung_hoang_nha_ngo.jpg";
+import ImgHistory_Auto_27 from "@/assets/img/history/loan_12_su_quan.jpg";
+import ImgHistory_Auto_28 from "@/assets/img/history/dinh_bo_linh_dep_loan_12_su_quan.jpg";
+import ImgHistory_Auto_29 from "@/assets/img/history/su_sup_do_cua_nha_dinh.png";
+import ImgHistory_Auto_30 from "@/assets/img/history/le_hoan_lap_nha_tien_le_dai_pha_quan_tong.jpg";
+import ImgHistory_Auto_31 from "@/assets/img/history/danh_chiem_thanh_mo_rong_ve_phuong_nam.jpg";
+import ImgHistory_Auto_32 from "@/assets/img/history/khung_hoang_ke_vi_trieu_tien_le.webp";
+import ImgHistory_Auto_33 from "@/assets/img/history/ly_cong_uan_len_ngoi_vua.jpg";
+import ImgHistory_Auto_34 from "@/assets/img/history/ly_thai_to_doi_do_ve_thang_long.jpg";
+import ImgHistory_Auto_35 from "@/assets/img/history/doi_ten_nuoc_thanh_dai_viet.jpg";
+import ImgHistory_Auto_36 from "@/assets/img/history/thanh_lap_van_mieu.jpg";
+import ImgHistory_Auto_37 from "@/assets/img/history/chien_thang_cua_ly_thuong_kiet.jpg";
+import ImgHistory_Auto_38 from "@/assets/img/history/cho_ke_cho_trung_tam_thang_long.jpg";
+import ImgHistory_Auto_39 from "@/assets/img/history/khoa_thi_dau_tien_trong_lich_su.jpg";
+import ImgHistory_Auto_40 from "@/assets/img/history/su_hinh_thanh_thuong_cang_van_don.jpg";
+import ImgHistory_Auto_41 from "@/assets/img/history/ly_chieu_hoang_nhuong_ngoi.jpg";
+import ImgHistory_Auto_42 from "@/assets/img/history/nha_tran.jpeg";
+import ImgHistory_Auto_43 from "@/assets/img/history/khang_chien_chong_nguyen_mong_lan_1.webp";
+import ImgHistory_Auto_44 from "@/assets/img/history/hoi_nghi_dien_hong.webp";
+import ImgHistory_Auto_45 from "@/assets/img/history/khang_chien_chong_nguyen_mong_lan_2.png";
+import ImgHistory_Auto_46 from "@/assets/img/history/khang_chien_chong_nguyen_mong_lan_3.jpg";
+import ImgHistory_Auto_47 from "@/assets/img/history/chien_thang_bach_dang_1288.jpg";
+import ImgHistory_Auto_48 from "@/assets/img/history/nha_tran_suy_yeu.webp";
+import ImgHistory_Auto_49 from "@/assets/img/history/nha_ho_minh_thuoc.png";
+import ImgHistory_Auto_50 from "@/assets/img/history/nha_ho_thay_the_nha_tran.jpg";
+import ImgHistory_Auto_51 from "@/assets/img/history/nha_minh_xam_luoc_dai_ngu.webp";
+import ImgHistory_Auto_52 from "@/assets/img/history/khoi_nghia_lam_son.jpg";
+import ImgHistory_Auto_53 from "@/assets/img/history/nha_hau_le.jpg";
+import ImgHistory_Auto_54 from "@/assets/img/history/le_loi_len_ngoi_trieu_hau_le.jpg";
+import ImgHistory_Auto_55 from "@/assets/img/history/bo_luat_hong_duc_ra_doi.jpg";
+import ImgHistory_Auto_56 from "@/assets/img/history/vua_le_thanh_tong_qua_doi.jpg";
+import ImgHistory_Auto_57 from "@/assets/img/history/thoi_ky_le_mac_phan_tranh.jpg";
+import ImgHistory_Auto_58 from "@/assets/img/history/trinh_nguyen_phan_tranh.jpg";
+import ImgHistory_Auto_59 from "@/assets/img/history/nha_mac.jpg";
+import ImgHistory_Auto_60 from "@/assets/img/history/mac_dang_dung_lap_trieu_mac.jpg";
+import ImgHistory_Auto_61 from "@/assets/img/history/mac_dang_dung_quy_phuc_nha_minh.jpeg";
+import ImgHistory_Auto_62 from "@/assets/img/history/mat_thang_long_nha_mac_chay_ve_cao_bang.jpg";
+import ImgHistory_Auto_63 from "@/assets/img/history/nha_mac_bi_tieu_diet_o_cao_bang.jpg";
+import ImgHistory_Auto_64 from "@/assets/img/history/trinh_kiem_nam_quyen.jpg";
+import ImgHistory_Auto_65 from "@/assets/img/history/lanh_tho_dai_viet_hinh_chu_s.jpg";
+import ImgHistory_Auto_66 from "@/assets/img/history/khoi_nghia_tay_son.jpg";
+import ImgHistory_Auto_67 from "@/assets/img/history/trieu_dai_tay_son.jpg";
+import ImgHistory_Auto_68 from "@/assets/img/history/tay_son_tieu_diet_chua_nguyen_o_dang_trong.webp";
+import ImgHistory_Auto_69 from "@/assets/img/history/chien_thang_rach_gam_xoai_mut.jpg";
+import ImgHistory_Auto_70 from "@/assets/img/history/nguyen_hue_tien_ra_bac_diet_trinh.webp";
+import ImgHistory_Auto_71 from "@/assets/img/history/dai_pha_quan_thanh_tet_ky_dau.png";
+import ImgHistory_Auto_72 from "@/assets/img/history/vua_quang_trung_bang_ha_tay_son_suy_yeu.webp";
+import ImgHistory_Auto_73 from "@/assets/img/history/nha_nguyen.jpg";
+import ImgHistory_Auto_74 from "@/assets/img/history/gia_long_thong_nhat_dat_nuoc.jpg";
+import ImgHistory_Auto_75 from "@/assets/img/history/vua_gia_long_doi_quoc_hieu_thanh_viet_nam.jpg";
+import ImgHistory_Auto_76 from "@/assets/img/history/vua_minh_mang_doi_quoc_hieu_thanh_dai_nam.jpg";
+import ImgHistory_Auto_77 from "@/assets/img/history/nguyen_truong_to_va_tu_tuong_cai_cach.jpg";
+import ImgHistory_Auto_78 from "@/assets/img/history/thuc_dan_phap_no_sung_xam_luoc.webp";
+import ImgHistory_Auto_79 from "@/assets/img/history/phap_danh_chiem_nam_ky.jpg";
+import ImgHistory_Auto_80 from "@/assets/img/history/thoi_ky_phap_thuoc.jpg";
+import ImgHistory_Auto_81 from "@/assets/img/history/hiep_uoc_patenotre.jpg";
+import ImgHistory_Auto_82 from "@/assets/img/history/phong_trao_can_vuong.webp";
+import ImgHistory_Auto_83 from "@/assets/img/history/dong_duong_lien_bang.jpg";
+import ImgHistory_Auto_84 from "@/assets/img/history/phong_trao_xo_viet_nghe_tinh.jpg";
+import ImgHistory_Auto_85 from "@/assets/img/history/cach_mang_thang_8_thanh_cong.jpg";
+import ImgHistory_Auto_86 from "@/assets/img/history/khang_chien_chong_phap.jpg";
+import ImgHistory_Auto_87 from "@/assets/img/history/quan_he_viet_minh_my_trong_the_chien_2.jpg";
+import ImgHistory_Auto_88 from "@/assets/img/history/chien_dich_viet_bac_thu_dong.jpg";
+import ImgHistory_Auto_89 from "@/assets/img/history/chien_dich_bien_gioi_thu_dong.jpg";
+import ImgHistory_Auto_90 from "@/assets/img/history/chien_dich_tay_bac.jpg";
+import ImgHistory_Auto_91 from "@/assets/img/history/chien_dich_dien_bien_phu.jpg";
+import ImgHistory_Auto_92 from "@/assets/img/history/khang_chien_chong_my.jpg";
+import ImgHistory_Auto_93 from "@/assets/img/history/chien_thang_ap_bac.jpg";
+import ImgHistory_Auto_94 from "@/assets/img/history/chien_dich_binh_gia.jpg";
+import ImgHistory_Auto_95 from "@/assets/img/history/danh_bai_cuoc_hanh_quan_junction_city.webp";
+import ImgHistory_Auto_96 from "@/assets/img/history/chien_dich_duong_9_khe_sanh.jpg";
+import ImgHistory_Auto_97 from "@/assets/img/history/chien_dich_dien_bien_phu_tren_khong.jpg";
+import ImgHistory_Auto_98 from "@/assets/img/history/cac_chien_dich_tieu_bieu_nam_1975.jpg";
+import ImgHistory_Auto_99 from "@/assets/img/history/thong_nhat_dat_nuoc_viet_nam_hien_dai.jpg";
+import ImgHistory_Auto_100 from "@/assets/img/history/giai_phong_mien_nam_thong_nhat_dat_nuoc.jpg";
+import ImgHistory_Auto_101 from "@/assets/img/history/thanh_lap_nuoc_cong_hoa_xhcn_viet_nam.jpg";
+import ImgHistory_Auto_102 from "@/assets/img/history/viet_nam_gia_nhap_lien_hop_quoc.jpg";
+import ImgHistory_Auto_103 from "@/assets/img/history/chien_tranh_bien_gioi_phia_bac.jpg";
+import ImgHistory_Auto_104 from "@/assets/img/history/duong_loi_doi_moi_toan_dien_dai_hoi_vi.jpg";
+import ImgHistory_Auto_105 from "@/assets/img/history/viet_nam_gia_nhap_asean_binh_thuong_hoa_quan_he_voi_my.jpg";
+import ImgHistory_Auto_106 from "@/assets/img/history/viet_nam_gia_nhap_wto.jpg";
+import ImgHistory_Auto_107 from "@/assets/img/history/ban_hanh_hien_phap_2013.jpg";
+
 export const HISTORY_TIMELINE = [
 
   // ─── THỜI TIỀN SỬ & HỒNG BÀNG ─────────────────────────────────────────────
@@ -344,7 +429,7 @@ export const HISTORY_TIMELINE = [
     period: "939 SCN – 944 SCN",
     description: "Sau chiến thắng Bạch Đằng, Ngô Quyền lên ngôi vua, lập triều Ngô, đóng đô ở Cổ Loa. Đây là triều đại đầu tiên của nền độc lập hoàn toàn, chấm dứt thời kỳ lệ thuộc phương Bắc.",
     figure: "Ngô Quyền",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/800px-Ngo_Quyen.jpg",
+    image: ImgHistory_Auto_25,
     figureDescription: "Ngô Quyền là người lãnh đạo cuộc kháng chiến chống quân Nam Hán và giành chiến thắng quyết định trên sông Bạch Đằng năm 938. Chiến thắng này đã chấm dứt hoàn toàn hơn 1000 năm Bắc thuộc, mở ra thời kỳ độc lập, tự chủ lâu dài cho dân tộc Việt Nam. Vì vậy, Ngô Quyền được xem là danh nhân tiêu biểu nhất của thời kỳ Bắc thuộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Ngo_Quyen.jpg/400px-Ngo_Quyen.jpg"
   },
@@ -356,7 +441,7 @@ export const HISTORY_TIMELINE = [
     period: "944 SCN – 965 SCN",
     description: "Sau khi Ngô Quyền mất, các con tranh giành ngôi vua, triều Ngô suy yếu. Quyền thần Dương Tam Kha chiếm ngôi, đất nước rơi vào hỗn loạn, chuẩn bị cho loạn 12 sứ quân.",
     figure: "Dương Tam Kha",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_26,
     figureDescription: "Sau khi Ngô Quyền mất, Dương Tam Kha cướp ngôi, làm rối loạn triều chính. Chính quyền trung ương suy yếu, các thế lực địa phương nổi lên cát cứ. Đây là nguyên nhân trực tiếp dẫn đến loạn 12 sứ quân, đẩy đất nước vào tình trạng chia cắt kéo dài",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -368,7 +453,7 @@ export const HISTORY_TIMELINE = [
     period: "965 SCN – 968 SCN",
     description: "Đất nước bị chia cắt bởi 12 thế lực cát cứ, chiến tranh liên miên gây khổ cực cho nhân dân. Đinh Bộ Lĩnh từ Hoa Lư nổi lên, từng bước dẹp loạn, thống nhất giang sơn.",
     figure: "Đinh Bộ Lĩnh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Dinh_Bo_Linh.jpg/800px-Dinh_Bo_Linh.jpg",
+    image: ImgHistory_Auto_27,
     figureDescription: "Đinh Bộ Lĩnh là người có tài thao lược, xuất thân từ Hoa Lư. Trong bối cảnh đất nước chia cắt, ông đã khéo léo kết hợp quân sự và ngoại giao, từng bước thu phục các sứ quân. Đinh Bộ Lĩnh trở thành biểu tượng của khát vọng thống nhất đất nước.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Dinh_Bo_Linh.jpg/400px-Dinh_Bo_Linh.jpg"
   },
@@ -380,7 +465,7 @@ export const HISTORY_TIMELINE = [
     period: "968 SCN – 974 SCN",
     description: "Đinh Bộ Lĩnh (Đinh Tiên Hoàng) dẹp xong 12 sứ quân, lên ngôi hoàng đế, đặt tên nước là Đại Cồ Việt, đóng đô ở Hoa Lư. Đây là thời điểm Việt Nam có nhà nước phong kiến trung ương tập quyền đầu tiên.",
     figure: "Đinh Bộ Lĩnh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Dinh_Bo_Linh.jpg/800px-Dinh_Bo_Linh.jpg",
+    image: ImgHistory_Auto_28,
     figureDescription: "Đinh Bộ Lĩnh là người có tài thao lược, xuất thân từ Hoa Lư. Trong bối cảnh đất nước chia cắt, ông đã khéo léo kết hợp quân sự và ngoại giao, từng bước thu phục các sứ quân. Đinh Bộ Lĩnh trở thành biểu tượng của khát vọng thống nhất đất nước.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Dinh_Bo_Linh.jpg/400px-Dinh_Bo_Linh.jpg"
   },
@@ -392,7 +477,7 @@ export const HISTORY_TIMELINE = [
     period: "974 SCN – 980 SCN",
     description: "Đinh Tiên Hoàng và Đinh Liễn bị ám sát năm 979. Triều Đinh suy yếu trong bối cảnh nhà Tống chuẩn bị xâm lược. Lê Hoàn được trao quyền nhiếp chính, đứng trước thử thách lớn.",
     figure: "Đinh Tiên Hoàng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Hoa_Lu_Ancient_Capital.jpg/800px-Hoa_Lu_Ancient_Capital.jpg",
+    image: ImgHistory_Auto_29,
     figureDescription: "Cuối triều Đinh, nội bộ triều đình suy yếu, vua bị sát hại, quyền lực rơi vào tay các thế lực khác. Đây là giai đoạn khủng hoảng nghiêm trọng, khiến đất nước đứng trước nguy cơ xâm lược từ bên ngoài.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Dinh_Bo_Linh.jpg/400px-Dinh_Bo_Linh.jpg"
   },
@@ -404,7 +489,7 @@ export const HISTORY_TIMELINE = [
     period: "980 SCN – 981 SCN",
     description: "Lê Hoàn lên ngôi trong bối cảnh quân Tống xâm lược. Ông tổ chức kháng chiến xuất sắc trên sông Bạch Đằng và Lạng Sơn, đánh bại hoàn toàn quân Tống, bảo vệ nền độc lập non trẻ.",
     figure: "Lê Hoàn",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Le_Hoan.jpg/800px-Le_Hoan.jpg",
+    image: ImgHistory_Auto_30,
     figureDescription: "Lê Hoàn được triều đình và quân đội suy tôn làm vua trong bối cảnh đất nước nguy cấp. Ông trực tiếp chỉ huy cuộc kháng chiến chống quân Tống xâm lược, giành thắng lợi vang dội, bảo vệ vững chắc nền độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Le_Hoan.jpg/400px-Le_Hoan.jpg"
   },
@@ -416,7 +501,7 @@ export const HISTORY_TIMELINE = [
     period: "982 SCN",
     description: "Lê Hoàn phản công đánh Champa, bắt sống vua Champa, mở rộng uy thế Đại Cồ Việt về phương Nam. Đây là bước đầu của quá trình Nam tiến kéo dài nhiều thế kỷ của người Việt.",
     figure: "Lê Hoàn",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/My_Son_temples.jpg/800px-My_Son_temples.jpg",
+    image: ImgHistory_Auto_31,
     figureDescription: "Lê Hoàn được triều đình và quân đội suy tôn làm vua trong bối cảnh đất nước nguy cấp. Ông trực tiếp chỉ huy cuộc kháng chiến chống quân Tống xâm lược, giành thắng lợi vang dội, bảo vệ vững chắc nền độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Le_Hoan.jpg/400px-Le_Hoan.jpg"
   },
@@ -428,7 +513,7 @@ export const HISTORY_TIMELINE = [
     period: "1005 – 1009",
     description: "Sau khi Lê Hoàn mất, các con tranh giành ngôi báu tàn sát lẫn nhau. Lê Long Đĩnh (vua Ngọa Triều) lên ngôi nhưng tàn bạo, triều đình suy vi. Sự xuất hiện của Lý Công Uẩn mở ra trang sử mới.",
     figure: "Lê Long Đĩnh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Hoa_Lu_Ancient_Capital.jpg/800px-Hoa_Lu_Ancient_Capital.jpg",
+    image: ImgHistory_Auto_32,
     figureDescription: "Triều Tiền Lê suy yếu do tranh chấp ngôi vua và sự cai trị tàn bạo, làm lòng dân oán thán. Đây là nguyên nhân khiến nhà Tiền Lê sụp đổ và nhường chỗ cho triều Lý.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -442,7 +527,7 @@ export const HISTORY_TIMELINE = [
     period: "1009",
     description: "Lý Công Uẩn – người có đức độ và tài năng xuất chúng – được tôn lên ngôi sau khi Lê Long Đĩnh mất. Ông lập ra nhà Lý, triều đại hưng thịnh nhất của Việt Nam thời phong kiến.",
     figure: "Lý Công Uẩn (Lý Thái Tổ)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ly_Thai_To_statue.jpg/800px-Ly_Thai_To_statue.jpg",
+    image: ImgHistory_Auto_33,
     figureDescription: "Lý Công Uẩn xuất thân từ tầng lớp quý tộc, được triều đình và tăng lữ ủng hộ nhờ tài năng và đức độ. Khi triều Tiền Lê suy yếu, ông được suy tôn lên ngôi, chấm dứt tình trạng khủng hoảng chính trị kéo dài. Việc Lý Công Uẩn lên ngôi mở ra triều đại nhà Lý, đánh dấu bước chuyển quan trọng sang một thời kỳ ổn định, phát triển lâu dài của đất nước",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Ly_Thai_To.jpg/400px-Ly_Thai_To.jpg"
   },
@@ -454,7 +539,7 @@ export const HISTORY_TIMELINE = [
     period: "1010",
     description: "Lý Thái Tổ viết 'Chiếu dời đô', chuyển kinh đô từ Hoa Lư về Đại La (đặt tên là Thăng Long). Đây là quyết định lịch sử, đặt nền móng cho Hà Nội ngàn năm văn hiến.",
     figure: "Lý Thái Tổ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Thang_Long_Imperial_Citadel.jpg/800px-Thang_Long_Imperial_Citadel.jpg",
+    image: ImgHistory_Auto_34,
     figureDescription: "Nhận thấy Hoa Lư không còn phù hợp cho sự phát triển lâu dài, Lý Thái Tổ quyết định dời đô ra Thăng Long. Đây là vùng đất rộng rãi, bằng phẳng, giao thông thuận lợi, có vị trí chiến lược quan trọng. Quyết định này thể hiện tầm nhìn xa của nhà vua, tạo điều kiện cho Đại Việt phát triển thịnh vượng suốt nhiều thế kỷ",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Ly_Thai_To.jpg/400px-Ly_Thai_To.jpg"
   },
@@ -466,7 +551,7 @@ export const HISTORY_TIMELINE = [
     period: "1054",
     description: "Vua Lý Thánh Tông đổi quốc hiệu từ Đại Cồ Việt thành Đại Việt – cái tên hào hùng tồn tại suốt nhiều thế kỷ. Đây cũng là giai đoạn phát triển mạnh mẽ về văn hóa, giáo dục và ngoại giao.",
     figure: "Lý Thánh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ly_Thai_To_statue.jpg/800px-Ly_Thai_To_statue.jpg",
+    image: ImgHistory_Auto_35,
     figureDescription: "Việc đổi quốc hiệu từ Đại Cồ Việt sang Đại Việt thể hiện ý thức dân tộc mạnh mẽ và khát vọng xây dựng một quốc gia độc lập, hùng cường. Dưới triều Lý Thánh Tông, đất nước ổn định, mở rộng lãnh thổ và củng cố vị thế trong khu vực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Van_Mieu_Quoc_Tu_Giam.jpg/400px-Van_Mieu_Quoc_Tu_Giam.jpg"
   },
@@ -478,7 +563,7 @@ export const HISTORY_TIMELINE = [
     period: "1070",
     description: "Vua Lý Thánh Tông cho xây Văn Miếu tại Thăng Long để thờ Khổng Tử và tôn vinh Nho học. Đây là trường đại học đầu tiên của Việt Nam, đào tạo nhân tài cho đất nước.",
     figure: "Lý Thánh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Van_Mieu_Hanoi.jpg/800px-Van_Mieu_Hanoi.jpg",
+    image: ImgHistory_Auto_36,
     figureDescription: "Việc đổi quốc hiệu từ Đại Cồ Việt sang Đại Việt thể hiện ý thức dân tộc mạnh mẽ và khát vọng xây dựng một quốc gia độc lập, hùng cường. Dưới triều Lý Thánh Tông, đất nước ổn định, mở rộng lãnh thổ và củng cố vị thế trong khu vực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Van_Mieu_Quoc_Tu_Giam.jpg/400px-Van_Mieu_Quoc_Tu_Giam.jpg"
   },
@@ -490,7 +575,7 @@ export const HISTORY_TIMELINE = [
     period: "1075 – 1077",
     description: "Lý Thường Kiệt tiên phát chế nhân, tấn công trước vào đất Tống rồi rút về phòng thủ. Trận chiến sông Như Nguyệt năm 1077 với bài thơ 'Nam quốc sơn hà' vang dội là chiến thắng vĩ đại nhất thời Lý.",
     figure: "Lý Thường Kiệt",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Ly_Thuong_Kiet.jpg/800px-Ly_Thuong_Kiet.jpg",
+    image: ImgHistory_Auto_37,
     figureDescription: "Trước nguy cơ xâm lược của nhà Tống, Lý Thường Kiệt chủ trương tiến công trước để tự vệ. Ông chỉ huy quân đội đánh vào Ung Châu, Liêm Châu rồi tổ chức phòng thủ vững chắc trên sông Như Nguyệt. Chiến thắng này bảo vệ nền độc lập dân tộc và thể hiện tư duy quân sự sáng tạo, chủ động của Đại Việt",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Ly_Thuong_Kiet.jpg/400px-Ly_Thuong_Kiet.jpg"
   },
@@ -502,7 +587,7 @@ export const HISTORY_TIMELINE = [
     period: "Thế kỷ XI – XVIII",
     description: "Kẻ Chợ (tức Thăng Long) phát triển thành trung tâm buôn bán sầm uất nhất Đại Việt với 36 phố phường chuyên biệt từng ngành nghề. Nền kinh tế thương mại phát triển mạnh dưới thời Lý.",
     figure: "Lý Thái Tổ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Thang_Long_Imperial_Citadel.jpg/800px-Thang_Long_Imperial_Citadel.jpg",
+    image: ImgHistory_Auto_38,
     figureDescription: "Nhận thấy Hoa Lư không còn phù hợp cho sự phát triển lâu dài, Lý Thái Tổ quyết định dời đô ra Thăng Long. Đây là vùng đất rộng rãi, bằng phẳng, giao thông thuận lợi, có vị trí chiến lược quan trọng. Quyết định này thể hiện tầm nhìn xa của nhà vua, tạo điều kiện cho Đại Việt phát triển thịnh vượng suốt nhiều thế kỷ",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Ly_Thai_To.jpg/400px-Ly_Thai_To.jpg"
   },
@@ -514,7 +599,7 @@ export const HISTORY_TIMELINE = [
     period: "1075",
     description: "Kỳ thi Tam trường – khoa thi đầu tiên trong lịch sử Việt Nam – được tổ chức để tuyển chọn nhân tài. Đây là bước ngoặt lớn, mở ra truyền thống khoa cử trọng dụng người có học thức.",
     figure: "Lý Nhân Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Van_Mieu_Hanoi.jpg/800px-Van_Mieu_Hanoi.jpg",
+    image: ImgHistory_Auto_39,
     figureDescription: "Triều đình mở khoa thi chọn người tài ra giúp nước, đặt nền móng cho chế độ khoa cử Việt Nam. Đây là bước tiến lớn trong việc xây dựng bộ máy nhà nước dựa trên trí tuệ và học vấn thay vì dòng dõi.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Van_Mieu_Quoc_Tu_Giam.jpg/400px-Van_Mieu_Quoc_Tu_Giam.jpg"
   },
@@ -526,7 +611,7 @@ export const HISTORY_TIMELINE = [
     period: "1149",
     description: "Vua Lý Anh Tông cho lập thương cảng Vân Đồn (Quảng Ninh) – thương cảng quốc tế đầu tiên của Việt Nam, giao thương với Trung Hoa, Java, Xiêm La. Đây là minh chứng cho sự phát triển ngoại thương.",
     figure: "Lý Anh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Van_Don_port.jpg/800px-Van_Don_port.jpg",
+    image: ImgHistory_Auto_40,
     figureDescription: "Vân Đồn được thành lập nhằm phát triển giao thương với các nước trong khu vực. Thương cảng này góp phần thúc đẩy kinh tế, khẳng định vị thế Đại Việt trong mạng lưới buôn bán quốc tế.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -538,7 +623,7 @@ export const HISTORY_TIMELINE = [
     period: "1225",
     description: "Lý Chiêu Hoàng – nữ vua cuối cùng nhà Lý – nhường ngôi cho chồng là Trần Cảnh theo sắp xếp của Trần Thủ Độ. Nhà Lý kết thúc sau 216 năm trị vì, nhường chỗ cho nhà Trần hùng mạnh.",
     figure: "Lý Chiêu Hoàng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ly_Thai_To_statue.jpg/800px-Ly_Thai_To_statue.jpg",
+    image: ImgHistory_Auto_41,
     figureDescription: "Là nữ hoàng duy nhất trong lịch sử Việt Nam, bà nhường ngôi cho Trần Cảnh, chấm dứt triều Lý. Sự kiện này mở đầu cho triều Trần và phản ánh sự chuyển giao quyền lực trong bối cảnh triều Lý suy yếu",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -552,7 +637,7 @@ export const HISTORY_TIMELINE = [
     period: "1225 – 1400",
     description: "Triều Trần là thời kỳ hào hùng nhất trong lịch sử chống ngoại xâm của Việt Nam – ba lần đánh bại đế quốc Nguyên Mông hùng mạnh nhất thế giới. Câu nói 'Sát Thát' (giết giặc Thát) vang dội cả nước.",
     figure: "Trần Hưng Đạo",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tran_Hung_Dao.jpg/800px-Tran_Hung_Dao.jpg",
+    image: ImgHistory_Auto_42,
     figureDescription: "là danh nhân kiệt xuất của nhà Trần, gắn liền với ba lần kháng chiến chống quân Mông – Nguyên thế kỷ XIII. Ông là người tổ chức, chỉ huy toàn bộ lực lượng quân sự, xây dựng chiến lược “lấy yếu thắng mạnh”, kết hợp chiến tranh nhân dân với nghệ thuật quân sự linh hoạt. Dưới sự lãnh đạo của ông, quân dân Đại Việt giành thắng lợi vang dội trong các trận Đông Bộ Đầu, Hàm Tử, Chương Dương, Bạch Đằng (1288), bảo vệ vững chắc nền độc lập dân tộc. Trần Hưng Đạo được tôn vinh là anh hùng dân tộc và danh tướng quân sự kiệt xuất của lịch sử Việt Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -564,7 +649,7 @@ export const HISTORY_TIMELINE = [
     period: "1258",
     description: "Quân Nguyên Mông lần đầu tràn vào Đại Việt với sức mạnh áp đảo. Vua Trần Thái Tông áp dụng chiến thuật 'vườn không nhà trống', rút lui chiến lược, rồi phản công, đánh bại 3 vạn quân Mông Cổ.",
     figure: "Trần Thái Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tran_Hung_Dao.jpg/800px-Tran_Hung_Dao.jpg",
+    image: ImgHistory_Auto_43,
     figureDescription: "Dưới sự lãnh đạo của Trần Thái Tông, quân dân Đại Việt đã đánh bại cuộc xâm lược đầu tiên của quân Nguyên Mông, bảo vệ nền độc lập trước đội quân mạnh nhất thế giới lúc bấy giờ.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -576,7 +661,7 @@ export const HISTORY_TIMELINE = [
     period: "Cuối năm 1284",
     description: "Vua Trần Nhân Tông triệu tập các bô lão cả nước để hỏi kế đánh hay hòa. Toàn thể bô lão đồng thanh hô 'Đánh!' – Hội nghị Diên Hồng trở thành biểu tượng của tinh thần đoàn kết toàn dân.",
     figure: "Trần Nhân Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Dien_Hong_conference.jpg/800px-Dien_Hong_conference.jpg",
+    image: ImgHistory_Auto_44,
     figureDescription: "Nhà vua triệu tập các bô lão cả nước để hỏi ý kiến đánh hay hòa. Hội nghị thể hiện tinh thần đoàn kết toàn dân và quyết tâm chống giặc ngoại xâm",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -588,7 +673,7 @@ export const HISTORY_TIMELINE = [
     period: "1285",
     description: "50 vạn quân Nguyên Mông ồ ạt tràn vào. Hưng Đạo Vương Trần Quốc Tuấn chỉ huy phản công, đánh bại hoàn toàn đội quân đông nhất từ trước đến nay. Chiến thắng Chương Dương, Hàm Tử vang dội.",
     figure: "Trần Hưng Đạo",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tran_Hung_Dao.jpg/800px-Tran_Hung_Dao.jpg",
+    image: ImgHistory_Auto_45,
     figureDescription: "là danh nhân kiệt xuất của nhà Trần, gắn liền với ba lần kháng chiến chống quân Mông – Nguyên thế kỷ XIII. Ông là người tổ chức, chỉ huy toàn bộ lực lượng quân sự, xây dựng chiến lược “lấy yếu thắng mạnh”, kết hợp chiến tranh nhân dân với nghệ thuật quân sự linh hoạt. Dưới sự lãnh đạo của ông, quân dân Đại Việt giành thắng lợi vang dội trong các trận Đông Bộ Đầu, Hàm Tử, Chương Dương, Bạch Đằng (1288), bảo vệ vững chắc nền độc lập dân tộc. Trần Hưng Đạo được tôn vinh là anh hùng dân tộc và danh tướng quân sự kiệt xuất của lịch sử Việt Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -600,7 +685,7 @@ export const HISTORY_TIMELINE = [
     period: "1287 – 1288",
     description: "Quân Nguyên Mông lần thứ ba xâm lược với 30 vạn quân thủy bộ. Trần Hưng Đạo lại dùng kế cắm cọc trên sông Bạch Đằng, tiêu diệt toàn bộ thủy quân địch. Chiến thắng Bạch Đằng 1288 vang danh muôn thuở.",
     figure: "Trần Hưng Đạo",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Bach_Dang_River_1288.jpg/800px-Bach_Dang_River_1288.jpg",
+    image: ImgHistory_Auto_46,
     figureDescription: "là danh nhân kiệt xuất của nhà Trần, gắn liền với ba lần kháng chiến chống quân Mông – Nguyên thế kỷ XIII. Ông là người tổ chức, chỉ huy toàn bộ lực lượng quân sự, xây dựng chiến lược “lấy yếu thắng mạnh”, kết hợp chiến tranh nhân dân với nghệ thuật quân sự linh hoạt. Dưới sự lãnh đạo của ông, quân dân Đại Việt giành thắng lợi vang dội trong các trận Đông Bộ Đầu, Hàm Tử, Chương Dương, Bạch Đằng (1288), bảo vệ vững chắc nền độc lập dân tộc. Trần Hưng Đạo được tôn vinh là anh hùng dân tộc và danh tướng quân sự kiệt xuất của lịch sử Việt Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -612,7 +697,7 @@ export const HISTORY_TIMELINE = [
     period: "1288",
     description: "Trận Bạch Đằng lần thứ hai trong lịch sử, Hưng Đạo Vương dùng lại kế cọc nhọn của Ngô Quyền. Ô Mã Nhi và toàn bộ thủy quân Nguyên bị tiêu diệt, chấm dứt mộng xâm lăng của đế chế Mông Cổ.",
     figure: "Trần Hưng Đạo",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Bach_Dang_River_1288.jpg/800px-Bach_Dang_River_1288.jpg",
+    image: ImgHistory_Auto_47,
     figureDescription: "là danh nhân kiệt xuất của nhà Trần, gắn liền với ba lần kháng chiến chống quân Mông – Nguyên thế kỷ XIII. Ông là người tổ chức, chỉ huy toàn bộ lực lượng quân sự, xây dựng chiến lược “lấy yếu thắng mạnh”, kết hợp chiến tranh nhân dân với nghệ thuật quân sự linh hoạt. Dưới sự lãnh đạo của ông, quân dân Đại Việt giành thắng lợi vang dội trong các trận Đông Bộ Đầu, Hàm Tử, Chương Dương, Bạch Đằng (1288), bảo vệ vững chắc nền độc lập dân tộc. Trần Hưng Đạo được tôn vinh là anh hùng dân tộc và danh tướng quân sự kiệt xuất của lịch sử Việt Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tran_Hung_Dao.jpg/400px-Tran_Hung_Dao.jpg"
   },
@@ -624,7 +709,7 @@ export const HISTORY_TIMELINE = [
     period: "Cuối thế kỷ XIV",
     description: "Vua Trần Dụ Tông ham chơi, triều đình tham nhũng, nông dân nổi loạn. Ngoại xâm Chiêm Thành từ phương Nam liên tục quấy phá. Nhà Trần dần mất quyền kiểm soát, tạo điều kiện cho Hồ Quý Ly nắm quyền.",
     figure: "Trần Dụ Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_48,
     figureDescription: "Triều đình sa vào ăn chơi, bỏ bê chính sự, kinh tế suy thoái, xã hội rối ren. Đây là nguyên nhân dẫn tới sự sụp đổ của nhà Trần và sự xuất hiện của nhà Hồ",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -638,7 +723,7 @@ export const HISTORY_TIMELINE = [
     period: "1400 – 1427",
     description: "Hồ Quý Ly cướp ngôi nhà Trần, nhà Minh lấy cớ 'phù Trần diệt Hồ' xâm lược. 20 năm đô hộ của nhà Minh tàn khốc hơn Bắc thuộc lần trước. Lê Lợi khởi nghĩa Lam Sơn giải phóng đất nước.",
     figure: "Lê Lợi",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Le_Loi.jpg/800px-Le_Loi.jpg",
+    image: ImgHistory_Auto_49,
     figureDescription: "Lê Lợi là danh nhân tiêu biểu nhất của thời kỳ Nhà Hồ & Minh Thuộc vì ông là người đã chấm dứt hoàn toàn ách đô hộ nhà Minh, đưa đất nước thoát khỏi giai đoạn đen tối nhất đầu thế kỷ XV. Sau khi nhà Hồ thất bại trước cuộc xâm lược của nhà Minh năm 1407, Đại Việt rơi vào gần 20 năm bị đô hộ. Nhà Minh thực hiện chính sách bóc lột tàn bạo, vơ vét tài nguyên, bắt dân lao dịch, hủy hoại sách vở và di sản văn hóa, âm mưu đồng hóa dân tộc Việt. Trong hoàn cảnh đó, tinh thần phản kháng âm thầm lan rộng trong nhân dân",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Le_Loi.jpg/400px-Le_Loi.jpg"
   },
@@ -650,7 +735,7 @@ export const HISTORY_TIMELINE = [
     period: "1400",
     description: "Hồ Quý Ly ép vua Trần nhường ngôi, lập nhà Hồ, đổi tên nước là Đại Ngu. Ông thi hành nhiều cải cách tiến bộ như hạn điền, phát hành tiền giấy nhưng lòng dân không phục.",
     figure: "Hồ Quý Ly",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Ho_Quy_Ly.jpg/800px-Ho_Quy_Ly.jpg",
+    image: ImgHistory_Auto_50,
     figureDescription: "Hồ Quý Ly là nhân vật gây nhiều tranh cãi trong lịch sử. Ông là người chấm dứt triều Trần và lập ra nhà Hồ năm 1400. Dù bị xem là người cướp ngôi, Hồ Quý Ly lại là nhà cải cách hiếm hoi của thời phong kiến Việt Nam. Ông tiến hành nhiều cải cách quan trọng như đổi mới giáo dục theo hướng thực học, phát hành tiền giấy, cải tổ bộ máy quan lại và tăng cường quốc phòng. Tuy nhiên, việc cải cách diễn ra quá nhanh, thiếu sự ủng hộ của tầng lớp quý tộc và nhân dân khiến triều Hồ không đủ sức chống lại cuộc xâm lược của nhà Minh. Dù thất bại, Hồ Quý Ly vẫn được đánh giá là người có tư duy tiến bộ vượt thời đại",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -662,7 +747,7 @@ export const HISTORY_TIMELINE = [
     period: "1407",
     description: "Quân Minh với 80 vạn người tràn vào, cha con Hồ Quý Ly bị bắt. Nhà Minh đặt ách cai trị tàn bạo – vơ vét của cải, đốt sách, bắt dân đi phu. Người Việt lại bước vào cuộc kháng chiến trường kỳ mới.",
     figure: "Hồ Quý Ly và Hồ Hán Thương",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Ho_Quy_Ly.jpg/800px-Ho_Quy_Ly.jpg",
+    image: ImgHistory_Auto_51,
     figureDescription: "Năm 1407, nhà Minh lấy cớ “phù Trần diệt Hồ” để xâm lược Đại Việt. Do nội bộ suy yếu, quân đội nhà Hồ nhanh chóng thất bại. Đại Việt rơi vào ách đô hộ tàn bạo của nhà Minh, mở ra thời kỳ Minh thuộc đầy đau thương",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -674,7 +759,7 @@ export const HISTORY_TIMELINE = [
     period: "1418 – 1428",
     description: "Lê Lợi dựng cờ khởi nghĩa tại Lam Sơn (Thanh Hóa), cùng quân sư Nguyễn Trãi lãnh đạo cuộc kháng chiến 10 năm gian khổ. Chiến lược 'đánh vào lòng người' bằng bình Ngô đại cáo trở thành tuyên ngôn độc lập bất hủ.",
     figure: "Lê Lợi",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Le_Loi.jpg/800px-Le_Loi.jpg",
+    image: ImgHistory_Auto_52,
     figureDescription: "Lê Lợi là danh nhân tiêu biểu nhất của thời kỳ Nhà Hồ & Minh Thuộc vì ông là người đã chấm dứt hoàn toàn ách đô hộ nhà Minh, đưa đất nước thoát khỏi giai đoạn đen tối nhất đầu thế kỷ XV. Sau khi nhà Hồ thất bại trước cuộc xâm lược của nhà Minh năm 1407, Đại Việt rơi vào gần 20 năm bị đô hộ. Nhà Minh thực hiện chính sách bóc lột tàn bạo, vơ vét tài nguyên, bắt dân lao dịch, hủy hoại sách vở và di sản văn hóa, âm mưu đồng hóa dân tộc Việt. Trong hoàn cảnh đó, tinh thần phản kháng âm thầm lan rộng trong nhân dân",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Le_Loi.jpg/400px-Le_Loi.jpg"
   },
@@ -688,7 +773,7 @@ export const HISTORY_TIMELINE = [
     period: "1428 – 1789",
     description: "Triều đại tồn tại lâu nhất trong lịch sử Việt Nam. Thời Lê Thánh Tông là đỉnh cao – lãnh thổ mở rộng, bộ luật Hồng Đức tiến bộ, khoa cử phát triển. Sau đó nội chiến Lê-Mạc, Trịnh-Nguyễn chia cắt đất nước.",
     figure: "Lê Thánh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Le_Thanh_Tong.jpg/800px-Le_Thanh_Tong.jpg",
+    image: ImgHistory_Auto_53,
     figureDescription: "Lê Thánh Tông là danh nhân tiêu biểu nhất của triều Hậu Lê vì ông đã đưa Đại Việt đạt tới đỉnh cao toàn diện về chính trị, kinh tế, quân sự, pháp luật và văn hóa trong lịch sử phong kiến Việt Nam. Sau khi nhà Hậu Lê được thành lập năm 1428, đất nước từng bước ổn định nhưng chỉ thực sự phát triển rực rỡ dưới thời Lê Thánh Tông (1460–1497). Ông xây dựng bộ máy nhà nước trung ương tập quyền chặt chẽ, chia lại đơn vị hành chính, kiểm soát quyền lực quan lại, hạn chế tình trạng cát cứ địa phương",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Le_Thanh_Tong.jpg/400px-Le_Thanh_Tong.jpg"
   },
@@ -700,7 +785,7 @@ export const HISTORY_TIMELINE = [
     period: "1428",
     description: "Sau khi đánh đuổi quân Minh, Lê Lợi lên ngôi hoàng đế tại Đông Kinh (Thăng Long), khôi phục quốc hiệu Đại Việt. Nguyễn Trãi viết Bình Ngô đại cáo – bản tuyên ngôn độc lập hùng hồn nhất.",
     figure: "Lê Lợi",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Le_Loi.jpg/800px-Le_Loi.jpg",
+    image: ImgHistory_Auto_54,
     figureDescription: "Lê Lợi là danh nhân tiêu biểu nhất của thời kỳ Nhà Hồ & Minh Thuộc vì ông là người đã chấm dứt hoàn toàn ách đô hộ nhà Minh, đưa đất nước thoát khỏi giai đoạn đen tối nhất đầu thế kỷ XV. Sau khi nhà Hồ thất bại trước cuộc xâm lược của nhà Minh năm 1407, Đại Việt rơi vào gần 20 năm bị đô hộ. Nhà Minh thực hiện chính sách bóc lột tàn bạo, vơ vét tài nguyên, bắt dân lao dịch, hủy hoại sách vở và di sản văn hóa, âm mưu đồng hóa dân tộc Việt. Trong hoàn cảnh đó, tinh thần phản kháng âm thầm lan rộng trong nhân dân",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Le_Loi.jpg/400px-Le_Loi.jpg"
   },
@@ -712,7 +797,7 @@ export const HISTORY_TIMELINE = [
     period: "1483",
     description: "Vua Lê Thánh Tông ban hành Quốc triều hình luật (Luật Hồng Đức) – bộ luật tiến bộ nhất Đông Nam Á lúc bấy giờ. Đáng chú ý là quyền bình đẳng của phụ nữ được ghi nhận trong luật.",
     figure: "Lê Thánh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Le_Thanh_Tong.jpg/800px-Le_Thanh_Tong.jpg",
+    image: ImgHistory_Auto_55,
     figureDescription: "Lê Thánh Tông là danh nhân tiêu biểu nhất của triều Hậu Lê vì ông đã đưa Đại Việt đạt tới đỉnh cao toàn diện về chính trị, kinh tế, quân sự, pháp luật và văn hóa trong lịch sử phong kiến Việt Nam. Sau khi nhà Hậu Lê được thành lập năm 1428, đất nước từng bước ổn định nhưng chỉ thực sự phát triển rực rỡ dưới thời Lê Thánh Tông (1460–1497). Ông xây dựng bộ máy nhà nước trung ương tập quyền chặt chẽ, chia lại đơn vị hành chính, kiểm soát quyền lực quan lại, hạn chế tình trạng cát cứ địa phương",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Le_Thanh_Tong.jpg/400px-Le_Thanh_Tong.jpg"
   },
@@ -724,7 +809,7 @@ export const HISTORY_TIMELINE = [
     period: "1497",
     description: "Lê Thánh Tông băng hà, kết thúc 38 năm trị vì huy hoàng. Ông là vị vua tài giỏi nhất nhà Lê – mở rộng lãnh thổ, phát triển văn hóa, cải cách hành chính. Triều Lê bắt đầu suy thoái sau đó.",
     figure: "Lê Thánh Tông",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Le_Thanh_Tong.jpg/800px-Le_Thanh_Tong.jpg",
+    image: ImgHistory_Auto_56,
     figureDescription: "Lê Thánh Tông là danh nhân tiêu biểu nhất của triều Hậu Lê vì ông đã đưa Đại Việt đạt tới đỉnh cao toàn diện về chính trị, kinh tế, quân sự, pháp luật và văn hóa trong lịch sử phong kiến Việt Nam. Sau khi nhà Hậu Lê được thành lập năm 1428, đất nước từng bước ổn định nhưng chỉ thực sự phát triển rực rỡ dưới thời Lê Thánh Tông (1460–1497). Ông xây dựng bộ máy nhà nước trung ương tập quyền chặt chẽ, chia lại đơn vị hành chính, kiểm soát quyền lực quan lại, hạn chế tình trạng cát cứ địa phương",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Le_Thanh_Tong.jpg/400px-Le_Thanh_Tong.jpg"
   },
@@ -736,7 +821,7 @@ export const HISTORY_TIMELINE = [
     period: "1527 – 1592",
     description: "Mạc Đăng Dung cướp ngôi nhà Lê, lập nhà Mạc. Nhà Lê lưu vong ở Thanh Hóa, nhờ họ Nguyễn và họ Trịnh phù Lê phục quốc. Đất nước 65 năm chiến tranh liên miên, nhân dân điêu đứng.",
     figure: "Mạc Đăng Dung",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Mac_Dang_Dung.jpg/800px-Mac_Dang_Dung.jpg",
+    image: ImgHistory_Auto_57,
     figureDescription: "Năm 1527, Mạc Đăng Dung phế truất vua Lê, lập ra nhà Mạc. Cuộc xung đột giữa hai triều đại kéo dài nhiều thập kỷ, gây chia rẽ đất nước và làm suy yếu quốc lực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -748,7 +833,7 @@ export const HISTORY_TIMELINE = [
     period: "1600 – 1788",
     description: "Sau khi nhà Mạc bị diệt, họ Trịnh nắm quyền ở Đàng Ngoài (từ Nghệ An trở ra), họ Nguyễn cai trị Đàng Trong (từ Nghệ An trở vào). Đất nước bị chia đôi bởi sông Gianh gần 200 năm.",
     figure: "Trịnh Kiểm và Nguyễn Hoàng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_58,
     figureDescription: "Hai tập đoàn phong kiến Trịnh ở Đàng Ngoài và Nguyễn ở Đàng Trong chia cắt đất nước, mỗi bên tự xây dựng chính quyền riêng. Cuộc phân tranh kéo dài gần hai thế kỷ khiến nhân dân khổ cực, xã hội rối ren",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -760,7 +845,7 @@ export const HISTORY_TIMELINE = [
     period: "1527 – 1677",
     description: "Nhà Mạc do Mạc Đăng Dung sáng lập sau khi cướp ngôi nhà Lê. Dù bị coi là 'ngụy triều', nhà Mạc có nhiều cải cách tiến bộ về kinh tế và ngoại giao. Cuối cùng bị quân Lê-Trịnh tiêu diệt ở Cao Bằng năm 1677.",
     figure: "Mạc Đăng Dung",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Mac_Dang_Dung.jpg/800px-Mac_Dang_Dung.jpg",
+    image: ImgHistory_Auto_59,
     figureDescription: "Năm 1527, Mạc Đăng Dung phế truất vua Lê, lập ra nhà Mạc. Cuộc xung đột giữa hai triều đại kéo dài nhiều thập kỷ, gây chia rẽ đất nước và làm suy yếu quốc lực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -772,7 +857,7 @@ export const HISTORY_TIMELINE = [
     period: "1527",
     description: "Mạc Đăng Dung – vốn là đô vật xuất thân – leo lên đỉnh quyền lực và buộc vua Lê nhường ngôi. Ông lập triều Mạc, đóng đô tại Thăng Long, thi hành nhiều chính sách thực dụng.",
     figure: "Mạc Đăng Dung",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Mac_Dang_Dung.jpg/800px-Mac_Dang_Dung.jpg",
+    image: ImgHistory_Auto_60,
     figureDescription: "Năm 1527, Mạc Đăng Dung phế truất vua Lê, lập ra nhà Mạc. Cuộc xung đột giữa hai triều đại kéo dài nhiều thập kỷ, gây chia rẽ đất nước và làm suy yếu quốc lực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -784,7 +869,7 @@ export const HISTORY_TIMELINE = [
     period: "1540",
     description: "Để tránh bị nhà Minh tấn công, Mạc Đăng Dung chịu nhục quy phục, dâng đất cho nhà Minh. Hành động này bị người đương thời lên án kịch liệt và làm suy yếu uy tín của nhà Mạc.",
     figure: "Mạc Đăng Dung",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Mac_Dang_Dung.jpg/800px-Mac_Dang_Dung.jpg",
+    image: ImgHistory_Auto_61,
     figureDescription: "Năm 1527, Mạc Đăng Dung phế truất vua Lê, lập ra nhà Mạc. Cuộc xung đột giữa hai triều đại kéo dài nhiều thập kỷ, gây chia rẽ đất nước và làm suy yếu quốc lực",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -796,7 +881,7 @@ export const HISTORY_TIMELINE = [
     period: "1592",
     description: "Tướng Trịnh Tùng dẫn quân Lê chiếm lại Thăng Long, nhà Mạc phải chạy lên Cao Bằng. Từ đây nhà Mạc chỉ còn tồn tại như một chính quyền địa phương nhỏ ở vùng biên giới phía Bắc.",
     figure: "Trịnh Tùng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_62,
     figureDescription: "Quân Lê – Trịnh chiếm lại Thăng Long, nhà Mạc suy yếu nghiêm trọng và phải rút lên Cao Bằng tồn tại cầm chừng",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -808,7 +893,7 @@ export const HISTORY_TIMELINE = [
     period: "1677",
     description: "Quân Trịnh tấn công Cao Bằng, Mạc Kính Vũ bỏ chạy sang Trung Quốc. Nhà Mạc hoàn toàn chấm dứt sau 150 năm tồn tại. Vùng Cao Bằng được sáp nhập trở lại lãnh thổ Đại Việt.",
     figure: "Mạc Kính Vũ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_63,
     figureDescription: "Triều Mạc chấm dứt hoàn toàn sau hơn 150 năm tồn tại, kết thúc một giai đoạn chia cắt lịch sử.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -820,7 +905,7 @@ export const HISTORY_TIMELINE = [
     period: "1545",
     description: "Sau khi Nguyễn Kim – công thần phù Lê – bị ám sát, con rể Trịnh Kiểm nắm toàn bộ quyền lực quân sự. Đây là khởi đầu của chế độ chúa Trịnh – vua Lê tồn tại song song trong gần 250 năm.",
     figure: "Trịnh Kiểm",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_64,
     figureDescription: "Trịnh Kiểm trở thành người nắm thực quyền, mở đầu thế lực họ Trịnh, trong khi vua Lê chỉ còn vai trò danh nghĩa.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -832,7 +917,7 @@ export const HISTORY_TIMELINE = [
     period: "1711",
     description: "Chúa Nguyễn Phúc Chu hoàn thiện việc mở rộng lãnh thổ về phía Nam, sáp nhập vùng đồng bằng sông Cửu Long. Hình dạng đất nước Việt Nam hình chữ S cơ bản đã được xác lập từ thời điểm này.",
     figure: "Chúa Nguyễn Phúc Chu",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/800px-Vietnam_history_map.png",
+    image: ImgHistory_Auto_65,
     figureDescription: "Mở rộng lãnh thổ về phía Nam, xác lập cương vực Đại Việt gần hoàn chỉnh hình chữ S",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -846,7 +931,7 @@ export const HISTORY_TIMELINE = [
     period: "1771",
     description: "Ba anh em Nguyễn Nhạc, Nguyễn Huệ, Nguyễn Lữ phát động khởi nghĩa tại Tây Sơn (Bình Định), lấy của nhà giàu chia cho người nghèo. Cuộc khởi nghĩa nông dân lớn nhất lịch sử Việt Nam bùng phát.",
     figure: "Nguyễn Nhạc",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Tay_Son_rebellion.jpg/800px-Tay_Son_rebellion.jpg",
+    image: ImgHistory_Auto_66,
     figureDescription: "Người khởi xướng phong trào Tây Sơn, lãnh đạo nhân dân nổi dậy chống chúa Nguyễn",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Tay_Son_uprising.jpg/400px-Tay_Son_uprising.jpg"
   },
@@ -858,7 +943,7 @@ export const HISTORY_TIMELINE = [
     period: "1778 – 1802",
     description: "Nhà Tây Sơn thống nhất đất nước sau hơn hai thế kỷ phân tranh, đánh đuổi cả quân Xiêm lẫn quân Thanh. Vua Quang Trung – Nguyễn Huệ – là thiên tài quân sự kiệt xuất nhất lịch sử Việt Nam.",
     figure: "Nguyễn Huệ (Quang Trung)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_67,
     figureDescription: "Hoàng đế kiệt xuất, thiên tài quân sự; đại phá quân Xiêm và quân Thanh, bảo vệ độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -870,7 +955,7 @@ export const HISTORY_TIMELINE = [
     period: "1777",
     description: "Quân Tây Sơn đánh tan quân chúa Nguyễn, chấm dứt 170 năm chia cắt Đàng Trong – Đàng Ngoài. Nguyễn Ánh may mắn thoát thân, chạy sang Xiêm La cầu viện.",
     figure: "Nguyễn Huệ (Quang Trung)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_68,
     figureDescription: "Hoàng đế kiệt xuất, thiên tài quân sự; đại phá quân Xiêm và quân Thanh, bảo vệ độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -882,7 +967,7 @@ export const HISTORY_TIMELINE = [
     period: "1785",
     description: "Nguyễn Huệ chỉ huy tiêu diệt 5 vạn quân Xiêm La do Nguyễn Ánh cầu viện, trên sông Tiền Giang. Đây là trận thủy chiến vĩ đại nhất miền Nam – giữ vững non sông Đại Việt trước giặc ngoại xâm.",
     figure: "Nguyễn Huệ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_69,
     figureDescription: "Lãnh đạo quân Tây Sơn đánh tan 5 vạn quân Xiêm, bảo vệ vững chắc miền Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -894,7 +979,7 @@ export const HISTORY_TIMELINE = [
     period: "1786",
     description: "Nguyễn Huệ đem quân ra Bắc, chỉ trong một tháng tiêu diệt chính quyền chúa Trịnh 200 năm. Ông gặp công chúa Ngọc Hân và kết hôn – cuộc hôn nhân huyền thoại trong lịch sử Việt Nam.",
     figure: "Nguyễn Huệ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_70,
     figureDescription: "Lãnh đạo quân Tây Sơn đánh tan 5 vạn quân Xiêm, bảo vệ vững chắc miền Nam",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -906,7 +991,7 @@ export const HISTORY_TIMELINE = [
     period: "1789",
     description: "Nguyễn Huệ lên ngôi Quang Trung, thần tốc hành quân ra Bắc, chỉ trong 5 ngày đêm đại phá 29 vạn quân Thanh. Chiến thắng Đống Đa (mùng 5 Tết Kỷ Dậu) là kỳ tích quân sự lẫy lừng nhất lịch sử.",
     figure: "Nguyễn Huệ (Quang Trung)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_71,
     figureDescription: "Hoàng đế kiệt xuất, thiên tài quân sự; đại phá quân Xiêm và quân Thanh, bảo vệ độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -918,7 +1003,7 @@ export const HISTORY_TIMELINE = [
     period: "1792",
     description: "Quang Trung đột ngột mất khi chỉ mới 39 tuổi, đang ấp ủ nhiều cải cách lớn. Cái chết của ông là tổn thất không thể bù đắp. Tây Sơn nhanh chóng suy yếu và bị Nguyễn Ánh đánh bại.",
     figure: "Quang Trung",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Quang_Trung.jpg/800px-Quang_Trung.jpg",
+    image: ImgHistory_Auto_72,
     figureDescription: "Sự qua đời của ông khiến triều Tây Sơn nhanh chóng suy yếu.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Quang_Trung.jpg/400px-Quang_Trung.jpg"
   },
@@ -932,7 +1017,7 @@ export const HISTORY_TIMELINE = [
     period: "1802 – 1945",
     description: "Triều đại phong kiến cuối cùng của Việt Nam. Thống nhất đất nước rộng lớn nhất lịch sử nhưng chính sách bảo thủ khiến đất nước yếu đi trước sức mạnh của thực dân Pháp. Kết thúc với cách mạng tháng 8/1945.",
     figure: "Gia Long (Nguyễn Ánh)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gia_Long.jpg/800px-Gia_Long.jpg",
+    image: ImgHistory_Auto_73,
     figureDescription: "Người sáng lập triều Nguyễn, thống nhất đất nước năm 1802",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gia_Long.jpg/400px-Gia_Long.jpg"
   },
@@ -944,7 +1029,7 @@ export const HISTORY_TIMELINE = [
     period: "1802",
     description: "Nguyễn Ánh đánh bại hoàn toàn nhà Tây Sơn, lên ngôi Hoàng đế, lấy niên hiệu Gia Long. Lần đầu tiên trong lịch sử, toàn bộ lãnh thổ từ ải Nam Quan đến mũi Cà Mau nằm dưới một chính quyền thống nhất.",
     figure: "Gia Long (Nguyễn Ánh)",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gia_Long.jpg/800px-Gia_Long.jpg",
+    image: ImgHistory_Auto_74,
     figureDescription: "Người sáng lập triều Nguyễn, thống nhất đất nước năm 1802",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gia_Long.jpg/400px-Gia_Long.jpg"
   },
@@ -956,7 +1041,7 @@ export const HISTORY_TIMELINE = [
     period: "1804",
     description: "Gia Long đổi tên nước thành Việt Nam – tên gọi lần đầu tiên xuất hiện trong lịch sử chính thức. Ông xây dựng kinh đô Huế với Đại Nội nguy nga, tổ chức bộ máy nhà nước theo mô hình Trung Hoa.",
     figure: "Gia Long",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Hue_Imperial_City.jpg/800px-Hue_Imperial_City.jpg",
+    image: ImgHistory_Auto_75,
     figureDescription: "Chính thức đặt quốc hiệu Việt Nam.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gia_Long.jpg/400px-Gia_Long.jpg"
   },
@@ -968,7 +1053,7 @@ export const HISTORY_TIMELINE = [
     period: "1839",
     description: "Vua Minh Mạng đổi quốc hiệu thành Đại Nam, thể hiện tham vọng trở thành đại cường phương Nam. Ông cũng thi hành nhiều cải cách hành chính, thống nhất 6 bộ, mở rộng lãnh thổ sang Campuchia.",
     figure: "Minh Mạng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Hue_Imperial_City.jpg/800px-Hue_Imperial_City.jpg",
+    image: ImgHistory_Auto_76,
     figureDescription: "Khẳng định chủ quyền và lãnh thổ quốc gia",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Minh_Mang.jpg/400px-Minh_Mang.jpg"
   },
@@ -980,7 +1065,7 @@ export const HISTORY_TIMELINE = [
     period: "Khoảng 1850 trở đi",
     description: "Nguyễn Trường Tộ dâng 30 bản điều trần đề nghị cải cách đất nước theo hướng hiện đại hóa. Tiếc rằng triều đình bảo thủ không tiếp thu, bỏ lỡ cơ hội canh tân, khiến đất nước ngày càng yếu trước thực dân.",
     figure: "Nguyễn Trường Tộ",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Nguyen_Truong_To.jpg/800px-Nguyen_Truong_To.jpg",
+    image: ImgHistory_Auto_77,
     figureDescription: "Nhà tư tưởng cải cách lớn, đề xuất canh tân đất nước",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -992,7 +1077,7 @@ export const HISTORY_TIMELINE = [
     period: "01-9-1858",
     description: "Liên quân Pháp – Tây Ban Nha nổ súng vào Đà Nẵng, mở màn cuộc chiến tranh xâm lược Việt Nam. Nguyễn Tri Phương chỉ huy quân phòng thủ kiên cường nhưng bất lợi do vũ khí lạc hậu.",
     figure: "Nguyễn Tri Phương",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Da_Nang_1858.jpg/800px-Da_Nang_1858.jpg",
+    image: ImgHistory_Auto_78,
     figureDescription: "Danh tướng triều Nguyễn, chỉ huy kháng chiến chống Pháp.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -1006,7 +1091,7 @@ export const HISTORY_TIMELINE = [
     period: "1859 – 1862",
     description: "Pháp đánh chiếm Sài Gòn (1859), rồi buộc triều Nguyễn ký Hòa ước Nhâm Tuất 1862 – nhượng ba tỉnh miền Đông Nam Kỳ. Đây là bước đầu của quá trình thực dân hóa toàn bộ Đông Dương.",
     figure: "Nguyễn Tri Phương",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Saigon_1859.jpg/800px-Saigon_1859.jpg",
+    image: ImgHistory_Auto_79,
     figureDescription: "Danh tướng triều Nguyễn, chỉ huy kháng chiến chống Pháp.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -1018,7 +1103,7 @@ export const HISTORY_TIMELINE = [
     period: "1884 – 1945",
     description: "Pháp thiết lập ách thực dân trên toàn Đông Dương. Nhân dân Việt Nam bị bóc lột tàn bạo nhưng không ngừng đấu tranh. Nhiều phong trào yêu nước bùng phát – từ Cần Vương đến Việt Minh.",
     figure: "Hàm Nghi",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/French_Indochina_map.jpg/800px-French_Indochina_map.jpg",
+    image: ImgHistory_Auto_80,
     figureDescription: "Ban Chiếu Cần Vương, kêu gọi nhân dân chống Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Ham_Nghi.jpg/400px-Ham_Nghi.jpg"
   },
@@ -1030,7 +1115,7 @@ export const HISTORY_TIMELINE = [
     period: "1884",
     description: "Triều Nguyễn ký Hiệp ước Patenotre, chính thức thừa nhận quyền bảo hộ của Pháp trên toàn Việt Nam. Đất nước mất hoàn toàn độc lập, bị chia thành ba xứ Bắc Kỳ, Trung Kỳ, Nam Kỳ với chế độ cai trị khác nhau.",
     figure: "Phan Đình Bình",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/French_Indochina_map.jpg/800px-French_Indochina_map.jpg",
+    image: ImgHistory_Auto_81,
     figureDescription: "Phan Đình Bình là đại thần triều Nguyễn có liên quan trực tiếp đến việc ký Hiệp ước Patennotre với Pháp. Hiệp ước này đánh dấu việc triều đình Huế chính thức thừa nhận sự bảo hộ của Pháp trên toàn lãnh thổ Việt Nam. Sự kiện này khiến Việt Nam mất hoàn toàn chủ quyền quốc gia, nhà Nguyễn chỉ còn tồn tại trên danh nghĩa. Dù không phải người chủ trương bán nước, vai trò của ông phản ánh sự bất lực và suy yếu nghiêm trọng của triều đình trước sức ép của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -1042,7 +1127,7 @@ export const HISTORY_TIMELINE = [
     period: "1885",
     description: "Vua Hàm Nghi xuất bôn, ra chiếu Cần Vương kêu gọi nhân dân giúp vua đánh Pháp. Phong trào lan rộng khắp Trung Kỳ và Bắc Kỳ, tập hợp nhiều sĩ phu yêu nước như Phan Đình Phùng, Đinh Công Tráng.",
     figure: "Tôn Thất Thuyết",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Ham_Nghi.jpg/800px-Ham_Nghi.jpg",
+    image: ImgHistory_Auto_82,
     figureDescription: "Tôn Thất Thuyết là đại thần chủ chiến trong triều Nguyễn, người phất cờ kháng Pháp nhân danh vua Hàm Nghi. Sau khi đưa vua rời kinh thành Huế, ông ban Chiếu Cần Vương, kêu gọi toàn dân đứng lên giúp vua đánh giặc. Phong trào lan rộng khắp cả nước, quy tụ nhiều sĩ phu, văn thân và nông dân tham gia. Dù thất bại do thiếu tổ chức và vũ khí, phong trào Cần Vương đã thể hiện tinh thần yêu nước mạnh mẽ của dân tộc trong buổi đầu mất nước",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vietnam_history_map.png/400px-Vietnam_history_map.png"
   },
@@ -1054,7 +1139,7 @@ export const HISTORY_TIMELINE = [
     period: "1887",
     description: "Pháp thành lập Liên bang Đông Dương gồm Việt Nam, Campuchia và (sau đó) Lào dưới quyền toàn quyền Pháp. Đây là cơ cấu hành chính thuộc địa tồn tại đến năm 1945.",
     figure: "Phan Bội Châu",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/French_Indochina_map.jpg/800px-French_Indochina_map.jpg",
+    image: ImgHistory_Auto_83,
     figureDescription: "Sự ra đời của Liên bang Đông Dương đã thúc đẩy các phong trào yêu nước phát triển mạnh hơn. Phan Bội Châu là nhà cách mạng tiêu biểu trong bối cảnh này. Ông nhận thức rõ bản chất áp bức của chế độ thuộc địa và tìm con đường cứu nước mới thông qua các hoạt động cách mạng ở trong và ngoài nước. Các hoạt động của ông góp phần duy trì tinh thần đấu tranh dân tộc trong thời kì Pháp đô hộ sâu sắc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Phan_Boi_Chau.jpg/400px-Phan_Boi_Chau.jpg"
   },
@@ -1066,7 +1151,7 @@ export const HISTORY_TIMELINE = [
     period: "1930 – 1931",
     description: "Dưới sự lãnh đạo của Đảng Cộng sản Đông Dương vừa thành lập, nông dân Nghệ An và Hà Tĩnh nổi dậy, lập chính quyền Xô viết. Đây là cuộc tổng diễn tập đầu tiên cho Cách mạng tháng Tám sau này.",
     figure: "Nguyễn Ái Quốc",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg",
+    image: ImgHistory_Auto_84,
     figureDescription: "Nguyễn Ái Quốc là người truyền bá chủ nghĩa Mác Lênin vào Việt Nam, đặt nền tảng tư tưởng cho phong trào cách mạng công nhân và nông dân. Dưới ảnh hưởng của tư tưởng cách mạng vô sản, phong trào Xô Viết Nghệ Tĩnh bùng nổ mạnh mẽ, lần đầu tiên hình thành chính quyền cách mạng của công nông ở một số địa phương. Phong trào tuy bị đàn áp nhưng chứng minh khả năng lãnh đạo của giai cấp công nhân và vai trò tiên phong của Đảng",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ho_Chi_Minh_1946.jpg/400px-Ho_Chi_Minh_1946.jpg"
   },
@@ -1078,7 +1163,7 @@ export const HISTORY_TIMELINE = [
     period: "Tháng 8 năm 1945",
     description: "Đảng Cộng sản lãnh đạo toàn dân tổng khởi nghĩa. Trong chưa đầy hai tuần, chính quyền cả nước về tay nhân dân. Ngày 2/9/1945, Hồ Chí Minh đọc Tuyên ngôn độc lập tại Quảng trường Ba Đình, khai sinh nước Việt Nam Dân chủ Cộng hòa.",
     figure: "Hồ Chí Minh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg",
+    image: ImgHistory_Auto_85,
     figureDescription: "Hồ Chí Minh là lãnh tụ tối cao của cách mạng Việt Nam, người trực tiếp lãnh đạo toàn dân đứng lên giành chính quyền trong Cách mạng Tháng Tám. Ông đã vận dụng linh hoạt thời cơ lịch sử khi phát xít Nhật đầu hàng, phát động tổng khởi nghĩa trên toàn quốc. Thắng lợi của cách mạng đã chấm dứt hơn 80 năm đô hộ của thực dân Pháp và chế độ phong kiến, mở ra kỷ nguyên độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ho_Chi_Minh_1946.jpg/400px-Ho_Chi_Minh_1946.jpg"
   },
@@ -1090,7 +1175,7 @@ export const HISTORY_TIMELINE = [
     period: "1945 – 1954",
     description: "Pháp quay lại tái chiếm Đông Dương. Dưới sự lãnh đạo của Hồ Chí Minh và Võ Nguyên Giáp, nhân dân Việt Nam tiến hành kháng chiến toàn dân, toàn diện, trường kỳ. Kết thúc bằng chiến thắng Điện Biên Phủ vang dội.",
     figure: "Hồ Chí Minh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg",
+    image: ImgHistory_Auto_86,
     figureDescription: "Hồ Chí Minh là lãnh tụ tối cao của cách mạng Việt Nam, người trực tiếp lãnh đạo toàn dân đứng lên giành chính quyền trong Cách mạng Tháng Tám. Ông đã vận dụng linh hoạt thời cơ lịch sử khi phát xít Nhật đầu hàng, phát động tổng khởi nghĩa trên toàn quốc. Thắng lợi của cách mạng đã chấm dứt hơn 80 năm đô hộ của thực dân Pháp và chế độ phong kiến, mở ra kỷ nguyên độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ho_Chi_Minh_1946.jpg/400px-Ho_Chi_Minh_1946.jpg"
   },
@@ -1102,7 +1187,7 @@ export const HISTORY_TIMELINE = [
     period: "1945",
     description: "OSS (tiền thân CIA) hợp tác với Việt Minh chống Nhật ở Đông Dương. Mỹ cung cấp vũ khí, huấn luyện cho bộ đội Việt Minh. Đây là giai đoạn ngắn ngủi mà Mỹ và Việt Nam đứng cùng chiến tuyến.",
     figure: "Hồ Chí Minh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg",
+    image: ImgHistory_Auto_87,
     figureDescription: "Hồ Chí Minh là lãnh tụ tối cao của cách mạng Việt Nam, người trực tiếp lãnh đạo toàn dân đứng lên giành chính quyền trong Cách mạng Tháng Tám. Ông đã vận dụng linh hoạt thời cơ lịch sử khi phát xít Nhật đầu hàng, phát động tổng khởi nghĩa trên toàn quốc. Thắng lợi của cách mạng đã chấm dứt hơn 80 năm đô hộ của thực dân Pháp và chế độ phong kiến, mở ra kỷ nguyên độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ho_Chi_Minh_1946.jpg/400px-Ho_Chi_Minh_1946.jpg"
   },
@@ -1114,7 +1199,7 @@ export const HISTORY_TIMELINE = [
     period: "Tháng 10 – 12 năm 1947",
     description: "Pháp tổ chức cuộc hành quân quy mô lớn nhằm tiêu diệt cơ quan đầu não kháng chiến Việt Minh ở Việt Bắc. Võ Nguyên Giáp chỉ huy phản công xuất sắc, phá tan âm mưu 'đánh nhanh thắng nhanh' của Pháp.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Vo_Nguyen_Giap.jpg/800px-Vo_Nguyen_Giap.jpg",
+    image: ImgHistory_Auto_88,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1126,7 +1211,7 @@ export const HISTORY_TIMELINE = [
     period: "Tháng 9 – 10 năm 1950",
     description: "Quân đội Việt Nam tiến công tiêu diệt hàng loạt cứ điểm Pháp dọc biên giới Việt-Trung, giải phóng một vùng rộng lớn. Pháp mất thế chủ động chiến lược, quân ta giành quyền kiểm soát vùng biên giới.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Vo_Nguyen_Giap.jpg/800px-Vo_Nguyen_Giap.jpg",
+    image: ImgHistory_Auto_89,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1138,7 +1223,7 @@ export const HISTORY_TIMELINE = [
     period: "Tháng 10 – 12 năm 1952",
     description: "Quân đội ta tiến công giải phóng vùng Tây Bắc rộng lớn, buộc Pháp tập trung phòng thủ. Chiến dịch mở đường cho quân ta kiểm soát miền núi phía Bắc, tạo thế bao vây Điện Biên Phủ.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Vo_Nguyen_Giap.jpg/800px-Vo_Nguyen_Giap.jpg",
+    image: ImgHistory_Auto_90,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1150,7 +1235,7 @@ export const HISTORY_TIMELINE = [
     period: "13-3 – 7-5-1954",
     description: "56 ngày đêm chiến đấu anh dũng – quân ta 'kéo pháo vào, kéo pháo ra', đào hầm bao vây toàn bộ tập đoàn cứ điểm Điện Biên Phủ. Ngày 7/5/1954, toàn bộ quân Pháp đầu hàng. Chấm dứt thực dân Pháp ở Đông Dương.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Dien_Bien_Phu_battle.jpg/800px-Dien_Bien_Phu_battle.jpg",
+    image: ImgHistory_Auto_91,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1164,7 +1249,7 @@ export const HISTORY_TIMELINE = [
     period: "1954 – 1975",
     description: "Sau Hiệp định Geneva, Việt Nam bị chia đôi. Mỹ dựng lên chính quyền Sài Gòn, leo thang quân sự. Nhân dân miền Nam kiên cường chiến đấu được miền Bắc chi viện, cuối cùng thống nhất đất nước năm 1975.",
     figure: "Nguyễn Chí Thanh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/800px-Vietnam_War_collage.jpg",
+    image: ImgHistory_Auto_92,
     figureDescription: "Nguyễn Chí Thanh là Ủy viên Bộ Chính trị, người trực tiếp chỉ đạo chiến trường miền Nam. Chiến thắng Ấp Bắc chứng minh quân giải phóng có thể đánh bại chiến thuật trực thăng vận và thiết xa vận của Mỹ, tạo niềm tin lớn cho phong trào đấu tranh vũ trang.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/400px-Vietnam_War_collage.jpg"
   },
@@ -1176,7 +1261,7 @@ export const HISTORY_TIMELINE = [
     period: "1963",
     description: "Trận Ấp Bắc (Mỹ Tho) – lần đầu tiên quân giải phóng đánh bại quân lực Sài Gòn có cố vấn và trực thăng Mỹ yểm trợ. Chiến thắng chứng minh quân ta hoàn toàn có thể đánh thắng chiến thuật 'Chiến tranh đặc biệt'.",
     figure: "Nguyễn Văn Linh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/800px-Vietnam_War_collage.jpg",
+    image: ImgHistory_Auto_93,
     figureDescription: "Nguyễn Văn Linh là một trong những cán bộ lãnh đạo tiêu biểu của cách mạng miền Nam trong những năm đầu kháng chiến chống Mỹ. Trong giai đoạn diễn ra Chiến thắng Ấp Bắc (1963), ông giữ vai trò quan trọng trong việc chỉ đạo chiến lược, động viên lực lượng vũ trang và nhân dân miền Nam đẩy mạnh đấu tranh vũ trang chống chiến lược “Chiến tranh đặc biệt” của Mỹ. Dù không trực tiếp chỉ huy trận đánh, Nguyễn Văn Linh là biểu tượng cho vai trò lãnh đạo chính trị, góp phần tạo điều kiện để quân giải phóng giành thắng lợi vang dội tại Ấp Bắc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/400px-Vietnam_War_collage.jpg"
   },
@@ -1188,7 +1273,7 @@ export const HISTORY_TIMELINE = [
     period: "2-12-1964 – 3-1-1965",
     description: "Quân giải phóng đánh tan nhiều đơn vị chủ lực Sài Gòn tại Bình Giã (Bà Rịa), mở đầu giai đoạn đánh phủ đầu trước khi Mỹ ồ ạt đưa quân vào. Chiến thắng khẳng định thế chủ động chiến trường.",
     figure: "Nguyễn Chí Thanh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/800px-Vietnam_War_collage.jpg",
+    image: ImgHistory_Auto_94,
     figureDescription: "Nguyễn Chí Thanh là Ủy viên Bộ Chính trị, người trực tiếp chỉ đạo chiến trường miền Nam. Chiến thắng Ấp Bắc chứng minh quân giải phóng có thể đánh bại chiến thuật trực thăng vận và thiết xa vận của Mỹ, tạo niềm tin lớn cho phong trào đấu tranh vũ trang.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/400px-Vietnam_War_collage.jpg"
   },
@@ -1200,7 +1285,7 @@ export const HISTORY_TIMELINE = [
     period: "22-2 – 15-5-1967",
     description: "Mỹ huy động lực lượng lớn nhất từ trước đến nay – 45.000 quân – càn quét chiến khu C. Quân giải phóng kiên cường chiến đấu, giữ vững căn cứ địa, Junction City thất bại hoàn toàn về mặt chiến lược.",
     figure: "Văn Tiến Dũng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/800px-Vietnam_War_collage.jpg",
+    image: ImgHistory_Auto_95,
     figureDescription: "Văn Tiến Dũng là Đại tướng, trực tiếp chỉ đạo các lực lượng đánh bại cuộc hành quân lớn nhất của Mỹ ở miền Nam. Chiến thắng này làm suy yếu nghiêm trọng lực lượng Mỹ, chứng minh chiến tranh nhân dân có thể đánh bại chiến tranh hiện đại.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/400px-Vietnam_War_collage.jpg"
   },
@@ -1212,7 +1297,7 @@ export const HISTORY_TIMELINE = [
     period: "21-1 – 7-1968",
     description: "Quân ta bao vây căn cứ Khe Sanh trong nhiều tháng, kéo 50.000 quân Mỹ vào bẫy trong khi lực lượng chủ yếu chuẩn bị Tổng tiến công Tết Mậu Thân. Trận đánh nghi binh xuất sắc nhất chiến tranh.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/800px-Vietnam_War_collage.jpg",
+    image: ImgHistory_Auto_96,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1224,7 +1309,7 @@ export const HISTORY_TIMELINE = [
     period: "18 – 29-12-1972",
     description: "Nixon ra lệnh rải thảm bom B-52 vào Hà Nội và Hải Phòng trong 12 ngày đêm nhằm khuất phục Việt Nam. Quân dân ta bắn rơi 81 máy bay Mỹ trong đó có 34 B-52 – pháo đài bay bất khả xâm phạm. Mỹ phải ký Hiệp định Paris.",
     figure: "Võ Nguyên Giáp",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/B-52_Vietnam.jpg/800px-B-52_Vietnam.jpg",
+    image: ImgHistory_Auto_97,
     figureDescription: "Võ Nguyên Giáp là Tổng chỉ huy Quân đội Nhân dân Việt Nam, trực tiếp chỉ đạo chiến dịch Việt Bắc. Ông tổ chức thế trận chiến tranh nhân dân, đánh bại âm mưu tiêu diệt cơ quan đầu não kháng chiến của Pháp. Chiến thắng Việt Bắc đã làm phá sản chiến lược đánh nhanh thắng nhanh của thực dân Pháp",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vo_Nguyen_Giap.jpg/400px-Vo_Nguyen_Giap.jpg"
   },
@@ -1236,7 +1321,7 @@ export const HISTORY_TIMELINE = [
     period: "1975",
     description: "Chiến dịch Tây Nguyên (tháng 3), chiến dịch Huế-Đà Nẵng (tháng 3-4) mở đường cho đại thắng. Quân đội Sài Gòn tan vỡ nhanh chóng hơn mọi dự tính. Toàn miền Nam được giải phóng trong vòng 55 ngày.",
     figure: "Văn Tiến Dũng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ho_Chi_Minh_Campaign.jpg/800px-Ho_Chi_Minh_Campaign.jpg",
+    image: ImgHistory_Auto_98,
     figureDescription: "Văn Tiến Dũng là Đại tướng, trực tiếp chỉ đạo các lực lượng đánh bại cuộc hành quân lớn nhất của Mỹ ở miền Nam. Chiến thắng này làm suy yếu nghiêm trọng lực lượng Mỹ, chứng minh chiến tranh nhân dân có thể đánh bại chiến tranh hiện đại.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Vietnam_War_collage.jpg/400px-Vietnam_War_collage.jpg"
   },
@@ -1250,7 +1335,7 @@ export const HISTORY_TIMELINE = [
     period: "1975 – nay",
     description: "Sau 30 năm kháng chiến, Việt Nam thống nhất và bước vào kỷ nguyên xây dựng đất nước. Từ một nước nghèo sau chiến tranh, Việt Nam vươn lên thành nền kinh tế năng động trong khu vực Đông Nam Á.",
     figure: "Lê Duẩn",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/800px-Vietnam_reunification.jpg",
+    image: ImgHistory_Auto_99,
     figureDescription: "Lê Duẩn là nhà lãnh đạo tiêu biểu gắn liền với sự nghiệp giải phóng miền Nam, thống nhất đất nước năm 1975 và những năm đầu xây dựng Việt Nam sau chiến tranh. Ông giữ vai trò chỉ đạo chiến lược trong cuộc kháng chiến chống Mỹ, đặc biệt là đường lối đấu tranh giải phóng miền Nam bằng sức mạnh tổng hợp của toàn dân tộc. Sau khi đất nước thống nhất, Lê Duẩn tiếp tục lãnh đạo công cuộc khôi phục kinh tế, hàn gắn vết thương chiến tranh và xây dựng Nhà nước Việt Nam thống nhất, đặt nền móng cho Việt Nam bước vào thời kỳ hiện đại",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/400px-Vietnam_reunification.jpg"
   },
@@ -1262,7 +1347,7 @@ export const HISTORY_TIMELINE = [
     period: "30-4-1975",
     description: "Chiến dịch Hồ Chí Minh lịch sử kết thúc bằng xe tăng quân giải phóng húc đổ cổng Dinh Độc Lập lúc 11h30. Non sông liền một dải sau 21 năm chia cắt. Đây là ngày lịch sử chấn động toàn thế giới.",
     figure: "Hồ Chí Minh",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ho_Chi_Minh_Campaign.jpg/800px-Ho_Chi_Minh_Campaign.jpg",
+    image: ImgHistory_Auto_100,
     figureDescription: "Hồ Chí Minh là lãnh tụ tối cao của cách mạng Việt Nam, người trực tiếp lãnh đạo toàn dân đứng lên giành chính quyền trong Cách mạng Tháng Tám. Ông đã vận dụng linh hoạt thời cơ lịch sử khi phát xít Nhật đầu hàng, phát động tổng khởi nghĩa trên toàn quốc. Thắng lợi của cách mạng đã chấm dứt hơn 80 năm đô hộ của thực dân Pháp và chế độ phong kiến, mở ra kỷ nguyên độc lập dân tộc",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Ho_Chi_Minh_1946.jpg/400px-Ho_Chi_Minh_1946.jpg"
   },
@@ -1274,7 +1359,7 @@ export const HISTORY_TIMELINE = [
     period: "2-7-1976",
     description: "Quốc hội thống nhất họp phiên đầu tiên, thống nhất hai miền về mặt nhà nước. Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam chính thức ra đời, thủ đô Hà Nội, Sài Gòn đổi tên thành TP. Hồ Chí Minh.",
     figure: "Tôn Đức Thắng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/800px-Vietnam_reunification.jpg",
+    image: ImgHistory_Auto_101,
     figureDescription: "Tôn Đức Thắng là Chủ tịch nước đầu tiên của nước Việt Nam thống nhất, đại diện cho tinh thần đoàn kết dân tộc sau chiến tranh",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/400px-Vietnam_reunification.jpg"
   },
@@ -1286,7 +1371,7 @@ export const HISTORY_TIMELINE = [
     period: "20-9-1977",
     description: "Việt Nam chính thức trở thành thành viên thứ 149 của Liên Hợp Quốc. Đây là bước quan trọng khẳng định vị thế quốc tế của Việt Nam sau thống nhất, mở ra quan hệ ngoại giao rộng rãi.",
     figure: "Phạm Văn Đồng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/United_Nations_HQ.jpg/800px-United_Nations_HQ.jpg",
+    image: ImgHistory_Auto_102,
     figureDescription: "Phạm Văn Đồng là Thủ tướng Chính phủ, người góp phần mở rộng quan hệ đối ngoại, đưa Việt Nam hội nhập với cộng đồng quốc tế.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/United_Nations_HQ.jpg/400px-United_Nations_HQ.jpg"
   },
@@ -1298,7 +1383,7 @@ export const HISTORY_TIMELINE = [
     period: "17-2-1979 – 16-3-1979",
     description: "Trung Quốc đưa 60 vạn quân xâm lược 6 tỉnh biên giới phía Bắc. Quân và dân ta chiến đấu kiên cường tại các tỉnh Lạng Sơn, Cao Bằng, Lào Cai. Sau 28 ngày quân Trung Quốc phải rút về nhưng thiệt hại lớn cả hai phía.",
     figure: "Lê Duẩn",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Sino_Vietnamese_War.jpg/800px-Sino_Vietnamese_War.jpg",
+    image: ImgHistory_Auto_103,
     figureDescription: "Lê Duẩn là nhà lãnh đạo tiêu biểu gắn liền với sự nghiệp giải phóng miền Nam, thống nhất đất nước năm 1975 và những năm đầu xây dựng Việt Nam sau chiến tranh. Ông giữ vai trò chỉ đạo chiến lược trong cuộc kháng chiến chống Mỹ, đặc biệt là đường lối đấu tranh giải phóng miền Nam bằng sức mạnh tổng hợp của toàn dân tộc. Sau khi đất nước thống nhất, Lê Duẩn tiếp tục lãnh đạo công cuộc khôi phục kinh tế, hàn gắn vết thương chiến tranh và xây dựng Nhà nước Việt Nam thống nhất, đặt nền móng cho Việt Nam bước vào thời kỳ hiện đại",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/400px-Vietnam_reunification.jpg"
   },
@@ -1310,7 +1395,7 @@ export const HISTORY_TIMELINE = [
     period: "1986",
     description: "Đại hội VI của Đảng phát động chính sách Đổi mới – chuyển từ kinh tế kế hoạch tập trung sang kinh tế thị trường định hướng XHCN. Đây là bước ngoặt lịch sử đưa Việt Nam thoát nghèo và hội nhập thế giới.",
     figure: "Tôn Đức Thắng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Vietnam_doi_moi.jpg/800px-Vietnam_doi_moi.jpg",
+    image: ImgHistory_Auto_104,
     figureDescription: "Tôn Đức Thắng là Chủ tịch nước đầu tiên của nước Việt Nam thống nhất, đại diện cho tinh thần đoàn kết dân tộc sau chiến tranh",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/400px-Vietnam_reunification.jpg"
   },
@@ -1322,7 +1407,7 @@ export const HISTORY_TIMELINE = [
     period: "Tháng 7-1995",
     description: "Tháng 7/1995 là tháng lịch sử kép: Việt Nam gia nhập ASEAN (28/7) và bình thường hóa quan hệ ngoại giao với Hoa Kỳ (11/7). Việt Nam chính thức hội nhập toàn diện vào cộng đồng quốc tế.",
     figure: "Võ Văn Kiệt",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/ASEAN_map.png/800px-ASEAN_map.png",
+    image: ImgHistory_Auto_105,
     figureDescription: "Võ Văn Kiệt là Thủ tướng, người thúc đẩy mạnh mẽ hội nhập khu vực và quốc tế, mở ra thời kì phát triển mới.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/ASEAN_map.png/400px-ASEAN_map.png"
   },
@@ -1334,7 +1419,7 @@ export const HISTORY_TIMELINE = [
     period: "11-1-2007",
     description: "Sau 11 năm đàm phán, Việt Nam chính thức là thành viên thứ 150 của Tổ chức Thương mại Thế giới. Cánh cửa hội nhập kinh tế toàn cầu mở ra, Việt Nam trở thành điểm đến hấp dẫn của đầu tư nước ngoài.",
     figure: "Nguyễn Tấn Dũng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/WTO_building.jpg/800px-WTO_building.jpg",
+    image: ImgHistory_Auto_106,
     figureDescription: "Nguyễn Tấn Dũng là Thủ tướng Chính phủ, lãnh đạo quá trình hội nhập kinh tế toàn cầu, mở rộng thị trường và thu hút đầu tư.",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/WTO_building.jpg/400px-WTO_building.jpg"
   },
@@ -1346,7 +1431,7 @@ export const HISTORY_TIMELINE = [
     period: "28-11-2013, hiệu lực 1-1-2014",
     description: "Quốc hội thông qua Hiến pháp năm 2013 – bản hiến pháp hiện hành, ghi nhận đầy đủ quyền con người, quyền công dân theo các chuẩn mực quốc tế. Đây là nền tảng pháp lý cho sự phát triển của Việt Nam trong kỷ nguyên mới.",
     figure: "Nguyễn Phú Trọng",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/800px-Vietnam_reunification.jpg",
+    image: ImgHistory_Auto_107,
     figureDescription: "Nguyễn Phú Trọng là Tổng Bí thư, Chủ tịch Quốc hội thời điểm ban hành Hiến pháp 2013, góp phần hoàn thiện thể chế chính trị và pháp luật của Nhà nước Việt Nam hiện đại",
     figureImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vietnam_reunification.jpg/400px-Vietnam_reunification.jpg"
   }
