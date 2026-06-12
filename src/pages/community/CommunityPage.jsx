@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
+import CreatePostModal from "@/components/user/community/CreatePostModal";
 
 import {
   COMMUNITY_ASSETS,
@@ -11,6 +12,7 @@ import {
   COMMUNITY_LOCATIONS,
   COMMUNITY_USERS,
 } from "@/constants/community";
+import { getPosts } from "@/api/postApi";
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -42,6 +44,15 @@ function parseDateInput(value, endOfDay = false) {
   );
 }
 
+function getInitials(name) {
+  const cleaned = String(name || "").trim();
+  if (!cleaned) return "?";
+  const parts = cleaned.split(/\s+/g).filter(Boolean);
+  const first = parts[0]?.[0] || "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
+}
+
 export default function CommunityPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
@@ -51,6 +62,13 @@ export default function CommunityPage() {
   const [dateTo, setDateTo] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
+  const [dbPosts, setDbPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [feedTab, setFeedTab] = useState("all");
 
   const pageScrollRef = useRef(null);
   const lastScrollTopRef = useRef(0);
@@ -58,9 +76,43 @@ export default function CommunityPage() {
   const scrollTickingRef = useRef(false);
   const lockUntilRef = useRef(0);
 
+  // Check login state on mount / update
   useEffect(() => {
-    headerCollapsedRef.current = headerCollapsed;
-  }, [headerCollapsed]);
+    const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+    setIsLogin(localStorage.getItem("isLogin") === "true" || !!token);
+
+    const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
+    if (userRaw) {
+      try {
+        setCurrentUser(JSON.parse(userRaw));
+      } catch {
+        setCurrentUser(null);
+      }
+    } else {
+      setCurrentUser(null);
+    }
+  }, [createModalOpen]); // check again if modal changes (in case of login state updates)
+
+  const loadPosts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getPosts();
+      setDbPosts(data);
+    } catch (err) {
+      console.error("Lỗi khi load posts:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handlePostCreated = useCallback(() => {
+    loadPosts();
+    setFeedTab("mine");
+  }, [loadPosts]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   const usersById = useMemo(() => {
     const map = new Map();
@@ -113,50 +165,42 @@ export default function CommunityPage() {
     const locationFilterId = locationId === "all" ? null : Number(locationId);
 
     /** @type {any[]} */
-    const enriched = COMMUNITY_POSTS.map((post) => {
-      const author = usersById.get(post.user_id) || { id: post.user_id, name: "(Ẩn danh)" };
-      const location = post.location_id
-        ? locationsById.get(post.location_id) || null
-        : null;
-      const assets = (assetsByPostId.get(post.id) || [])
-        .slice()
-        .sort((a, b) => (b.is_primary || 0) - (a.is_primary || 0));
-
-      const rawComments = (commentsByPostId.get(post.id) || [])
-        .slice()
-        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-      const comments = rawComments.map((comment) => {
-        const commentAuthor = usersById.get(comment.user_id) || {
-          id: comment.user_id,
-          name: "(Ẩn danh)",
-        };
-
-        return {
-          id: comment.id,
-          content: comment.content,
-          created_at: comment.created_at,
-          createdAtLabel: formatDateTime(comment.created_at),
-          author: commentAuthor,
-        };
-      });
-
-      const likeCount = likesCountByPostId.get(post.id) || 0;
+    const enriched = dbPosts.map((p) => {
+      // Map 'accepted' to 'published' for FE status badge support
+      const statusMapped = p.status === 'accepted' ? 'published' : p.status;
+      
+      const createdAtLabel = p.created_at ? formatDateTime(p.created_at) : "";
 
       return {
-        id: post.id,
-        title: post.title,
-        content: post.content,
-        status: post.status,
-        category: post.category,
-        location,
-        created_at: post.created_at,
-        createdAtLabel: formatDateTime(post.created_at),
-        author,
-        assets,
-        comments,
-        commentCount: comments.length,
-        likeCount,
+        id: p.id,
+        user_id: p.user_id,
+        title: p.title,
+        content: p.content,
+        status: statusMapped,
+        category: p.location?.place?.category?.name || p.location?.place?.category || null,
+        location: p.location ? {
+          id: p.location.id,
+          name: p.location.place?.name || p.location.address || ""
+        } : null,
+        created_at: p.created_at,
+        createdAtLabel,
+        author: {
+          name: p.user?.username || "(Ẩn danh)",
+          avatar: p.user?.avatar || ""
+        },
+        assets: p.assets || [],
+        comments: (p.comments || []).map(c => ({
+          id: c.id,
+          parent_id: c.parent_id,
+          content: c.content,
+          createdAtLabel: c.createdAtLabel || (c.created_at ? formatDateTime(c.created_at) : ""),
+          author: {
+            name: c.user?.username || "(Ẩn danh)",
+            avatar: c.user?.avatar || ""
+          }
+        })),
+        likeCount: p.likeCount || 0,
+        likedYN: p.likedYN || 'N',
       };
     });
 
@@ -186,7 +230,16 @@ export default function CommunityPage() {
       return true;
     });
 
-    const sorted = [...filteredByMeta].sort((a, b) => {
+    const filteredByTab = filteredByMeta.filter((post) => {
+      if (feedTab === "mine") {
+        return Number(post.user_id) === Number(currentUser?.id);
+      } else {
+        // Tab tất cả bài viết chỉ hiện bài đã duyệt (accepted/published)
+        return post.status === "published" || post.status === "accepted";
+      }
+    });
+
+    const sorted = [...filteredByTab].sort((a, b) => {
       const ta = new Date(a.created_at).getTime();
       const tb = new Date(b.created_at).getTime();
       if (Number.isNaN(ta) || Number.isNaN(tb)) return 0;
@@ -195,26 +248,25 @@ export default function CommunityPage() {
 
     return sorted;
   }, [
-    assetsByPostId,
     category,
-    commentsByPostId,
     dateFrom,
     dateTo,
-    likesCountByPostId,
+    dbPosts,
     locationId,
-    locationsById,
     search,
     sort,
-    usersById,
+    feedTab,
+    currentUser,
   ]);
 
   const categoryOptions = useMemo(() => {
     const set = new Set();
-    for (const post of COMMUNITY_POSTS) {
-      if (post.category) set.add(post.category);
+    for (const post of dbPosts) {
+      const cat = post.location?.place?.category?.name || post.location?.place?.category;
+      if (cat) set.add(cat);
     }
     return Array.from(set).sort((a, b) => a.localeCompare(b, "vi"));
-  }, []);
+  }, [dbPosts]);
 
   useEffect(() => {
     const el = pageScrollRef.current;
@@ -417,10 +469,58 @@ export default function CommunityPage() {
             </div>
 
             <div className="mx-auto w-full max-w-3xl space-y-4 pb-8">
-              {postFeed.length ? (
+              {isLogin && (
+                <div className="space-y-4">
+                  {/* Trigger box */}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex items-center gap-3">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold">
+                      {getInitials(currentUser?.username || "Me")}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCreateModalOpen(true)}
+                      className="flex-1 rounded-full bg-slate-50 border border-slate-100 hover:bg-slate-100/80 px-4 py-2.5 text-left text-sm text-slate-500 transition-colors cursor-pointer"
+                    >
+                      Bạn đang nghĩ gì thế? Chia sẻ trải nghiệm văn hóa của bạn...
+                    </button>
+                  </div>
+
+                  {/* Tabs Switcher */}
+                  <div className="flex border-b border-slate-200 pb-1 gap-6">
+                    <button
+                      type="button"
+                      onClick={() => setFeedTab("all")}
+                      className={`pb-2.5 text-sm font-semibold transition-colors cursor-pointer border-b-2 relative ${
+                        feedTab === "all"
+                          ? "border-amber-500 text-amber-600"
+                          : "border-transparent text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      Tất cả bài viết
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFeedTab("mine")}
+                      className={`pb-2.5 text-sm font-semibold transition-colors cursor-pointer border-b-2 relative ${
+                        feedTab === "mine"
+                          ? "border-amber-500 text-amber-600"
+                          : "border-transparent text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      Bài viết của tôi
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {loading ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+                </div>
+              ) : postFeed.length ? (
                 postFeed.map((post) => (
                   <div key={post.id}>
-                    <CommunityPostCard post={post} />
+                    <CommunityPostCard post={post} showStatus={feedTab === "mine"} />
                   </div>
                 ))
               ) : (
@@ -451,6 +551,13 @@ export default function CommunityPage() {
             </div>
           </div>
         ) : null}
+
+        {createModalOpen && (
+          <CreatePostModal
+            onClose={() => setCreateModalOpen(false)}
+            onPostCreated={handlePostCreated}
+          />
+        )}
       </div>
     </div>
   );

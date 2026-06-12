@@ -6,6 +6,7 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardSectionPage from "@/pages/dashboard/DashboardSectionPage";
 import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
+import PostsManagementPage from "@/pages/dashboard/PostsManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
 import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
@@ -157,7 +158,7 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_COMMUNITY_POSTS,
-        element: dashPage("Quản lý bài viết", "Bài viết từ cộng đồng"),
+        element: <PostsManagementPage />,
         title: "Quản lý bài viết",
       },
       {
