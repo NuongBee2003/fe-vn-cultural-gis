@@ -384,9 +384,8 @@ export const HOLIDAYS = [
             "Hòa mình vào tiếng trống chiêng rộn rã của đoàn múa lân sư rồng cầu may."
           ],
           destinations: [
-            { name: "Đình thần Phú Long - Lái Thiêu (Bình Dương)", reason: "Ngôi đình cổ kính linh thiêng, một trong những trung tâm tổ chức lễ Kỳ Yên quy mô lớn thu hút đông đảo người dân Bình Dương." },
-            { name: "Đình Thông Tây Hội (TP.HCM)", reason: "Ngôi đình cổ xưa nhất vùng đất Gia Định nằm tại Gò Vấp, nơi diễn ra lễ tế Kỳ Yên trang trọng truyền thống." },
-            { name: "Đình Bình Đông (Quận 8, TP.HCM)", reason: "Ngôi đình độc đáo nằm biệt lập trên cồn sông, điểm hành hương cúng bái thanh bình dịp lễ Kỳ Yên." }
+            { name: "Đình Trường Thọ - 32 Đ. Số 2, Thủ Đức, Hồ Chí Minh", reason: "Ngôi đình cổ kính linh thiêng, một trong những trung tâm tổ chức lễ Kỳ Yên quy mô lớn thu hút đông đảo người dân." },
+            
           ],
           foods: [
             { name: "Thịt heo quay cúng đình kèm bánh hỏi", reason: "Món dâng cúng đình thần giòn bì thơm lừng chia lộc cho bà con, ăn kèm bánh hỏi mỡ hành nước mắm tỏi ớt." },

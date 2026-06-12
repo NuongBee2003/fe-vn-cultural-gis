@@ -29,7 +29,7 @@ function getBboxFromBounds(bounds) {
   return `${_southWest.lng},${_southWest.lat},${_northEast.lng},${_northEast.lat}`;
 }
 
-export default function Map({ activeFilter = "all", onSelectFromSearch }) {
+export default function Map({ activeFilter = "all", onSelectFromSearch, onLocationsCountChange }) {
   const { data: categories = [] } = useCategories();
   const [bbox, setBbox] = useState("106.68,10.76,106.70,10.79");
   
@@ -70,6 +70,11 @@ export default function Map({ activeFilter = "all", onSelectFromSearch }) {
     // Chưa load được → gửi thêm vào đầu list để render marker
     return [pinnedLocation, ...apiLocations];
   }, [apiLocations, pinnedLocation]);
+
+  // Báo cáo số lượng địa điểm hiện tại trên bản đồ lên component cha
+  useEffect(() => {
+    onLocationsCountChange?.(filtered.length);
+  }, [filtered.length, onLocationsCountChange]);
 
   const [mapInstance, setMapInstance] = useState(null);
   const [userPosition, setUserPosition] = useState(null);

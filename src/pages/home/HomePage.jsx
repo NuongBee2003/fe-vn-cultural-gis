@@ -1,14 +1,27 @@
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Map from "@/components/user/map/Map";
 import SearchBar from "@/components/user/map/SearchBar";
 import FilterChips from "@/components/user/map/FilterChips";
 import UserProfile from "@/components/user/map/UserProfile";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, MapPin } from "lucide-react";
+import { useAllLocations } from "@/api/useLocationQuery";
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [activeFilter, setActiveFilter] = useState("all");
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
+  const [locationsCount, setLocationsCount] = useState(0);
+
+  // Gọi API lấy tổng số lượng tất cả địa điểm có trong hệ thống
+  const { data: allLocsData } = useAllLocations(1, 1);
+  const totalDbCount = allLocsData?.meta?.total ?? 0;
+
+  // Tính số lượng địa điểm hiển thị theo filter:
+  // - Nếu filter = "all": hiển thị tổng số địa điểm trong DB (tránh bị giới hạn bởi geo-viewport)
+  // - Nếu filter khác: hiển thị số lượng địa điểm theo category đã được Map báo lên
+  const displayCount = activeFilter === "all" ? totalDbCount : locationsCount;
 
   // Ref để gọi selectLocation bên trong Map từ SearchBar
   const selectLocationRef = useRef(null);
@@ -28,6 +41,7 @@ export default function HomePage() {
       <Map
         activeFilter={activeFilter}
         onSelectFromSearch={handleRegisterSelectLocation}
+        onLocationsCountChange={setLocationsCount}
       />
 
       {/* Mobile Top Controls */}
@@ -65,7 +79,11 @@ export default function HomePage() {
           />
         </div>
         {!showFiltersMobile && (
-          <div className="shrink-0 pointer-events-auto hidden md:flex items-center gap-2">
+          <div className="shrink-0 pointer-events-auto hidden md:flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5 rounded-full border border-border bg-background px-3.5 py-1.5 text-xs font-semibold shadow-sm transition-all hover:bg-muted text-foreground">
+              <MapPin size={13.5} className="text-[var(--brand-primary)]" />
+              <span>{t('map.totalLocations', { count: displayCount })}</span>
+            </div>
             <LanguageSwitcher />
             <UserProfile />
           </div>

@@ -77,6 +77,7 @@
     "searching": "Đang tìm kiếm...",
     "noResults": "Không tìm thấy địa điểm nào",
     "resultsHint": "kết quả · Nhấn để xem trên bản đồ",
+    "totalLocations": "{{count}} địa điểm",
     "loadingPlaces": "Đang tải địa điểm…",
     "myLocation": "Vị trí của tôi",
     "directions": "Chỉ đường",
