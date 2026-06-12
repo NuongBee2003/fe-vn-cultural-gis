@@ -23,6 +23,13 @@ import BanhCanhCua from "@/assets/img/cuisine/BanhCanhCua.jpg";
 import BanhBotLoc from "@/assets/img/cuisine/BanhBotLoc.jpg";
 import HuTieuGo from "@/assets/img/cuisine/HuTieuGo.jpg";
 import BoNhungGiam from "@/assets/img/cuisine/BoNhungGiam.jpg";
+import BanhKhot from "@/assets/img/cuisine/Banh khot.webp";
+import LauCaDuoi from "@/assets/img/cuisine/laucaduoi.jpg";
+import GoiMangCut from "@/assets/img/cuisine/goimangcut.webp";
+import BongLanTrungMuoi from "@/assets/img/cuisine/bong lan trung muoi.jpg";
+import PhaLauSaiGon from "@/assets/img/cuisine/pha lau sai gon.jpg";
+import BunRieuCua from "@/assets/img/cuisine/burieu.jpg";
+import ComNieu from "@/assets/img/cuisine/comnieu.webp";
 
 /** @typedef {"all" | "north" | "central" | "south" | "highland"} FoodRegion */
 
@@ -779,7 +786,7 @@ export const CULTURE_FOOD_ITEMS = [
     id: "food-25",
     title: "Bánh khọt Vũng Tàu",
     summary: "Những chiếc bánh tròn nhỏ vàng giòn rụm, ôm trọn nhân tôm tươi roi rói, rắc thêm mỡ hành béo ngậy.",
-    image: "",
+    image: BanhKhot,
     region: "south",
     province: "Bà Rịa - Vũng Tàu",
     tags: ["Chiên", "Đặc sản", "Ăn chơi"],
@@ -799,7 +806,7 @@ export const CULTURE_FOOD_ITEMS = [
     id: "food-26",
     title: "Lẩu cá đuối Vũng Tàu",
     summary: "Nồi lẩu chua thanh cay nhẹ với những lát cá đuối tươi mềm sụn giòn sần sật.",
-    image: "",
+    image: LauCaDuoi,
     region: "south",
     province: "Bà Rịa - Vũng Tàu",
     tags: ["Món nước", "Lẩu", "Hải sản"],
@@ -818,7 +825,7 @@ export const CULTURE_FOOD_ITEMS = [
     id: "food-27",
     title: "Gỏi măng cụt đất Bình Dương",
     summary: "Sự kết hợp hoàn hảo giữa măng cụt xanh giòn ngọt chua dịu và thịt gà ta xé phay bùi ngậy.",
-    image: "",
+    image: GoiMangCut,
     region: "south",
     province: "Bình Dương",
     tags: ["Gỏi", "Mùa vụ", "Trái cây"],
@@ -834,48 +841,10 @@ export const CULTURE_FOOD_ITEMS = [
   },
 
   {
-    id: "food-28",
-    title: "Lẩu cá kèo lá giang",
-    summary: "Lẩu chua lá giang đậm đà ăn kèm cá kèo tươi ngọt thịt và các loại rau sông nước.",
-    image: "",
-    region: "south",
-    province: "TP. Hồ Chí Minh",
-    tags: ["Món nước", "Lẩu", "Đặc sản"],
-    detail: {
-      description: "Lẩu cá kèo lá giang là món ăn vô cùng được ưa chuộng ở Sài Gòn, đặc trưng bởi vị chua thanh của lá giang, vị chát nhẹ của rau đắng và thịt cá kèo mềm ngọt béo ngậy.",
-      highlights: ["Nước lẩu chua thanh lá giang", "Cá kèo tươi ngọt thịt béo ngậy", "Ăn kèm rau đắng, rau muống và hoa thiên lý"],
-      ingredients: ["Cá kèo tươi", "Lá giang", "Rau đắng", "Bún tươi", "Nước mắm tỏi ớt"],
-      restaurants: [
-        { name: "Lẩu cá kèo Bà Huyện", address: "18 Bà Huyện Thanh Quan, Phường Võ Thị Sáu, Quận 3, TP.HCM", price: "120.000đ - 180.000đ" },
-        { name: "Lẩu cá kèo Mưa Chiều", address: "4 Bà Huyện Thanh Quan, Quận 3, TP.HCM", price: "100.000đ - 160.000đ" }
-      ]
-    }
-  },
-
-  {
-    id: "food-29",
-    title: "Cháo lòng Bình Dương",
-    summary: "Mâm cháo lòng nóng hổi với lòng heo làm sạch luộc chín tới giòn dai ăn kèm cháo huyết đậm vị.",
-    image: "",
-    region: "south",
-    province: "Bình Dương",
-    tags: ["Ăn sáng", "Bình dân", "Đặc sản"],
-    detail: {
-      description: "Đặc sản cháo lòng Bình Dương nổi tiếng với lòng heo tươi ngon được làm sạch tỉ mỉ, luộc chín giòn dai đặt trên mâm ăn cùng bát cháo huyết nóng hổi rắc tiêu hành thơm lừng.",
-      highlights: ["Lòng heo luộc giòn dai thơm ngọt", "Cháo huyết ninh nhừ sánh ngọt xương", "Ăn cùng bánh quẩy giòn tan"],
-      ingredients: ["Gạo tẻ", "Lòng heo thập cẩm", "Huyết heo", "Hành lá", "Tiêu", "Bánh quẩy"],
-      restaurants: [
-        { name: "Cháo lòng Phú Long", address: "Quốc lộ 13, Lái Thiêu, Thuận An, Bình Dương", price: "40.000đ - 70.000đ" },
-        { name: "Cháo lòng mâm Bình Dương", address: "Phú Cường, Thủ Dầu Một, Bình Dương", price: "35.000đ - 60.000đ" }
-      ]
-    }
-  },
-
-  {
     id: "food-30",
     title: "Bánh bông lan trứng muối",
     summary: "Bánh bông lan nướng lò nhỏ xinh xốp mềm, vị ngọt dịu kết hợp trứng muối bùi béo và chà bông mặn mòi.",
-    image: "",
+    image: BongLanTrungMuoi,
     region: "south",
     province: "Bà Rịa - Vũng Tàu",
     tags: ["Ăn vặt", "Bánh ngọt", "Quà tặng"],
@@ -891,29 +860,10 @@ export const CULTURE_FOOD_ITEMS = [
   },
 
   {
-    id: "food-31",
-    title: "Bánh bèo bì Bình Dương",
-    summary: "Bánh bèo mềm mướt ăn kèm bì heo dai giòn trộn thính thơm và nước mắm chua ngọt đặc chế.",
-    image: "",
-    region: "south",
-    province: "Bình Dương",
-    tags: ["Ăn chơi", "Đặc sản", "Di sản"],
-    detail: {
-      description: "Bánh bèo bì Chợ Búng là di sản văn hóa phi vật thể quốc gia của tỉnh Bình Dương. Món ăn kết hợp đĩa bánh bèo nhỏ dai mịn với bì heo ram cắt sợi trộn thính gạo, rau thơm và nước mắm tỏi ớt chua ngọt.",
-      highlights: ["Bì heo trộn thính gạo rang thơm lừng", "Nước mắm chua ngọt pha tỏi ớt đặc trưng", "Bánh bèo dẻo mịn rưới mỡ hành"],
-      ingredients: ["Bột gạo", "Bì heo", "Thịt heo nạc", "Thính gạo", "Mỡ hành", "Nước mắm tỏi ớt"],
-      restaurants: [
-        { name: "Bánh bèo bì Mỹ Hương (Chợ Búng)", address: "174 Khu phố Thạnh Hòa A, An Thạnh, Thuận An, Bình Dương", price: "30.000đ - 50.000đ" },
-        { name: "Bánh bèo bì Ngọc Hương", address: "188 Tỉnh lộ 745, An Thạnh, Thuận An, Bình Dương", price: "25.000đ - 45.000đ" }
-      ]
-    }
-  },
-
-  {
     id: "food-32",
     title: "Phá lấu bò Sài Gòn",
     summary: "Lòng bò ninh mềm trong nước cốt dừa béo ngậy, dậy mùi ngũ vị hương ăn kèm bánh mì hoặc mì gói.",
-    image: "",
+    image: PhaLauSaiGon,
     region: "south",
     province: "TP. Hồ Chí Minh",
     tags: ["Ăn vặt", "Đường phố", "Bình dân"],
@@ -930,20 +880,49 @@ export const CULTURE_FOOD_ITEMS = [
   },
 
   {
-    id: "food-33",
-    title: "Gỏi cá mai Vũng Tàu",
-    summary: "Cá mai phi lê trong suốt trộn thính, đậu phộng, mè rang thơm phức ăn kèm nước chấm đậu phộng béo ngậy.",
-    image: "",
-    region: "south",
-    province: "Bà Rịa - Vũng Tàu",
-    tags: ["Gỏi", "Hải sản", "Đặc sản"],
+    id: "food-34",
+    title: "Bún riêu cua",
+    summary: "Nước dùng đỏ au từ gạch cua, chan cùng bún và cà chua chín mọng — món bún quốc dân của miền Bắc.",
+    image: BunRieuCua,
+    region: "north",
+    province: "Hà Nội",
+    tags: ["Món nước", "Ăn sáng", "Truyền thống"],
     detail: {
-      description: "Gỏi cá mai là đặc sản vùng biển Vũng Tàu. Loài cá mai thịt trong suốt, ít tanh được rút xương, bóp tái chanh rồi trộn cùng thính, đậu phộng, mè rang. Điểm nhấn là nước sốt chấm sệt pha từ nước cốt me, đậu phộng xay nhuyễn thơm bùi béo ngọt.",
-      highlights: ["Cá mai ngọt thanh dai giòn tự nhiên", "Nước chấm mè đậu phộng béo bùi đậm đà", "Cuốn bánh tráng cùng nhiều loại rau thơm vùng biển"],
-      ingredients: ["Cá mai tươi", "Thính gạo", "Đậu phộng", "Mè rang", "Chanh", "Rau thơm các loại", "Bánh tráng"],
+      description: "Bún riêu cua là một trong những món bún nổi tiếng nhất Việt Nam, đặc trưng bởi nước dùng ngọt thanh từ cua đồng giã nhuyễn, điểm thêm màu đỏ của cà chua và mắm tôm đậm đà. Topping phong phú gồm đậu phụ chiên, chả, tiết luộc ăn kèm rau sống.",
+      highlights: [
+        "Nước dùng gạch cua đỏ au thơm ngọt",
+        "Đậu phụ chiên vàng thấm nước riêu",
+        "Ăn kèm mắm tôm và rau sống phong phú",
+      ],
+      ingredients: ["Cua đồng", "Bún", "Cà chua", "Đậu phụ", "Tiết luộc", "Mắm tôm", "Rau sống"],
       restaurants: [
-        { name: "Gỏi cá mai Vườn Xoài", address: "34/4 Hoàng Hoa Xám, Phường 2, Vũng Tàu", price: "100.000đ - 150.000đ/phần" },
-        { name: "Quán gỏi cá mai Ba Hưng", address: "A7/14 Trung tâm đô thị Chí Linh, Phường 10, Vũng Tàu", price: "80.000đ - 130.000đ/phần" }
+        { name: "Bún riêu cua Sài Gòn", address: "78 Tôn Thất Tùng, Phường Phạm Ngũ Lão, Quận 1, TP.HCM", price: "45.000đ - 65.000đ" },
+        { name: "Bún riêu Bà Già", address: "230 Lê Văn Sỹ, Phường 1, Quận Tân Bình, TP.HCM", price: "40.000đ - 55.000đ" },
+        { name: "Bún riêu cua Nguyên Sinh", address: "126 Nguyễn Thị Thập, Phường Tân Phú, Quận 7, TP.HCM", price: "45.000đ - 60.000đ" }
+      ]
+    }
+  },
+
+  {
+    id: "food-35",
+    title: "Cơm niêu Sài Gòn",
+    summary: "Cơm nấu trong nồi đất nung, cạnh giòn vàng rụm — nét ẩm thực bình dị mà thương của người Sài Gòn.",
+    image: ComNieu,
+    region: "south",
+    province: "TP. Hồ Chí Minh",
+    tags: ["Cơm", "Truyền thống", "Đặc sản"],
+    detail: {
+      description: "Cơm niêu là món ăn gắn liền với ký ức tuổi thơ của nhiều thế hệ người Sài Gòn. Cơm được nấu trong nồi đất nung nhỏ trên bếp than, tạo nên lớp cơm cháy giòn vàng thơm phức ở đáy nồi — phần được xem là ngon nhất. Ăn kèm các món kho, chiên truyền thống.",
+      highlights: [
+        "Lớp cơm cháy đáy nồi giòn tan thơm lừng",
+        "Cơm dẻo hơn nhờ nồi đất giữ nhiệt đều",
+        "Ăn kèm cá kho tộ, thịt kho hột vịt truyền thống",
+      ],
+      ingredients: ["Gạo tẻ ngon", "Nồi đất nung", "Cá kho tộ", "Thịt kho", "Rau xào"],
+      restaurants: [
+        { name: "Cơm niêu Sài Gòn", address: "2B Đinh Tiên Hoàng, Phường Đa Kao, Quận 1, TP.HCM", price: "80.000đ - 150.000đ" },
+        { name: "Cơm niêu đất nung Hương Xưa", address: "36 Cao Bá Quát, Phường 1, Quận 1, TP.HCM", price: "70.000đ - 130.000đ" },
+        { name: "Cơm niêu Bà Cụ", address: "145 Phạm Viết Chánh, Phường 19, Quận Bình Thạnh, TP.HCM", price: "60.000đ - 110.000đ" }
       ]
     }
   }
