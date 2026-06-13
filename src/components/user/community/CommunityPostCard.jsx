@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
-import { Heart, MessageCircle, Send, Share2, Loader2 } from "lucide-react";
-import { createComment } from "@/api/commentApi";
+import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
+import { createComment, updateComment, deleteComment } from "@/api/commentApi";
+import { toggleLikePost } from "@/api/postApi";
 
 function getInitials(name) {
   const cleaned = String(name || "").trim();
@@ -45,8 +46,86 @@ export default function CommunityPostCard({ post, showStatus = false }) {
   const [mainCommentDraft, setMainCommentDraft] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
+  // Edit/Delete comment state
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+
   const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
   const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
+
+  const [liked, setLiked] = useState(post.likedYN === "Y");
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [isLiking, setIsLiking] = useState(false);
+
+  const handleToggleLike = async () => {
+    if (!isLogin) {
+      alert("Vui lòng đăng nhập để thích bài viết");
+      return;
+    }
+    if (isLiking) return;
+    setIsLiking(true);
+    // Optimistic update
+    const newLiked = !liked;
+    setLiked(newLiked);
+    setLikeCount((prev) => prev + (newLiked ? 1 : -1));
+    try {
+      const res = await toggleLikePost(post.id);
+      setLiked(res.likedYN === "Y");
+      setLikeCount(res.likeCount);
+    } catch (err) {
+      // Revert nếu lỗi
+      setLiked(!newLiked);
+      setLikeCount((prev) => prev + (newLiked ? -1 : 1));
+      console.error("Lỗi khi thích bài viết:", err);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditDraft(comment.content);
+    setReplyToId(null);
+  };
+
+  const handleSaveEdit = async (commentId) => {
+    const text = editDraft.trim();
+    if (!text) return;
+    setIsSavingEdit(true);
+    try {
+      const res = await updateComment(commentId, text);
+      setLocalComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, content: res?.content ?? text } : c
+        )
+      );
+      setEditingCommentId(null);
+      setEditDraft("");
+    } catch (err) {
+      console.error("Lỗi khi sửa bình luận:", err);
+      alert(err.message || "Không thể sửa bình luận lúc này");
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Xóa bình luận này?")) return;
+    setDeletingCommentId(commentId);
+    try {
+      await deleteComment(commentId);
+      setLocalComments((prev) =>
+        prev.filter((c) => c.id !== commentId && c.parent_id !== commentId)
+      );
+    } catch (err) {
+      console.error("Lỗi khi xóa bình luận:", err);
+      alert(err.message || "Không thể xóa bình luận lúc này");
+    } finally {
+      setDeletingCommentId(null);
+    }
+  };
 
   const handlePostMainComment = async () => {
     const text = mainCommentDraft.trim();
@@ -64,6 +143,8 @@ export default function CommunityPostCard({ post, showStatus = false }) {
         id: res.id,
         content: res.content,
         createdAtLabel: "Vừa xong",
+        editYN: "Y",
+        delYN: "Y",
         author: {
           name: res.user?.username || "Bạn",
           avatar: res.user?.avatar || ""
@@ -96,6 +177,8 @@ export default function CommunityPostCard({ post, showStatus = false }) {
         parent_id: res.parent_id,
         content: res.content,
         createdAtLabel: "Vừa xong",
+        editYN: "Y",
+        delYN: "Y",
         author: {
           name: res.user?.username || "Bạn",
           avatar: res.user?.avatar || ""
@@ -214,16 +297,25 @@ export default function CommunityPostCard({ post, showStatus = false }) {
         ) : null}
 
         <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-          <span>{post.likeCount} lượt thích</span>
+          <span>{likeCount} lượt thích</span>
           <span>{localComments.length} bình luận</span>
         </div>
 
         <div className="mt-3 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3">
           <button
             type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            onClick={handleToggleLike}
+            disabled={isLiking}
+            className={`inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all
+              ${liked
+                ? "text-rose-500 bg-rose-50 hover:bg-rose-100"
+                : "text-slate-700 hover:bg-slate-50"
+              } disabled:opacity-60`}
           >
-            <Heart size={16} className="text-slate-500" />
+            <Heart
+              size={16}
+              className={`transition-transform duration-150 ${liked ? "fill-rose-500 text-rose-500 scale-110" : "text-slate-500"}`}
+            />
             Thích
           </button>
           <button
@@ -312,7 +404,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                           </p>
                         </div>
 
-                        {/* Nút phản hồi */}
+                        {/* Nút phản hồi + sửa + xóa */}
                         {isLogin && (
                           <div className="mt-1.5 flex items-center gap-3 px-2">
                             <button
@@ -320,11 +412,62 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                               onClick={() => {
                                 setReplyToId(comment.id);
                                 setDraft("");
+                                setEditingCommentId(null);
                               }}
                               className="text-xs font-medium text-amber-600 hover:text-amber-800"
                             >
                               Trả lời
                             </button>
+                            {comment.editYN === "Y" && editingCommentId !== comment.id && (
+                              <button
+                                type="button"
+                                onClick={() => handleEditComment(comment)}
+                                className="text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1"
+                              >
+                                <Pencil size={11} /> Sửa
+                              </button>
+                            )}
+                            {comment.delYN === "Y" && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteComment(comment.id)}
+                                disabled={deletingCommentId === comment.id}
+                                className="text-xs font-medium text-rose-500 hover:text-rose-700 flex items-center gap-1 disabled:opacity-50"
+                              >
+                                {deletingCommentId === comment.id
+                                  ? <Loader2 size={11} className="animate-spin" />
+                                  : <Trash2 size={11} />} Xóa
+                              </button>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Inline edit form */}
+                        {editingCommentId === comment.id && (
+                          <div className="mt-2 rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
+                            <textarea
+                              value={editDraft}
+                              onChange={(e) => setEditDraft(e.target.value)}
+                              rows={2}
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-2 focus-visible:ring-amber-200/70 resize-none"
+                            />
+                            <div className="mt-2 flex items-center gap-2 justify-end">
+                              <button
+                                type="button"
+                                onClick={() => { setEditingCommentId(null); setEditDraft(""); }}
+                                className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                              >
+                                <XIcon size={12} /> Hủy
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSaveEdit(comment.id)}
+                                disabled={isSavingEdit || !editDraft.trim()}
+                                className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-600 disabled:opacity-50"
+                              >
+                                {isSavingEdit ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Lưu
+                              </button>
+                            </div>
                           </div>
                         )}
 

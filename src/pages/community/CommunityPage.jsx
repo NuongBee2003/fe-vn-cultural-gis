@@ -194,6 +194,8 @@ export default function CommunityPage() {
           parent_id: c.parent_id,
           content: c.content,
           createdAtLabel: c.createdAtLabel || (c.created_at ? formatDateTime(c.created_at) : ""),
+          editYN: c.editYN || 'N',
+          delYN: c.delYN || 'N',
           author: {
             name: c.user?.username || "(Ẩn danh)",
             avatar: c.user?.avatar || ""
