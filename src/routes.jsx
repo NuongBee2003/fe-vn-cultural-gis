@@ -7,6 +7,7 @@ import DashboardSectionPage from "@/pages/dashboard/DashboardSectionPage";
 import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import PostsManagementPage from "@/pages/dashboard/PostsManagementPage";
+import UsersManagementPage from "@/pages/dashboard/UsersManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
 import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
@@ -168,12 +169,12 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_USERS_ROLES,
-        element: dashPage("Quản lý quyền", "Phân quyền hệ thống"),
-        title: "Quản lý quyền",
+        element: <UsersManagementPage />,
+        title: "Quản lý tài khoản",
       },
       {
         path: PATHS.DASHBOARD_USERS_ACCOUNTS,
-        element: dashPage("Quản lý tài khoản", "Danh sách tài khoản người dùng"),
+        element: <UsersManagementPage />,
         title: "Quản lý tài khoản",
       },
       {
