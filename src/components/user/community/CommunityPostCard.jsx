@@ -16,6 +16,19 @@ function getInitials(name) {
   return (first + last).toUpperCase();
 }
 
+function formatDateTime(isoString) {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 function getStatusBadge(status) {
   if (status === "published" || status === "accepted") {
     return {
@@ -290,8 +303,23 @@ export default function CommunityPostCard({ post, showStatus = false, autoOpenCo
 
   const commentsTree = useMemo(() => {
     const list = localComments || [];
-    const topLevel = list.filter((c) => !c.parent_id);
-    const replies = list.filter((c) => c.parent_id);
+    
+    // Normalize comments to guarantee author object exists
+    const normalizedList = list.map((c) => {
+      const authorName = c.author?.name || c.user?.username || "Ẩn danh";
+      const authorAvatar = c.author?.avatar || c.user?.avatar || "";
+      return {
+        ...c,
+        createdAtLabel: c.createdAtLabel || (c.created_at ? formatDateTime(c.created_at) : ""),
+        author: {
+          name: authorName,
+          avatar: authorAvatar,
+        },
+      };
+    });
+
+    const topLevel = normalizedList.filter((c) => !c.parent_id);
+    const replies = normalizedList.filter((c) => c.parent_id);
     
     return topLevel.map((parent) => {
       const parentReplies = replies.filter(
@@ -680,6 +708,85 @@ export default function CommunityPostCard({ post, showStatus = false, autoOpenCo
                                   {renderContent(reply.content)}
                                 </p>
                               </div>
+
+                              {/* Nút phản hồi + sửa + xóa cho comment con (reply) */}
+                              {isLogin && (
+                                <div className="mt-1.5 flex items-center gap-3 px-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setReplyToId(comment.id); // Vẫn là parentId của comment gốc
+                                      const authorName = reply.author?.name || "";
+                                      const matchedUser = mentionUsers.find(u => u.display === authorName);
+                                      if (matchedUser) {
+                                        setDraft(`@[${matchedUser.display}](${matchedUser.id}) `);
+                                        setDraftMentionIds([matchedUser.id]);
+                                      } else if (authorName) {
+                                        setDraft(`@${authorName} `);
+                                        setDraftMentionIds([]);
+                                      } else {
+                                        setDraft("");
+                                        setDraftMentionIds([]);
+                                      }
+                                      setEditingCommentId(null);
+                                    }}
+                                    className="text-xs font-medium text-amber-600 hover:text-amber-800"
+                                  >
+                                    Trả lời
+                                  </button>
+                                  {reply.editYN === "Y" && editingCommentId !== reply.id && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleEditComment(reply)}
+                                      className="text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1"
+                                    >
+                                      <Pencil size={11} /> Sửa
+                                    </button>
+                                  )}
+                                  {reply.delYN === "Y" && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteComment(reply.id)}
+                                      disabled={deletingCommentId === reply.id}
+                                      className="text-xs font-medium text-rose-500 hover:text-rose-700 flex items-center gap-1 disabled:opacity-50"
+                                    >
+                                      {deletingCommentId === reply.id
+                                        ? <Loader2 size={11} className="animate-spin" />
+                                        : <Trash2 size={11} />} Xóa
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Inline edit form cho comment con (reply) */}
+                              {editingCommentId === reply.id && (
+                                <div className="mt-2 rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
+                                  <MentionInput
+                                    multiLine
+                                    rows={2}
+                                    value={editDraft}
+                                    onChange={(e) => setEditDraft(e.target.value)}
+                                    wrapperClassName="w-full rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-200/70"
+                                  />
+                                  <div className="mt-2 flex items-center gap-2 justify-end">
+                                    <button
+                                      type="button"
+                                      onClick={() => { setEditingCommentId(null); setEditDraft(""); }}
+                                      className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                                    >
+                                      <XIcon size={12} /> Hủy
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSaveEdit(reply.id)}
+                                      disabled={isSavingEdit || !editDraft.trim()}
+                                      className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-600 disabled:opacity-50"
+                                    >
+                                      {isSavingEdit ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Lưu
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
