@@ -12,8 +12,9 @@ import {
   COMMUNITY_LOCATIONS,
   COMMUNITY_USERS,
 } from "@/constants/community";
-import { getPosts } from "@/api/postApi";
+import { getPosts, getPostDetail } from "@/api/postApi";
 import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead } from "@/api/notificationApi";
+import { useWebSocketNotification } from "@/context/WebSocketContext";
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -77,6 +78,25 @@ export default function CommunityPage() {
   const [loadingNoti, setLoadingNoti] = useState(false);
   const notiRef = useRef(null);
 
+  const [activeNotificationPostId, setActiveNotificationPostId] = useState(null);
+  const [activeNotificationCommentId, setActiveNotificationCommentId] = useState(null);
+
+  const { addNotificationListener } = useWebSocketNotification();
+
+  useEffect(() => {
+    const removeListener = addNotificationListener((newNoti) => {
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === newNoti.id)) return prev;
+        return [newNoti, ...prev];
+      });
+      setUnreadCount((prev) => prev + 1);
+    });
+
+    return () => {
+      removeListener();
+    };
+  }, [addNotificationListener]);
+
   const loadNotifications = useCallback(async () => {
     const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
     if (!token) return;
@@ -124,14 +144,41 @@ export default function CommunityPage() {
       await markNotificationAsRead(noti.id);
     }
     if (noti.post_id) {
-      const element = document.getElementById(`post-card-${noti.post_id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-        element.classList.add("ring-2", "ring-amber-500", "duration-500");
-        setTimeout(() => {
-          element.classList.remove("ring-2", "ring-amber-500");
-        }, 2000);
+      try {
+        const latestPost = await getPostDetail(noti.post_id);
+        if (latestPost) {
+          // If the post is not ours and we are on "mine" tab, switch to "all" tab
+          const isOwnPost = Number(latestPost.user_id) === Number(currentUser?.id);
+          if (!isOwnPost && feedTab === "mine") {
+            setFeedTab("all");
+          }
+
+          setDbPosts(prev => {
+            const exists = prev.some(p => p.id === latestPost.id);
+            if (exists) {
+              return prev.map(p => p.id === latestPost.id ? latestPost : p);
+            } else {
+              return [latestPost, ...prev];
+            }
+          });
+
+          setActiveNotificationPostId(latestPost.id);
+          setActiveNotificationCommentId(noti.comment_id || null);
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải chi tiết bài viết từ thông báo:", err);
       }
+
+      setTimeout(() => {
+        const element = document.getElementById(`post-card-${noti.post_id}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("ring-2", "ring-amber-500", "duration-500");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-amber-500");
+          }, 2000);
+        }
+      }, 300);
     }
   };
 
@@ -642,7 +689,12 @@ export default function CommunityPage() {
               ) : postFeed.length ? (
                 postFeed.map((post) => (
                   <div key={post.id} id={`post-card-${post.id}`}>
-                    <CommunityPostCard post={post} showStatus={feedTab === "mine"} />
+                    <CommunityPostCard
+                      post={post}
+                      showStatus={feedTab === "mine"}
+                      autoOpenComments={activeNotificationPostId === post.id}
+                      highlightCommentId={activeNotificationPostId === post.id ? activeNotificationCommentId : null}
+                    />
                   </div>
                 ))
               ) : (

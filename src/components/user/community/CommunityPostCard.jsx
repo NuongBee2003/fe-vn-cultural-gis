@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import { createComment, updateComment, deleteComment } from "@/api/commentApi";
-import { toggleLikePost } from "@/api/postApi";
+import { toggleLikePost, getPostDetail } from "@/api/postApi";
 import { useNotify } from "@/context/NotifyContext";
 import MentionInput, { getPlainTextFromMarkup } from "@/components/ui/input/MentionInput";
 import { useMentionUsers } from "@/hooks/useMentionUsers";
@@ -35,7 +35,7 @@ function getStatusBadge(status) {
   };
 }
 
-export default function CommunityPostCard({ post, showStatus = false }) {
+export default function CommunityPostCard({ post, showStatus = false, autoOpenComments = false, highlightCommentId = null }) {
   const notify = useNotify();
   const mentionUsers = useMentionUsers(); // singleton cache — không gọi API thêm
 
@@ -106,6 +106,45 @@ export default function CommunityPostCard({ post, showStatus = false }) {
   const [liked, setLiked] = useState(post.likedYN === "Y");
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
   const [isLiking, setIsLiking] = useState(false);
+
+  // Sync prop updates to local states
+  useEffect(() => {
+    setLocalComments(post.comments || []);
+    setLiked(post.likedYN === "Y");
+    setLikeCount(post.likeCount ?? 0);
+  }, [post]);
+
+  // Handle autoOpenComments from props
+  useEffect(() => {
+    if (autoOpenComments) {
+      setCommentsOpen(true);
+      const fetchLatest = async () => {
+        try {
+          const latestPost = await getPostDetail(post.id);
+          if (latestPost) {
+            setLocalComments(latestPost.comments || []);
+            setLiked(latestPost.likedYN === "Y");
+            setLikeCount(latestPost.likeCount ?? 0);
+          }
+        } catch (err) {
+          console.error("Lỗi khi tự động tải chi tiết bài viết:", err);
+        }
+      };
+      fetchLatest();
+    }
+  }, [autoOpenComments, post.id]);
+
+  // Handle scrolling to highlighted comment
+  useEffect(() => {
+    if (highlightCommentId && commentsOpen) {
+      setTimeout(() => {
+        const commentEl = document.getElementById(`comment-${highlightCommentId}`);
+        if (commentEl) {
+          commentEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+    }
+  }, [highlightCommentId, commentsOpen]);
 
   const handleToggleLike = async () => {
     if (!isLogin) {
@@ -263,6 +302,23 @@ export default function CommunityPostCard({ post, showStatus = false }) {
     });
   }, [localComments]);
 
+  const handleCommentToggle = async () => {
+    const nextVal = !commentsOpen;
+    setCommentsOpen(nextVal);
+    if (nextVal) {
+      try {
+        const latestPost = await getPostDetail(post.id);
+        if (latestPost) {
+          setLocalComments(latestPost.comments || []);
+          setLiked(latestPost.likedYN === "Y");
+          setLikeCount(latestPost.likeCount ?? 0);
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải chi tiết bài viết khi mở bình luận:", err);
+      }
+    }
+  };
+
   return (
     <article className="rounded-2xl border border-slate-200 bg-white shadow-sm">
       <header className="flex items-start gap-3 p-4">
@@ -373,7 +429,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
           </button>
           <button
             type="button"
-            onClick={() => setCommentsOpen((v) => !v)}
+            onClick={handleCommentToggle}
             className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             <MessageCircle size={16} className="text-slate-500" />
@@ -394,7 +450,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                   onMentionsChange={setMainMentionIds}
                   placeholder="Viết bình luận công khai..."
                   disabled={isSubmittingComment}
-                  wrapperClassName="flex-1 h-10 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100/40 focus-within:bg-white focus-within:border-amber-400 transition-all"
+                  wrapperClassName="flex-1 h-10 color-black rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100/40 focus-within:bg-white focus-within:border-amber-400 transition-all"
                 />
                 <button
                   type="button"
@@ -421,7 +477,15 @@ export default function CommunityPostCard({ post, showStatus = false }) {
             {commentsTree.length ? (
               <div className="space-y-4">
                 {commentsTree.map((comment) => (
-                  <div key={comment.id} className="space-y-3">
+                  <div
+                    key={comment.id}
+                    id={`comment-${comment.id}`}
+                    className={`space-y-3 p-1.5 rounded-xl transition-all duration-500 ${
+                      Number(highlightCommentId) === Number(comment.id)
+                        ? "ring-2 ring-amber-400 bg-amber-50/30"
+                        : ""
+                    }`}
+                  >
                     {/* Bình luận gốc */}
                     <div className="flex items-start gap-3">
                       <div className="h-9 w-9 shrink-0 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-[11px] font-semibold">
@@ -573,7 +637,15 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="ml-[18px] pl-11 border-l-2 border-slate-100 space-y-3">
                         {comment.replies.map((reply) => (
-                          <div key={reply.id} className="flex items-start gap-3">
+                          <div
+                            key={reply.id}
+                            id={`comment-${reply.id}`}
+                            className={`flex items-start gap-3 p-1.5 rounded-xl transition-all duration-500 ${
+                              Number(highlightCommentId) === Number(reply.id)
+                                ? "ring-2 ring-amber-400 bg-amber-50/30"
+                                : ""
+                            }`}
+                          >
                             <div className="h-7 w-7 shrink-0 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-[10px] font-semibold">
                               {reply.author?.avatar ? (
                                 <img
