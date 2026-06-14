@@ -255,3 +255,33 @@ export async function reviewPost(id, status) {
     throw error;
   }
 }
+
+/**
+ * 8. Lấy danh sách người đã thích bài viết
+ * @param {number|string} id ID bài viết
+ */
+export async function getPostLikes(id) {
+  try {
+    const token = getAuthToken();
+    const headers = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${BASE_URL}/post/${id}/likes`, {
+      method: "GET",
+      headers: headers
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    return result.data || [];
+  } catch (error) {
+    console.error(`❌ Lỗi khi lấy danh sách lượt thích của bài viết ${id}:`, error);
+    throw error;
+  }
+}
+
