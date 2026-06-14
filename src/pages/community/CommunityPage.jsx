@@ -114,50 +114,6 @@ export default function CommunityPage() {
     loadPosts();
   }, [loadPosts]);
 
-  const usersById = useMemo(() => {
-    const map = new Map();
-    for (const user of COMMUNITY_USERS) {
-      map.set(user.id, user);
-    }
-    return map;
-  }, []);
-
-  const locationsById = useMemo(() => {
-    const map = new Map();
-    for (const location of COMMUNITY_LOCATIONS) {
-      map.set(location.id, location);
-    }
-    return map;
-  }, []);
-
-  const assetsByPostId = useMemo(() => {
-    const map = new Map();
-    for (const asset of COMMUNITY_ASSETS) {
-      const list = map.get(asset.post_id) || [];
-      list.push(asset);
-      map.set(asset.post_id, list);
-    }
-    return map;
-  }, []);
-
-  const commentsByPostId = useMemo(() => {
-    const map = new Map();
-    for (const comment of COMMUNITY_COMMENTS) {
-      const list = map.get(comment.post_id) || [];
-      list.push(comment);
-      map.set(comment.post_id, list);
-    }
-    return map;
-  }, []);
-
-  const likesCountByPostId = useMemo(() => {
-    const map = new Map();
-    for (const like of COMMUNITY_POST_LIKES) {
-      map.set(like.post_id, (map.get(like.post_id) || 0) + 1);
-    }
-    return map;
-  }, []);
-
   const postFeed = useMemo(() => {
     const query = search.trim().toLowerCase();
     const fromDate = parseDateInput(dateFrom, false);

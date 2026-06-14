@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAdminPosts, reviewPost, deletePost } from "@/api/postApi";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -16,6 +17,7 @@ import { Check, X, Trash2, Search, SlidersHorizontal } from "lucide-react";
 const PAGE_SIZES = [5, 10, 15, 20];
 
 export default function PostsManagementPage() {
+  const notify = useNotify();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,26 +51,33 @@ export default function PostsManagementPage() {
   // Handle Approve/Reject
   const handleReview = async (id, status) => {
     const actionText = status === "accepted" ? "duyệt" : "từ chối";
-    if (!window.confirm(`Bạn có chắc chắn muốn ${actionText} bài viết này?`)) return;
+    const ok = await notify.confirm(`Bạn có chắc chắn muốn ${actionText} bài viết này?`, {
+      title: "Xác nhận thao tác",
+      confirmLabel: actionText.charAt(0).toUpperCase() + actionText.slice(1),
+    });
+    if (!ok) return;
 
     try {
       await reviewPost(id, status);
-      // Reload posts
       loadPosts();
     } catch (err) {
-      alert(`Lỗi khi ${actionText} bài viết: ${err.message}`);
+      notify.error(`Lỗi khi ${actionText} bài viết: ${err.message}`);
     }
   };
 
   // Handle Delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
+    const ok = await notify.confirm("Bạn có chắc chắn muốn xóa bài viết này?", {
+      title: "Xóa bài viết",
+      confirmLabel: "Xóa",
+    });
+    if (!ok) return;
 
     try {
       await deletePost(id);
       loadPosts();
     } catch (err) {
-      alert(`Lỗi khi xóa bài viết: ${err.message}`);
+      notify.error(`Lỗi khi xóa bài viết: ${err.message}`);
     }
   };
 

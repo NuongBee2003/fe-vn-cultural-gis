@@ -1,7 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import { createComment, updateComment, deleteComment } from "@/api/commentApi";
 import { toggleLikePost } from "@/api/postApi";
+import { useNotify } from "@/context/NotifyContext";
+import MentionInput, { getPlainTextFromMarkup } from "@/components/ui/input/MentionInput";
+import { useMentionUsers } from "@/hooks/useMentionUsers";
 
 function getInitials(name) {
   const cleaned = String(name || "").trim();
@@ -33,6 +36,49 @@ function getStatusBadge(status) {
 }
 
 export default function CommunityPostCard({ post, showStatus = false }) {
+  const notify = useNotify();
+  const mentionUsers = useMentionUsers(); // singleton cache — không gọi API thêm
+
+  /**
+   * Render text và highlight @username.
+   * Chỉ highlight nếu username thực sự tồn tại trong hệ thống.
+   * Sắp xếp username theo độ dài giảm dần để tránh prefix matching sai.
+   */
+  const renderContent = useCallback((text) => {
+    if (!text) return null;
+    if (mentionUsers.length === 0) return text; // chưa load xong → trả về plain text
+
+    // Escape ky tự đặc biệt trong username trước khi đưa vào regex
+    const escapedNames = mentionUsers
+      .map((u) => u.display.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .sort((a, b) => b.length - a.length); // dài hơn được match trước
+
+    const pattern = new RegExp(`@(${escapedNames.join("|")})`, "g");
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = pattern.exec(text)) !== null) {
+      // Phần text thường trước mention
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      parts.push(
+        <span key={match.index} className="text-amber-600 font-semibold">
+          {match[0]}
+        </span>
+      );
+      lastIndex = pattern.lastIndex;
+    }
+
+    // Phần text còn lại sau mention cuối
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+  }, [mentionUsers]);
+
   const badge = getStatusBadge(post.status);
   const primaryAsset = post.assets.find((a) => a.is_primary) || post.assets[0];
   const extraAssets = primaryAsset
@@ -42,8 +88,10 @@ export default function CommunityPostCard({ post, showStatus = false }) {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [replyToId, setReplyToId] = useState(null);
   const [draft, setDraft] = useState("");
+  const [draftMentionIds, setDraftMentionIds] = useState([]);      // IDs được @ trong reply
   const [localComments, setLocalComments] = useState(() => post.comments || []);
   const [mainCommentDraft, setMainCommentDraft] = useState("");
+  const [mainMentionIds, setMainMentionIds] = useState([]);         // IDs được @ trong bình luận chính
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   // Edit/Delete comment state
@@ -61,7 +109,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
 
   const handleToggleLike = async () => {
     if (!isLogin) {
-      alert("Vui lòng đăng nhập để thích bài viết");
+      notify.warning("Vui lòng đăng nhập để thích bài viết", "Chưa đăng nhập");
       return;
     }
     if (isLiking) return;
@@ -86,12 +134,12 @@ export default function CommunityPostCard({ post, showStatus = false }) {
 
   const handleEditComment = (comment) => {
     setEditingCommentId(comment.id);
-    setEditDraft(comment.content);
+    setEditDraft(comment.content); // plain text – MentionInput sẽ parse @username
     setReplyToId(null);
   };
 
   const handleSaveEdit = async (commentId) => {
-    const text = editDraft.trim();
+    const text = getPlainTextFromMarkup(editDraft).trim();
     if (!text) return;
     setIsSavingEdit(true);
     try {
@@ -105,14 +153,15 @@ export default function CommunityPostCard({ post, showStatus = false }) {
       setEditDraft("");
     } catch (err) {
       console.error("Lỗi khi sửa bình luận:", err);
-      alert(err.message || "Không thể sửa bình luận lúc này");
+      notify.error(err.message || "Không thể sửa bình luận lúc này");
     } finally {
       setIsSavingEdit(false);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm("Xóa bình luận này?")) return;
+    const ok = await notify.confirm("Xóa bình luận này?", { title: "Xóa bình luận", confirmLabel: "Xóa" });
+    if (!ok) return;
     setDeletingCommentId(commentId);
     try {
       await deleteComment(commentId);
@@ -121,14 +170,14 @@ export default function CommunityPostCard({ post, showStatus = false }) {
       );
     } catch (err) {
       console.error("Lỗi khi xóa bình luận:", err);
-      alert(err.message || "Không thể xóa bình luận lúc này");
+      notify.error(err.message || "Không thể xóa bình luận lúc này");
     } finally {
       setDeletingCommentId(null);
     }
   };
 
   const handlePostMainComment = async () => {
-    const text = mainCommentDraft.trim();
+    const text = getPlainTextFromMarkup(mainCommentDraft).trim();
     if (!text) return;
 
     setIsSubmittingComment(true);
@@ -136,7 +185,8 @@ export default function CommunityPostCard({ post, showStatus = false }) {
       const res = await createComment({
         post_id: post.id,
         content: text,
-        parent_id: null
+        parent_id: null,
+        mentioned_user_ids: mainMentionIds,  // IDs chính xác từ react-mentions
       });
 
       const formatted = {
@@ -153,23 +203,25 @@ export default function CommunityPostCard({ post, showStatus = false }) {
 
       setLocalComments((prev) => [...prev, formatted]);
       setMainCommentDraft("");
+      setMainMentionIds([]);
     } catch (err) {
       console.error("Lỗi khi đăng bình luận:", err);
-      alert(err.message || "Không thể đăng bình luận lúc này");
+      notify.error(err.message || "Không thể đăng bình luận lúc này");
     } finally {
       setIsSubmittingComment(false);
     }
   };
 
   const handlePostReplyComment = async (parentId) => {
-    const text = draft.trim();
+    const text = getPlainTextFromMarkup(draft).trim();
     if (!text) return;
 
     try {
       const res = await createComment({
         post_id: post.id,
         content: text,
-        parent_id: parentId
+        parent_id: parentId,
+        mentioned_user_ids: draftMentionIds,  // IDs chính xác từ react-mentions
       });
 
       const formatted = {
@@ -187,10 +239,11 @@ export default function CommunityPostCard({ post, showStatus = false }) {
 
       setLocalComments((prev) => [...prev, formatted]);
       setDraft("");
+      setDraftMentionIds([]);
       setReplyToId(null);
     } catch (err) {
       console.error("Lỗi khi đăng phản hồi:", err);
-      alert(err.message || "Không thể gửi phản hồi lúc này");
+      notify.error(err.message || "Không thể gửi phản hồi lúc này");
     }
   };
 
@@ -342,12 +395,13 @@ export default function CommunityPostCard({ post, showStatus = false }) {
             {/* Ô nhập bình luận chính */}
             {isLogin ? (
               <div className="flex items-center gap-2 mb-4">
-                <input
+                <MentionInput
                   value={mainCommentDraft}
                   onChange={(e) => setMainCommentDraft(e.target.value)}
+                  onMentionsChange={setMainMentionIds}
                   placeholder="Viết bình luận công khai..."
                   disabled={isSubmittingComment}
-                  className="h-10 flex-1 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100/40 focus:bg-white px-4 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70 transition-all"
+                  wrapperClassName="flex-1 h-10 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100/40 focus-within:bg-white focus-within:border-amber-400 transition-all"
                 />
                 <button
                   type="button"
@@ -400,7 +454,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                             </p>
                           </div>
                           <p className="mt-1 text-sm leading-6 text-slate-700">
-                            {comment.content}
+                            {renderContent(comment.content)}
                           </p>
                         </div>
 
@@ -411,7 +465,18 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                               type="button"
                               onClick={() => {
                                 setReplyToId(comment.id);
-                                setDraft("");
+                                const authorName = comment.author?.name || "";
+                                const matchedUser = mentionUsers.find(u => u.display === authorName);
+                                if (matchedUser) {
+                                  setDraft(`@[${matchedUser.display}](${matchedUser.id}) `);
+                                  setDraftMentionIds([matchedUser.id]);
+                                } else if (authorName) {
+                                  setDraft(`@${authorName} `);
+                                  setDraftMentionIds([]);
+                                } else {
+                                  setDraft("");
+                                  setDraftMentionIds([]);
+                                }
                                 setEditingCommentId(null);
                               }}
                               className="text-xs font-medium text-amber-600 hover:text-amber-800"
@@ -445,11 +510,12 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                         {/* Inline edit form */}
                         {editingCommentId === comment.id && (
                           <div className="mt-2 rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
-                            <textarea
+                            <MentionInput
+                              multiLine
+                              rows={2}
                               value={editDraft}
                               onChange={(e) => setEditDraft(e.target.value)}
-                              rows={2}
-                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-2 focus-visible:ring-amber-200/70 resize-none"
+                              wrapperClassName="w-full rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-200/70"
                             />
                             <div className="mt-2 flex items-center gap-2 justify-end">
                               <button
@@ -478,11 +544,12 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                               Đang trả lời <span className="font-medium text-slate-700">{comment.author?.name}</span>
                             </p>
                             <div className="mt-2 flex items-center gap-2">
-                              <input
+                              <MentionInput
                                 value={draft}
                                 onChange={(e) => setDraft(e.target.value)}
+                                onMentionsChange={setDraftMentionIds}
                                 placeholder="Viết phản hồi..."
-                                className="h-10 flex-1 rounded-full border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
+                                wrapperClassName="flex-1 h-10 rounded-full border border-slate-200 bg-white focus-within:border-amber-400 transition-all"
                               />
                               <button
                                 type="button"
@@ -537,7 +604,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
                                   </p>
                                 </div>
                                 <p className="mt-1 text-sm leading-6 text-slate-700">
-                                  {reply.content}
+                                  {renderContent(reply.content)}
                                 </p>
                               </div>
                             </div>

@@ -24,15 +24,6 @@ export default function SearchBar({ onSelectLocation }) {
     return () => clearTimeout(timer);
   }, [inputValue]);
 
-  // Mở dropdown khi có query
-  useEffect(() => {
-    if (debouncedQuery.trim().length >= 1) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [debouncedQuery]);
-
   // Đóng dropdown khi click ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -83,7 +74,15 @@ export default function SearchBar({ onSelectLocation }) {
         <input
           ref={inputRef}
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setInputValue(val);
+            if (val.trim().length >= 1) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
+          }}
           onFocus={() => {
             if (debouncedQuery.trim().length >= 1) setIsOpen(true);
           }}

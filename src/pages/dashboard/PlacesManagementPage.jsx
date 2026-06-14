@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLocations } from "@/api/useLocationQuery";
 import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
@@ -90,7 +90,6 @@ export default function PlacesManagementPage() {
 
   // Kết quả hiển thị: nếu đang search → dùng pagedSearchResults, ngược lại dùng locations từ API
   const filteredLocations = isServerSearching ? pagedSearchResults : locations;
-  const displayTotal = isServerSearching ? searchResults.length : meta.total;
 
   // ── Handlers ──────────────────────────────────────────
   const handleCreate = () => {

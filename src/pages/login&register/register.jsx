@@ -11,9 +11,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { authApi } from "@/api/authApi";
+import { useNotify } from "@/context/NotifyContext";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const notify = useNotify();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -47,7 +49,7 @@ export default function RegisterPage() {
         localStorage.setItem("user", JSON.stringify(res.user));
         localStorage.setItem("adminUser", JSON.stringify(res.user));
         
-        alert("Đăng ký thành công!");
+        await notify.success("Tài khoản của bạn đã được tạo thành công!", "Đăng ký thành công");
         navigate(PATHS.HOME);
       } else {
         setError("Đăng ký thất bại. Không tìm thấy thông tin xác thực.");

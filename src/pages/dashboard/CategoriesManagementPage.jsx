@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -23,7 +23,7 @@ export default function CategoriesManagementPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const { data: rawCategories = [], isLoading, error } = useCategories();
+  const { data: rawCategories = [] } = useCategories();
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory();
   const deleteMutation = useDeleteCategory();
@@ -59,17 +59,12 @@ export default function CategoriesManagementPage() {
   }, [search, CATEGORIES]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCategories.length / pageSize));
-
-  useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
-    }
-  }, [page, totalPages]);
+  const activePage = Math.min(page, totalPages);
 
   const pageItems = useMemo(() => {
-    const start = (page - 1) * pageSize;
+    const start = (activePage - 1) * pageSize;
     return filteredCategories.slice(start, start + pageSize);
-  }, [filteredCategories, page, pageSize]);
+  }, [filteredCategories, activePage, pageSize]);
 
   return (
     <main className="px-6 py-5">
@@ -140,12 +135,12 @@ export default function CategoriesManagementPage() {
           <TableBody>
             {pageItems.map((category, index) => (
               <TableRow key={category.id}>
-                <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
+                <TableCell>{(activePage - 1) * pageSize + index + 1}</TableCell>
                 <TableCell>{category.name}</TableCell>
                 <TableCell>
                   {category.icon_marker ? (
                     <img
-                      src={category.icon_marker}
+                       src={category.icon_marker}
                       alt={category.name}
                       className="h-8 w-8 object-cover rounded"
                     />
@@ -208,20 +203,20 @@ export default function CategoriesManagementPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled={page === 1}
-                      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={activePage === 1}
+                      onClick={() => setPage((prev) => Math.max(Math.min(prev, totalPages) - 1, 1))}
                     >
                       Trang trước
                     </Button>
                     <span className="text-sm text-foreground">
-                      {page} / {totalPages}
+                      {activePage} / {totalPages}
                     </span>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled={page === totalPages}
-                      onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={activePage === totalPages}
+                      onClick={() => setPage((prev) => Math.min(Math.min(prev, totalPages) + 1, totalPages))}
                     >
                       Trang sau
                     </Button>

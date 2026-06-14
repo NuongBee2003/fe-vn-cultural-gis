@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
@@ -8,15 +8,18 @@ import logoVcm from "@/assets/logo-vcm.png";
 
 export default function DashboardLayout() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
+  const [username] = useState(() => {
     const adminUser = localStorage.getItem("adminUser");
     if (adminUser) {
-      const user = JSON.parse(adminUser);
-      setUsername(user.username || "Admin");
+      try {
+        const user = JSON.parse(adminUser);
+        return user.username || "Admin";
+      } catch {
+        return "";
+      }
     }
-  }, []);
+    return "";
+  });
 
   return (
     <div

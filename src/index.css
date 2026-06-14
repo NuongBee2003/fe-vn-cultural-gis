@@ -276,3 +276,19 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   react-mentions: fix layout cho singleLine + multiLine
+   ───────────────────────────────────────────────────────────────── */
+
+/* Outer control div fill wrapper */
+.mention-input__control {
+  height: 100% !important;
+  width: 100% !important;
+  background: transparent !important;
+}
+
+/* Placeholder color cho input bên trong */
+.mention-input__input::placeholder {
+  color: #94a3b8; /* slate-400 */
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -26,11 +26,15 @@ export default function NavItem({ item, collapsed }) {
       childLinkActive(location.pathname, child.href),
     ) ?? false;
   const [open, setOpen] = useState(hasActiveChild);
+  const [prevHasActiveChild, setPrevHasActiveChild] = useState(hasActiveChild);
   const Icon = item.icon;
 
-  useEffect(() => {
-    if (hasActiveChild) setOpen(true);
-  }, [hasActiveChild]);
+  if (hasActiveChild !== prevHasActiveChild) {
+    setPrevHasActiveChild(hasActiveChild);
+    if (hasActiveChild) {
+      setOpen(true);
+    }
+  }
 
   const translatedLabel = t(item.labelKey, item.label);
 

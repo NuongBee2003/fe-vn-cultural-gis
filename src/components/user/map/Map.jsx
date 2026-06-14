@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNotify } from "@/context/NotifyContext";
 import {
   MapContainer,
   TileLayer,
@@ -30,8 +31,9 @@ function getBboxFromBounds(bounds) {
 }
 
 export default function Map({ activeFilter = "all", onSelectFromSearch, onLocationsCountChange }) {
+  const notify = useNotify();
   const { data: categories = [] } = useCategories();
-  const [bbox, setBbox] = useState("106.68,10.76,106.70,10.79");
+  const [bbox, setBbox] = useState(null);
   
   // Tìm category ID từ activeFilter
   const selectedCategoryId = useMemo(() => {
@@ -142,10 +144,11 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
         });
       } catch (err) {
         console.error(err);
-        alert(
+        notify.error(
           err instanceof Error
             ? err.message
-            : "Không thể tính tuyến đường. Hãy bật quyền vị trí và thử lại."
+            : "Không thể tính tuyến đường. Hãy bật quyền vị trí và thử lại.",
+          "Lỗi tuyến đường"
         );
         setRouteDestination(null);
       } finally {
@@ -227,7 +230,7 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
       },
       (err) => {
         console.error(err);
-        alert("Không thể lấy vị trí của bạn. Vui lòng kiểm tra quyền truy cập vị trí.");
+        notify.error("Không thể lấy vị trí của bạn. Vui lòng kiểm tra quyền truy cập vị trí.");
         setLoadingLocation(false);
       },
       { enableHighAccuracy: true }
@@ -237,6 +240,14 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   // Lắng nghe sự kiện di chuyển/zoom bản đồ để cập nhật bbox
   // Debounce 500ms: tránh gọi API liên tục khi pan/zoom → giảm flicker
   const bboxTimerRef = useRef(null);
+
+  useEffect(() => {
+    if (!mapInstance) return;
+    const initialBounds = mapInstance.getBounds();
+    const initialBbox = getBboxFromBounds(initialBounds);
+    if (initialBbox) setBbox(initialBbox);
+  }, [mapInstance]);
+
   useEffect(() => {
     if (!mapInstance) return;
 

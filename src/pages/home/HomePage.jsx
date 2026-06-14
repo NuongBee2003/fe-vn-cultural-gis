@@ -80,7 +80,6 @@ export default function HomePage() {
               <MapPin size={13.5} className="text-[var(--brand-primary)]" />
               <span>{t('map.totalLocations', { count: displayCount })}</span>
             </div>
-            <LanguageSwitcher />
           </div>
         )}
       </div>

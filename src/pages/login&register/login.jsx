@@ -4,10 +4,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { authApi } from "@/api/authApi";
+import { useNotify } from "@/context/NotifyContext";
 
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const notify = useNotify();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,7 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(res.user));
         localStorage.setItem("adminUser", JSON.stringify(res.user));
         
-        alert("Đăng nhập thành công!");
+        await notify.success("Đăng nhập thành công!", "Chào mừng trở lại");
         navigate(PATHS.HOME);
       } else {
         setError("Đăng nhập thất bại. Không tìm thấy thông tin xác thực.");

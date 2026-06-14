@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare } from "lucide-react";
 import { usePlaceReviews } from "@/api/useLocationQuery";
 import { useDeleteReview } from "@/api/locationAdminApi";
@@ -168,11 +168,6 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
 
   const { data, isLoading } = usePlaceReviews(placeId);
 
-  // Reset page when filter or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filterRating, searchQuery, sortBy]);
-
   if (!isOpen) return null;
 
   const allReviews = data?.reviews ?? [];
@@ -284,7 +279,10 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
                     return (
                       <button
                         key={rating}
-                        onClick={() => setFilterRating(isSelected ? 0 : rating)}
+                        onClick={() => {
+                          setFilterRating(isSelected ? 0 : rating);
+                          setCurrentPage(1);
+                        }}
                         className={`flex items-center gap-3 text-left w-full p-1.5 rounded-lg transition hover:bg-gray-100/70 group ${
                           isSelected ? "bg-amber-50/80 hover:bg-amber-50 border border-amber-200/50" : "border border-transparent"
                         }`}
@@ -332,12 +330,18 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
                     type="text"
                     placeholder="Tìm nội dung, tên người dùng..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
                     className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-amber-400 transition"
                   />
                   {searchQuery && (
                     <button
-                      onClick={() => setSearchQuery("")}
+                      onClick={() => {
+                        setSearchQuery("");
+                        setCurrentPage(1);
+                      }}
                       className="absolute right-3 top-2.5 text-[10px] text-gray-400 hover:text-gray-600 font-bold bg-gray-100 px-1 py-0.5 rounded"
                     >
                       Xóa
@@ -350,7 +354,10 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
                   <ArrowUpDown size={12} className="absolute left-3 top-3 text-gray-400" />
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
+                    onChange={(e) => {
+                      setSortBy(e.target.value);
+                      setCurrentPage(1);
+                    }}
                     className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-amber-400 transition bg-white appearance-none"
                   >
                     <option value="newest">Đánh giá mới nhất</option>
