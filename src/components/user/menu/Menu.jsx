@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -8,6 +8,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Menu as MenuIcon,
+  Shield,
+  User,
+  Mail,
+  ChevronUp,
+  X,
+  Crown,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
@@ -15,15 +21,52 @@ import { MENU_NAV_ITEMS } from "@/constants/menuNav";
 import { PATHS } from "@/constants/paths";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
+function getRoleBadge(role) {
+  const r = String(role || "").toLowerCase();
+  if (r === "admin") {
+    return {
+      label: "Quản trị viên",
+      icon: <Crown size={11} />,
+      className: "bg-amber-100 text-amber-700 border-amber-300",
+    };
+  }
+  if (r === "moderator" || r === "mod") {
+    return {
+      label: "Kiểm duyệt viên",
+      icon: <Shield size={11} />,
+      className: "bg-indigo-100 text-indigo-700 border-indigo-300",
+    };
+  }
+  return {
+    label: "Người dùng",
+    icon: <User size={11} />,
+    className: "bg-slate-100 text-slate-600 border-slate-300",
+  };
+}
+
 export default function Menu() {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
 
   const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
   const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
   const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
   const user = userRaw ? JSON.parse(userRaw) : null;
+
+  // Đóng popup khi click ngoài
+  useEffect(() => {
+    if (!profileOpen) return;
+    function handleClickOutside(e) {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [profileOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("isLogin");
@@ -33,6 +76,8 @@ export default function Menu() {
     localStorage.removeItem("adminUser");
     window.location.reload();
   };
+
+  const roleBadge = getRoleBadge(user?.role);
 
   return (
     <>
@@ -131,17 +176,97 @@ export default function Menu() {
         </div>
 
         {/* Login and Register or User Profile */}
-        <div className="relative z-50 px-1.5 py-2.5 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
-          {isLogin ? (
-            collapsed ? (
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-sm font-semibold overflow-hidden shadow-sm">
+        <div ref={profileRef} className="relative z-50 px-1.5 py-2.5 border-t border-[var(--brand-primary-18)] flex flex-col gap-1.5">
+
+          {/* Profile Popup */}
+          {profileOpen && isLogin && user && (
+            <div className="absolute bottom-full left-1.5 right-1.5 mb-2 rounded-2xl border border-[var(--brand-primary-18)] bg-[var(--brand-bg)] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
+              {/* Header popup */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--brand-primary-18)]">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--brand-primary-50)]">
+                  Thông tin tài khoản
+                </p>
+                <button
+                  onClick={() => setProfileOpen(false)}
+                  className="w-6 h-6 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-all cursor-pointer"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              {/* Avatar + tên + email */}
+              <div className="px-4 py-4 flex items-center gap-3">
+                <div className="w-12 h-12 shrink-0 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-base font-bold overflow-hidden shadow-md ring-2 ring-[var(--brand-primary-35)]">
                   {user?.avatar ? (
                     <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                   ) : (
                     user?.username ? user.username.charAt(0).toUpperCase() : "U"
                   )}
                 </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold text-slate-100 truncate">{user?.username || "Người dùng"}</p>
+                  {user?.email && (
+                    <p className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
+                      <Mail size={10} />
+                      {user.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Thông tin chi tiết */}
+              <div className="px-4 pb-3 space-y-2">
+                {/* Role / Quyền */}
+                <div className="flex items-center justify-between rounded-xl bg-white/5 border border-[var(--brand-primary-18)] px-3 py-2.5">
+                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                    <Shield size={13} className="text-[var(--brand-primary-50)]" />
+                    <span>Quyền hạn</span>
+                  </div>
+                  <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${roleBadge.className}`}>
+                    {roleBadge.icon}
+                    {roleBadge.label}
+                  </span>
+                </div>
+
+                {/* ID tài khoản */}
+                {user?.id && (
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 border border-[var(--brand-primary-18)] px-3 py-2.5">
+                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                      <User size={13} className="text-[var(--brand-primary-50)]" />
+                      <span>ID tài khoản</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-slate-300">#{user.id}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Nút đăng xuất */}
+              <div className="px-4 pb-4">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-[12px] font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 hover:text-rose-300 cursor-pointer transition-all"
+                >
+                  <LogOut size={13} />
+                  {t("auth.logout", "Đăng xuất")}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {isLogin ? (
+            collapsed ? (
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setProfileOpen((v) => !v)}
+                  title="Xem thông tin tài khoản"
+                  className="w-9 h-9 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-sm font-semibold overflow-hidden shadow-sm cursor-pointer hover:ring-2 hover:ring-[var(--brand-primary-50)] transition-all"
+                >
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+                  ) : (
+                    user?.username ? user.username.charAt(0).toUpperCase() : "U"
+                  )}
+                </button>
                 <button
                   onClick={handleLogout}
                   title={t("auth.logout", "Đăng xuất")}
@@ -151,7 +276,10 @@ export default function Menu() {
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col gap-2 bg-white/5 rounded-xl p-2 border border-[var(--brand-primary-18)]">
+              <button
+                onClick={() => setProfileOpen((v) => !v)}
+                className="w-full flex flex-col gap-2 bg-white/5 rounded-xl p-2 border border-[var(--brand-primary-18)] cursor-pointer hover:bg-white/10 hover:border-[var(--brand-primary-35)] transition-all text-left"
+              >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 shrink-0 rounded-full bg-[#5D4037] text-white flex items-center justify-center text-xs font-semibold overflow-hidden">
                     {user?.avatar ? (
@@ -168,14 +296,12 @@ export default function Menu() {
                       {user?.email || ""}
                     </p>
                   </div>
+                  <ChevronUp
+                    size={14}
+                    className={`shrink-0 text-slate-400 transition-transform duration-200 ${profileOpen ? "rotate-0" : "rotate-180"}`}
+                  />
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center justify-center gap-1.5 py-1.5 mt-1 rounded-lg text-[11px] font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border-none cursor-pointer transition-all w-full"
-                >
-                  <LogOut size={12} /> {t("auth.logout", "Đăng xuất")}
-                </button>
-              </div>
+              </button>
             )
           ) : (
             collapsed ? (

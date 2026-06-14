@@ -354,7 +354,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
           <span>{localComments.length} bình luận</span>
         </div>
 
-        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3">
+        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
           <button
             type="button"
             onClick={handleToggleLike}
@@ -378,13 +378,6 @@ export default function CommunityPostCard({ post, showStatus = false }) {
           >
             <MessageCircle size={16} className="text-slate-500" />
             Bình luận
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
-            <Share2 size={16} className="text-slate-500" />
-            Chia sẻ
           </button>
         </div>
 
