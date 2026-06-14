@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Search, SlidersHorizontal, X, Bell } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
 import CreatePostModal from "@/components/user/community/CreatePostModal";
@@ -81,6 +82,7 @@ export default function CommunityPage() {
   const [activeNotificationPostId, setActiveNotificationPostId] = useState(null);
   const [activeNotificationCommentId, setActiveNotificationCommentId] = useState(null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const { addNotificationListener } = useWebSocketNotification();
 
   useEffect(() => {
@@ -134,9 +136,9 @@ export default function CommunityPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNotificationClick = async (noti) => {
+  const handleNotificationClick = useCallback(async (noti) => {
     setNotificationsOpen(false);
-    if (!noti.is_read) {
+    if (!noti.is_read && noti.id) {
       setNotifications(prev =>
         prev.map(n => n.id === noti.id ? { ...n, is_read: true } : n)
       );
@@ -180,7 +182,52 @@ export default function CommunityPage() {
         }
       }, 300);
     }
-  };
+  }, [currentUser, feedTab]);
+
+  // Handle click on WebSocket toast (real-time popup)
+  useEffect(() => {
+    const handleWsClick = (e) => {
+      const { post_id, comment_id, noti_id } = e.detail;
+      if (post_id) {
+        const notiObj = {
+          id: noti_id,
+          post_id: Number(post_id),
+          comment_id: comment_id ? Number(comment_id) : null,
+          is_read: false
+        };
+        handleNotificationClick(notiObj);
+      }
+    };
+
+    window.addEventListener("ws_notification_click", handleWsClick);
+    return () => {
+      window.removeEventListener("ws_notification_click", handleWsClick);
+    };
+  }, [handleNotificationClick]);
+
+  // Handle URL query parameters on mount or change
+  useEffect(() => {
+    const postId = searchParams.get("post_id");
+    const commentId = searchParams.get("comment_id");
+    const notiId = searchParams.get("noti_id");
+
+    if (postId) {
+      const notiObj = {
+        id: notiId ? Number(notiId) : null,
+        post_id: Number(postId),
+        comment_id: commentId ? Number(commentId) : null,
+        is_read: !notiId
+      };
+      handleNotificationClick(notiObj);
+
+      // Clear search params to prevent multiple triggers
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete("post_id");
+      newParams.delete("comment_id");
+      newParams.delete("noti_id");
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, handleNotificationClick]);
 
   const handleMarkAllAsRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));

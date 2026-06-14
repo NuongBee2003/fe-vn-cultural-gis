@@ -44,8 +44,28 @@ function ToastCard({ toast, onClose }) {
   }, [onClose]);
 
   const handleToastClick = () => {
-    if (toast.url) {
-      // Navigate to URL
+    if (toast.post_id) {
+      const queryParams = `?post_id=${toast.post_id}${
+        toast.comment_id ? `&comment_id=${toast.comment_id}` : ""
+      }&noti_id=${toast.rawNoti?.id || ""}`;
+      const targetUrl = `/community${queryParams}`;
+
+      if (window.location.pathname === "/community") {
+        // Update URL search parameters without reloading
+        window.history.replaceState(null, "", targetUrl);
+        // Dispatch custom event so CommunityPage can trigger the scrolling/highlighting immediately
+        const event = new CustomEvent("ws_notification_click", {
+          detail: {
+            post_id: toast.post_id,
+            comment_id: toast.comment_id,
+            noti_id: toast.rawNoti?.id
+          }
+        });
+        window.dispatchEvent(event);
+      } else {
+        window.location.href = targetUrl;
+      }
+    } else if (toast.url) {
       window.location.href = toast.url;
     }
     setExiting(true);
@@ -147,6 +167,7 @@ export function WebSocketProvider({ children }) {
           }
         } catch (err) {
           origin = "http://localhost:3002";
+          console.error("Error parsing WebSocket URL:", err);
         }
 
         const wsProtocol = origin.startsWith("https") ? "wss" : "ws";
@@ -174,6 +195,9 @@ export function WebSocketProvider({ children }) {
               message: noti.message,
               url: noti.url,
               actor: noti.actor,
+              post_id: noti.post_id,
+              comment_id: noti.comment_id,
+              rawNoti: noti,
             };
             setToasts((prev) => [...prev, newToast]);
 
