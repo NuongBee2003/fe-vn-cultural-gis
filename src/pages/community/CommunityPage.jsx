@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, Bell } from "lucide-react";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
 import CreatePostModal from "@/components/user/community/CreatePostModal";
@@ -13,6 +13,7 @@ import {
   COMMUNITY_USERS,
 } from "@/constants/community";
 import { getPosts } from "@/api/postApi";
+import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead } from "@/api/notificationApi";
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -69,6 +70,76 @@ export default function CommunityPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [feedTab, setFeedTab] = useState("all");
+
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNoti, setLoadingNoti] = useState(false);
+  const notiRef = useRef(null);
+
+  const loadNotifications = useCallback(async () => {
+    const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+    if (!token) return;
+    try {
+      setLoadingNoti(true);
+      const data = await getNotifications();
+      setNotifications(data);
+      setUnreadCount(data.filter(n => !n.is_read).length);
+    } catch (err) {
+      console.error("Lỗi khi tải thông báo:", err);
+    } finally {
+      setLoadingNoti(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      loadNotifications();
+    }
+  }, [isLogin, loadNotifications]);
+
+  useEffect(() => {
+    if (notificationsOpen) {
+      loadNotifications();
+    }
+  }, [notificationsOpen, loadNotifications]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notiRef.current && !notiRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleNotificationClick = async (noti) => {
+    setNotificationsOpen(false);
+    if (!noti.is_read) {
+      setNotifications(prev =>
+        prev.map(n => n.id === noti.id ? { ...n, is_read: true } : n)
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+      await markNotificationAsRead(noti.id);
+    }
+    if (noti.post_id) {
+      const element = document.getElementById(`post-card-${noti.post_id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.classList.add("ring-2", "ring-amber-500", "duration-500");
+        setTimeout(() => {
+          element.classList.remove("ring-2", "ring-amber-500");
+        }, 2000);
+      }
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setUnreadCount(0);
+    await markAllNotificationsAsRead();
+  };
 
   const pageScrollRef = useRef(null);
   const lastScrollTopRef = useRef(0);
@@ -420,6 +491,99 @@ export default function CommunityPage() {
                       >
                         <SlidersHorizontal size={18} className="text-slate-600" />
                       </button>
+
+                      {isLogin && (
+                        <div className="relative" ref={notiRef}>
+                          <button
+                            type="button"
+                            onClick={() => setNotificationsOpen(!notificationsOpen)}
+                            className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 cursor-pointer relative ${
+                              notificationsOpen
+                                ? "border-amber-400 bg-amber-50 text-amber-600 ring-2 ring-amber-200/50"
+                                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-amber-300"
+                            }`}
+                            aria-label="Thông báo"
+                            title="Thông báo"
+                          >
+                            <Bell size={18} />
+                            {unreadCount > 0 && (
+                              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white animate-pulse">
+                                {unreadCount}
+                              </span>
+                            )}
+                          </button>
+
+                          {notificationsOpen && (
+                            <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white shadow-xl z-[100] flex flex-col max-h-[450px] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50">
+                                <span className="font-semibold text-slate-900 text-sm">Thông báo</span>
+                                {unreadCount > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={handleMarkAllAsRead}
+                                    className="text-xs font-medium text-amber-600 hover:text-amber-700 cursor-pointer border-none bg-transparent"
+                                  >
+                                    Đánh dấu tất cả đã đọc
+                                  </button>
+                                )}
+                              </div>
+
+                              <div className="flex-1 overflow-y-auto divide-y divide-slate-100 min-h-0">
+                                {loadingNoti && notifications.length === 0 ? (
+                                  <div className="flex justify-center items-center py-8">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-amber-500"></div>
+                                  </div>
+                                ) : notifications.length === 0 ? (
+                                  <div className="px-4 py-8 text-center text-xs text-slate-400">
+                                    Không có thông báo nào.
+                                  </div>
+                                ) : (
+                                  notifications.map((noti) => {
+                                    const timeLabel = noti.created_at ? formatDateTime(noti.created_at) : "";
+                                    
+                                    return (
+                                      <button
+                                        key={noti.id}
+                                        type="button"
+                                        onClick={() => handleNotificationClick(noti)}
+                                        className={`w-full text-left px-4 py-3 hover:bg-slate-50 flex gap-3 transition-colors cursor-pointer items-start border-none ${
+                                          !noti.is_read ? "bg-amber-50/40" : "bg-transparent"
+                                        }`}
+                                      >
+                                        <div className="h-9 w-9 shrink-0 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold overflow-hidden">
+                                          {noti.actor?.avatar ? (
+                                            <img
+                                              src={noti.actor.avatar}
+                                              alt={noti.actor.username}
+                                              className="h-full w-full object-cover"
+                                            />
+                                          ) : (
+                                            getInitials(noti.actor?.username || "U")
+                                          )}
+                                        </div>
+
+                                        <div className="flex-1 min-w-0">
+                                          <p className="text-xs text-slate-800 leading-normal">
+                                            <span className="font-semibold text-slate-900">{noti.actor?.username || "Người dùng"}</span>{" "}
+                                            {noti.message || "đã thực hiện một hành động"}
+                                          </p>
+                                          <span className="text-[10px] text-slate-400 mt-1 block">
+                                            {timeLabel}
+                                          </span>
+                                        </div>
+
+                                        {!noti.is_read && (
+                                          <div className="h-2 w-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                                        )}
+                                      </button>
+                                    );
+                                  })
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </>
                   ) : null}
                 </div>
@@ -477,7 +641,7 @@ export default function CommunityPage() {
                 </div>
               ) : postFeed.length ? (
                 postFeed.map((post) => (
-                  <div key={post.id}>
+                  <div key={post.id} id={`post-card-${post.id}`}>
                     <CommunityPostCard post={post} showStatus={feedTab === "mine"} />
                   </div>
                 ))

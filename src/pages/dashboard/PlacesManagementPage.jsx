@@ -3,6 +3,7 @@ import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLoc
 import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button/button";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { Input } from "@/components/ui/input/input";
 import {
   Table,
@@ -456,60 +457,30 @@ export default function PlacesManagementPage() {
             <TableFooter>
               <TableRow>
                 <TableCell colSpan={8}>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    {/* Hiển thị đúng số lượng tùy theo trạng thái */}
-                    <div className="text-sm text-muted-foreground">
-                      {isServerSearching ? (
-                        <>
-                          {t('map.resultsHint').split('·')[0].trim()}{" "}
-                          <span className="font-medium text-foreground">
-                            {searchResults.length}
-                          </span>{" "}
-                          {t('common.results')} "{debouncedSearch}"
-                        </>
-                      ) : (
-                        <>
-                          {t('common.showing')}{" "}
-                          <span className="font-medium text-foreground">
-                            {locations.length}
-                          </span>{" "}
-                          {t('common.of')}{" "}
-                          <span className="font-medium text-foreground">
-                            {meta.total}
-                          </span>{" "}
-                          {t('common.locations')}
-                          {isFiltering && (
-                            <span> {t('dashboard.places.showingInCategory', { category: categoryFilter.name })}</span>
-                          )}
-                        </>
-                      )}
-                    </div>
-
-                    {/* Pagination — hiện cả khi search (client-side) lẫn khi phân trang bình thường */}
-                    {totalPages > 1 && (
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled={page <= 1}
-                        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                      >
-                        {t('common.prevPage')}
-                      </Button>
-                      <span className="text-sm text-foreground min-w-[60px] text-center">
-                        {page} / {totalPages}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled={page >= totalPages}
-                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                      >
-                        {t('common.nextPage')}
-                      </Button>
-                    </div>
+                  <div className="text-sm text-muted-foreground">
+                    {isServerSearching ? (
+                      <>
+                        {t('map.resultsHint').split('·')[0].trim()}{" "}
+                        <span className="font-medium text-foreground">
+                          {searchResults.length}
+                        </span>{" "}
+                        {t('common.results')} "{debouncedSearch}"
+                      </>
+                    ) : (
+                      <>
+                        {t('common.showing')}{" "}
+                        <span className="font-medium text-foreground">
+                          {locations.length}
+                        </span>{" "}
+                        {t('common.of')}{" "}
+                        <span className="font-medium text-foreground">
+                          {meta.total}
+                        </span>{" "}
+                        {t('common.locations')}
+                        {isFiltering && (
+                          <span> {t('dashboard.places.showingInCategory', { category: categoryFilter.name })}</span>
+                        )}
+                      </>
                     )}
                   </div>
                 </TableCell>
@@ -518,6 +489,17 @@ export default function PlacesManagementPage() {
           </Table>
         )}
       </div>
+
+      {/* ── Pagination ────────────────────────────────────── */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex justify-end">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
 
       {/* ── Form Modal (Create / Update) ─────────────────── */}
       <LocationFormModal

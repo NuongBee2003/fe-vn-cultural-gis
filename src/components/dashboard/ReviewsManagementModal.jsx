@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare } from "lucide-react";
 import { usePlaceReviews } from "@/api/useLocationQuery";
 import { useDeleteReview } from "@/api/locationAdminApi";
@@ -224,7 +225,7 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="relative flex flex-col bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden border border-gray-100 animate-in zoom-in-95 duration-200">
-        
+
         {/* Header */}
         <div className="flex items-start justify-between gap-4 p-5 border-b border-gray-100 shrink-0 bg-gray-50/50">
           <div>
@@ -252,10 +253,10 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
           </div>
         ) : (
           <div className="flex-1 overflow-hidden grid grid-cols-1 md:grid-cols-12">
-            
+
             {/* Cột trái: Thống kê & Bộ lọc */}
             <div className="md:col-span-5 p-5 border-b md:border-b-0 md:border-r border-gray-100 bg-gray-50/30 overflow-y-auto flex flex-col gap-5">
-              
+
               {/* Tổng quan Điểm số */}
               <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-xs">
                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Đánh giá trung bình</p>
@@ -291,14 +292,14 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
                         <span className="text-xs font-semibold text-gray-600 w-6 group-hover:text-amber-500 transition">
                           {rating}★
                         </span>
-                        
+
                         <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
                           <div
                             className="bg-amber-400 h-full rounded-full transition-all duration-500"
                             style={{ width: `${percent}%` }}
                           />
                         </div>
-                        
+
                         <span className="text-xs font-mono text-gray-400 w-10 text-right group-hover:text-gray-700">
                           {percent}%
                         </span>
@@ -322,7 +323,7 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
               {/* Bộ lọc & Tìm kiếm */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tìm kiếm & Sắp xếp</h3>
-                
+
                 {/* Ô tìm kiếm */}
                 <div className="relative">
                   <Search size={14} className="absolute left-3 top-3 text-gray-400" />
@@ -383,7 +384,7 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
 
             {/* Cột phải: Danh sách đánh giá & Phân trang */}
             <div className="md:col-span-7 flex flex-col p-5 overflow-hidden">
-              
+
               {/* Header của danh sách */}
               <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4 shrink-0">
                 <span className="text-xs font-bold text-gray-500">
@@ -416,32 +417,17 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
 
               {/* Phân trang (Pagination) ở dưới cùng */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-4 shrink-0">
-                  <button
-                    type="button"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                    className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white transition"
-                  >
-                    Trang trước
-                  </button>
-                  
-                  <span className="text-xs font-medium text-gray-500">
-                    Trang <span className="font-bold text-gray-800">{currentPage}</span> / <span className="font-semibold text-gray-700">{totalPages}</span>
-                  </span>
-                  
-                  <button
-                    type="button"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                    className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white transition"
-                  >
-                    Trang sau
-                  </button>
+                <div className="border-t border-gray-100 pt-4 mt-4 shrink-0 flex justify-center">
+                  <Pagination
+                    page={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    size="sm"
+                  />
                 </div>
               )}
             </div>
-            
+
           </div>
         )}
 
