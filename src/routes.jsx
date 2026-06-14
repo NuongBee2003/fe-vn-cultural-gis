@@ -8,6 +8,9 @@ import PlacesManagementPage from "@/pages/dashboard/PlacesManagementPage";
 import CategoriesManagementPage from "@/pages/dashboard/CategoriesManagementPage";
 import PostsManagementPage from "@/pages/dashboard/PostsManagementPage";
 import UsersManagementPage from "@/pages/dashboard/UsersManagementPage";
+import CuisineManagementPage from "@/pages/dashboard/CuisineManagementPage";
+import CustomManagementPage from "@/pages/dashboard/CustomManagementPage";
+import FolkArtManagementPage from "@/pages/dashboard/FolkArtManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
 import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
@@ -191,9 +194,24 @@ export const routeConfig = [
         title: "Quản lý trải nghiệm",
       },
       {
-        path: PATHS.DASHBOARD_EVENTS,
-        element: dashPage("Quản lý sự kiện", "Lịch sự kiện văn hóa"),
-        title: "Quản lý sự kiện",
+        path: PATHS.DASHBOARD_CULTURE,
+        element: <Navigate to={PATHS.DASHBOARD_CULTURE_CUISINES} replace />,
+        title: "Quản lý văn hóa",
+      },
+      {
+        path: PATHS.DASHBOARD_CULTURE_CUISINES,
+        element: <CuisineManagementPage />,
+        title: "Quản lý ẩm thực",
+      },
+      {
+        path: PATHS.DASHBOARD_CULTURE_CUSTOMS,
+        element: <CustomManagementPage />,
+        title: "Quản lý phong tục",
+      },
+      {
+        path: PATHS.DASHBOARD_CULTURE_FOLK_ARTS,
+        element: <FolkArtManagementPage />,
+        title: "Quản lý nghệ thuật dân gian",
       },
       {
         path: PATHS.DASHBOARD_REPORTS_HOT_PLACES,

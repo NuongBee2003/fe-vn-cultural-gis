@@ -117,7 +117,10 @@
       "accounts": "Manage Accounts",
       "categories": "Manage Categories",
       "experiences": "Manage Experiences",
-      "events": "Manage Events",
+      "culture": "Culture Management",
+      "cultureCuisines": "Manage Cuisines",
+      "cultureCustoms": "Manage Customs",
+      "cultureFolkArts": "Manage Folk Arts",
       "reports": "Reports",
       "hotPlaces": "Hot Places"
     },

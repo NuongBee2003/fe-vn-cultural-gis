@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
-import { uploadImageToSupabase } from "@/lib/supabaseClient";
+import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
 
 export default function CategoryFormModal({
@@ -68,6 +68,15 @@ export default function CategoryFormModal({
           SUPABASE_BUCKETS.ICON_LOCATION
         );
         finalFormData.icon_marker = imageUrl;
+      }
+
+      // Xóa icon cũ trên Supabase nếu icon mới khác icon cũ
+      if (initialData && initialData.icon_marker && initialData.icon_marker !== finalFormData.icon_marker && initialData.icon_marker.includes("supabase.co")) {
+        try {
+          await deleteImageFromSupabase(initialData.icon_marker, SUPABASE_BUCKETS.ICON_LOCATION);
+        } catch (err) {
+          console.error("Lỗi xóa icon cũ:", err);
+        }
       }
 
       // Submit form

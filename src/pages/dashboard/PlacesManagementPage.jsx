@@ -19,6 +19,9 @@ import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 import ReviewsManagementModal from "@/components/dashboard/ReviewsManagementModal";
 import { ImageOff, Filter, X } from "lucide-react";
 
+import { deleteImageFromSupabase } from "@/lib/supabaseClient";
+import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
+
 const PAGE_SIZES = [5, 10, 15, 20];
 
 const DEFAULT_CATEGORY = { id: null, name: "all" };
@@ -103,12 +106,23 @@ export default function PlacesManagementPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (location) => {
+  const handleDelete = async (location) => {
     if (
       window.confirm(
         t('dashboard.places.confirmDelete', { name: location.name })
       )
     ) {
+      if (location.images && location.images.length > 0) {
+        for (const imgUrl of location.images) {
+          if (imgUrl && imgUrl.includes("supabase.co")) {
+            try {
+              await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.LOCATION_IMAGES);
+            } catch (err) {
+              console.error("Lỗi xóa ảnh địa điểm trên Supabase:", err);
+            }
+          }
+        }
+      }
       deleteMutation.mutate(location.id);
     }
   };

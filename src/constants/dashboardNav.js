@@ -4,6 +4,7 @@ import {
   LayoutGrid,
   MapPinned,
   MessageSquareText,
+  Palette,
   Tags,
   Users,
 } from "lucide-react";
@@ -53,10 +54,15 @@ export const DASHBOARD_NAV_ITEMS = [
     to: "/dashboard/experiences",
   },
   {
-    label: "Quản lý sự kiện",
-    labelKey: "dashboard.nav.events",
-    icon: CalendarDays,
-    to: "/dashboard/events",
+    label: "Quản lý văn hóa",
+    labelKey: "dashboard.nav.culture",
+    icon: Palette,
+    base: "/dashboard/culture",
+    children: [
+      { label: "Quản lý ẩm thực", labelKey: "dashboard.nav.cultureCuisines", to: "/dashboard/culture/cuisines" },
+      { label: "Quản lý phong tục", labelKey: "dashboard.nav.cultureCustoms", to: "/dashboard/culture/customs" },
+      { label: "Quản lý nghệ thuật dân gian", labelKey: "dashboard.nav.cultureFolkArts", to: "/dashboard/culture/folk-arts" },
+    ],
   },
   {
     label: "Báo cáo",

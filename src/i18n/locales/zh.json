@@ -117,7 +117,10 @@
       "accounts": "账户管理",
       "categories": "类别管理",
       "experiences": "体验管理",
-      "events": "活动管理",
+      "culture": "文化管理",
+      "cultureCuisines": "美食管理",
+      "cultureCustoms": "习俗管理",
+      "cultureFolkArts": "民间艺术管理",
       "reports": "统计报表",
       "hotPlaces": "热门地点"
     },

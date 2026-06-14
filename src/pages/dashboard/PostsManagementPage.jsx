@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAdminPosts, reviewPost, deletePost } from "@/api/postApi";
 import { useNotify } from "@/context/NotifyContext";
+import { deleteImageFromSupabase } from "@/lib/supabaseClient";
+import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -74,6 +76,18 @@ export default function PostsManagementPage() {
     if (!ok) return;
 
     try {
+      const post = posts.find((p) => p.id === id);
+      if (post && post.images && post.images.length > 0) {
+        for (const imgUrl of post.images) {
+          if (imgUrl && imgUrl.includes("supabase.co")) {
+            try {
+              await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.POST_IMAGES);
+            } catch (err) {
+              console.error("Lỗi xóa ảnh bài viết trên Supabase:", err);
+            }
+          }
+        }
+      }
       await deletePost(id);
       loadPosts();
     } catch (err) {

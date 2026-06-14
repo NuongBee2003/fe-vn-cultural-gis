@@ -13,6 +13,8 @@ import {
 import { useCategories } from "@/api/useLocationQuery";
 import { useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/api/categoryApi";
 import CategoryFormModal from "@/components/dashboard/CategoryFormModal";
+import { deleteImageFromSupabase } from "@/lib/supabaseClient";
+import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 
 const PAGE_SIZES = [5, 10, 15, 20];
 
@@ -174,12 +176,19 @@ export default function CategoriesManagementPage() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => {
+                    onClick={async () => {
                       if (
                         window.confirm(
                           `Bạn có chắc chắn muốn xóa danh mục "${category.name}"?`
                         )
                       ) {
+                        if (category.icon_marker && category.icon_marker.includes("supabase.co")) {
+                          try {
+                            await deleteImageFromSupabase(category.icon_marker, SUPABASE_BUCKETS.ICON_LOCATION);
+                          } catch (err) {
+                            console.error("Lỗi xóa icon trên Supabase:", err);
+                          }
+                        }
                         deleteMutation.mutate(category.id);
                       }
                     }}

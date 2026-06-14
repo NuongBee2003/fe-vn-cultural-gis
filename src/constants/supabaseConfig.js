@@ -3,6 +3,9 @@ export const SUPABASE_BUCKETS = {
   ICON_LOCATION: 'icon_location',   // Icon marker cho category
   LOCATION_IMAGES: 'image_location', // Ảnh minh họa cho địa điểm
   POST_IMAGES: 'post',               // Ảnh bài viết của user
+  CUISINE_IMAGES: 'cuisines',        // Ảnh ẩm thực
+  CUSTOM_IMAGES: 'customs',          // Ảnh phong tục
+  FOLK_ART_IMAGES: 'folk-arts',      // Ảnh nghệ thuật dân gian
 };
 
 // Cấu hình tải ảnh

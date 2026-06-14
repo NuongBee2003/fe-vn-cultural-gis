@@ -117,7 +117,10 @@
       "accounts": "Quản lý tài khoản",
       "categories": "Quản lý danh mục địa điểm",
       "experiences": "Quản lý trải nghiệm",
-      "events": "Quản lý sự kiện",
+      "culture": "Quản lý văn hóa",
+      "cultureCuisines": "Quản lý ẩm thực",
+      "cultureCustoms": "Quản lý phong tục",
+      "cultureFolkArts": "Quản lý nghệ thuật dân gian",
       "reports": "Báo cáo",
       "hotPlaces": "Địa điểm hot"
     },

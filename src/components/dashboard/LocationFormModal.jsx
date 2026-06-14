@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
-import { uploadImageToSupabase } from "@/lib/supabaseClient";
+import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
 import { useCategories, useAssetsByPlaceId } from "@/api/useLocationQuery";
 
@@ -216,6 +216,20 @@ export default function LocationFormModal({
           return item.url;
         })
       );
+
+      // Xóa ảnh cũ bị loại bỏ trên Supabase Storage
+      if (initialData && initialData.images) {
+        const deletedImages = initialData.images.filter(img => !uploadedUrls.includes(img));
+        for (const imgUrl of deletedImages) {
+          if (imgUrl && imgUrl.includes("supabase.co")) {
+            try {
+              await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.LOCATION_IMAGES);
+            } catch (err) {
+              console.error("Lỗi xóa ảnh địa điểm cũ:", err);
+            }
+          }
+        }
+      }
 
       // Build payload
       const payload = {
