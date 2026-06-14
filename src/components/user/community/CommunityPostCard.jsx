@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
 import { createComment, updateComment, deleteComment } from "@/api/commentApi";
 import { toggleLikePost } from "@/api/postApi";
+import PostLikesModal from "./PostLikesModal";
 import { useNotify } from "@/context/NotifyContext";
 import MentionInput, { getPlainTextFromMarkup } from "@/components/ui/input/MentionInput";
 import { useMentionUsers } from "@/hooks/useMentionUsers";
@@ -106,6 +107,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
   const [liked, setLiked] = useState(post.likedYN === "Y");
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
   const [isLiking, setIsLiking] = useState(false);
+  const [likesModalOpen, setLikesModalOpen] = useState(false);
 
   const handleToggleLike = async () => {
     if (!isLogin) {
@@ -264,6 +266,7 @@ export default function CommunityPostCard({ post, showStatus = false }) {
   }, [localComments]);
 
   return (
+    <>
     <article className="rounded-2xl border border-slate-200 bg-white shadow-sm">
       <header className="flex items-start gap-3 p-4">
         <div className="h-10 w-10 shrink-0 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold">
@@ -350,7 +353,12 @@ export default function CommunityPostCard({ post, showStatus = false }) {
         ) : null}
 
         <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-          <span>{likeCount} lượt thích</span>
+          <span
+            onClick={() => setLikesModalOpen(true)}
+            className="cursor-pointer hover:underline hover:text-slate-800 transition-colors font-medium"
+          >
+            {likeCount} lượt thích
+          </span>
           <span>{localComments.length} bình luận</span>
         </div>
 
@@ -615,5 +623,14 @@ export default function CommunityPostCard({ post, showStatus = false }) {
         ) : null}
       </div>
     </article>
+
+    {/* Modal danh sách người thích */}
+    {likesModalOpen && (
+      <PostLikesModal
+        postId={post.id}
+        onClose={() => setLikesModalOpen(false)}
+      />
+    )}
+  </>
   );
 }

@@ -22,6 +22,7 @@ import {
 import { searchPlaceLocationsByDB } from "@/api/locationApi";
 import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
+import { REGIONS } from "@/constants/provinces";
 
 export default function CuisineManagementPage() {
   const { t } = useTranslation();
@@ -42,6 +43,8 @@ export default function CuisineManagementPage() {
     ingredients: "",
     image_url: "",
   });
+  const [selectedProvinces, setSelectedProvinces] = useState([]);
+  const [showProvinceSelector, setShowProvinceSelector] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [errors, setErrors] = useState({});
@@ -120,6 +123,8 @@ export default function CuisineManagementPage() {
       ingredients: "",
       image_url: "",
     });
+    setSelectedProvinces([]);
+    setShowProvinceSelector(false);
     setSelectedLocations([]);
     setLocationQuery("");
     setLocationResults([]);
@@ -137,6 +142,13 @@ export default function CuisineManagementPage() {
       ingredients: item.ingredients || "",
       image_url: item.image_url || "",
     });
+    
+    // Parse item.origin thành mảng các tỉnh thành được chọn
+    const provincesFromDb = item.origin
+      ? item.origin.split(",").map(s => s.trim()).filter(Boolean)
+      : [];
+    setSelectedProvinces(provincesFromDb);
+    setShowProvinceSelector(false);
     
     // Extract selected locations from nested cuisine_places
     const places = item.cuisine_places 
@@ -204,7 +216,7 @@ export default function CuisineManagementPage() {
   const validateForm = () => {
     const errs = {};
     if (!formData.name.trim()) errs.name = "Tên món ăn không được để trống";
-    if (!formData.origin.trim()) errs.origin = "Vui lòng nhập nguồn gốc vùng miền";
+    if (selectedProvinces.length === 0) errs.origin = "Vui lòng chọn ít nhất một tỉnh thành nguồn gốc";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -234,6 +246,7 @@ export default function CuisineManagementPage() {
 
       const payload = {
         ...formData,
+        origin: selectedProvinces.join(", "),
         image_url: imageUrl,
         place_ids: selectedLocations.map((l) => l.id),
       };
@@ -478,16 +491,105 @@ export default function CuisineManagementPage() {
               </div>
 
               {/* Nguồn gốc */}
-              <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground">Nguồn gốc vùng miền *</label>
-                <Input
-                  name="origin"
-                  value={formData.origin}
-                  onChange={handleInputChange}
-                  placeholder="Ví dụ: Hà Nội, Quảng Nam, Nam Bộ..."
-                  disabled={isMutating}
-                />
-                {errors.origin && <p className="text-xs text-red-500 mt-1">{errors.origin}</p>}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-foreground">
+                  Nguồn gốc tỉnh thành * (Đã chọn: {selectedProvinces.length})
+                </label>
+
+                {/* Danh sách các tỉnh thành đã chọn */}
+                {selectedProvinces.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 p-2 bg-slate-50 border border-dashed rounded-lg">
+                    {selectedProvinces.map((prov) => (
+                      <div
+                        key={prov}
+                        className="flex items-center gap-1.5 rounded bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs text-amber-800 font-medium"
+                      >
+                        <span className="truncate max-w-[150px]">{prov}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedProvinces((prev) => prev.filter((p) => p !== prov))
+                          }
+                          className="rounded-full hover:bg-amber-100 text-amber-500 hover:text-amber-800 p-0.5 shrink-0"
+                        >
+                          <X size={10} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {errors.origin && <p className="text-xs text-red-500">{errors.origin}</p>}
+
+                {/* Toggle Show Selector */}
+                <button
+                  type="button"
+                  onClick={() => setShowProvinceSelector(!showProvinceSelector)}
+                  className="text-xs font-semibold text-[#B8922E] hover:underline flex items-center gap-1"
+                >
+                  {showProvinceSelector ? "✕ Ẩn danh sách chọn" : "＋ Chọn tỉnh thành nguồn gốc..."}
+                </button>
+
+                {/* Bảng chọn nhiều tỉnh thành chia theo vùng miền */}
+                {showProvinceSelector && (
+                  <div className="border rounded-lg p-3 bg-slate-50/50 space-y-3 max-h-60 overflow-y-auto">
+                    {Object.values(REGIONS).map((region) => {
+                      const allSelectedInRegion = region.provinces.every(p => selectedProvinces.includes(p));
+                      
+                      const handleToggleRegion = () => {
+                        if (allSelectedInRegion) {
+                          setSelectedProvinces(prev => prev.filter(p => !region.provinces.includes(p)));
+                        } else {
+                          setSelectedProvinces(prev => {
+                            const next = [...prev];
+                            region.provinces.forEach(p => {
+                              if (!next.includes(p)) next.push(p);
+                            });
+                            return next;
+                          });
+                        }
+                      };
+
+                      return (
+                        <div key={region.id} className="space-y-1.5">
+                          <div className="flex items-center justify-between border-b pb-1">
+                            <span className="text-xs font-bold text-stone-700">{region.label}</span>
+                            <button
+                              type="button"
+                              onClick={handleToggleRegion}
+                              className="text-[10px] text-[#B8922E] hover:underline font-medium"
+                            >
+                              {allSelectedInRegion ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                            {region.provinces.map((prov) => {
+                              const isChecked = selectedProvinces.includes(prov);
+                              const handleCheckboxChange = () => {
+                                if (isChecked) {
+                                  setSelectedProvinces(prev => prev.filter(p => p !== prov));
+                                } else {
+                                  setSelectedProvinces(prev => [...prev, prov]);
+                                }
+                              };
+                              return (
+                                <label key={prov} className="flex items-center gap-1.5 text-xs text-stone-600 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={handleCheckboxChange}
+                                    className="rounded border-gray-300 text-[#B8922E] focus:ring-[#B8922E] h-3.5 w-3.5"
+                                  />
+                                  <span className="select-none">{prov}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Nguyên liệu */}
