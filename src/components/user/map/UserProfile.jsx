@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grip, X, LogOut } from "lucide-react";
+import { Grip, X, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 
@@ -76,6 +76,20 @@ export default function UserProfile() {
             <button className="mt-4 px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 bg-white transition-colors">
               Quản lý tài khoản
             </button>
+
+            {String(user?.role || "").toLowerCase() === "admin" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate(PATHS.DASHBOARD);
+                }}
+                className="mt-2 w-full flex items-center justify-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-semibold transition-all shadow-sm"
+              >
+                <Shield size={16} />
+                Trang quản lý
+              </button>
+            )}
           </div>
 
           <div className="p-2 bg-white rounded-b-3xl">

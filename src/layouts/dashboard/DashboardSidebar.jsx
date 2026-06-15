@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
@@ -134,6 +134,17 @@ export default function DashboardSidebar() {
           )}
         </div>
       </nav>
+
+      {/* Button to go back to Home UI */}
+      <div className="p-3 border-t border-border">
+        <NavLink
+          to="/"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white no-underline transition-all shadow-sm"
+        >
+          <ArrowLeft size={16} />
+          Về trang chủ UI
+        </NavLink>
+      </div>
     </aside>
   );
 }

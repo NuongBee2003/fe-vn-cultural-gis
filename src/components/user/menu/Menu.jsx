@@ -238,6 +238,21 @@ export default function Menu() {
                     <span className="text-[11px] font-mono text-slate-300">#{user.id}</span>
                   </div>
                 )}
+
+                {/* Trang quản lý nếu là admin */}
+                {String(user?.role || "").toLowerCase() === "admin" && (
+                  <NavLink
+                    to={PATHS.DASHBOARD}
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center justify-between rounded-xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 px-3 py-2.5 text-xs font-semibold text-amber-400 no-underline cursor-pointer transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Shield size={13} className="text-amber-500" />
+                      <span>Trang quản lý</span>
+                    </div>
+                    <span>→</span>
+                  </NavLink>
+                )}
               </div>
 
               {/* Nút đăng xuất */}

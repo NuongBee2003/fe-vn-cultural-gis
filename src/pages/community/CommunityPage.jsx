@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Search, SlidersHorizontal, X, Bell } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
 import CreatePostModal from "@/components/user/community/CreatePostModal";
@@ -12,8 +13,9 @@ import {
   COMMUNITY_LOCATIONS,
   COMMUNITY_USERS,
 } from "@/constants/community";
-import { getPosts } from "@/api/postApi";
+import { getPosts, getPostDetail } from "@/api/postApi";
 import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead } from "@/api/notificationApi";
+import { useWebSocketNotification } from "@/context/WebSocketContext";
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -75,6 +77,26 @@ export default function CommunityPage() {
   const [loadingNoti, setLoadingNoti] = useState(false);
   const notiRef = useRef(null);
 
+  const [activeNotificationPostId, setActiveNotificationPostId] = useState(null);
+  const [activeNotificationCommentId, setActiveNotificationCommentId] = useState(null);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { addNotificationListener } = useWebSocketNotification();
+
+  useEffect(() => {
+    const removeListener = addNotificationListener((newNoti) => {
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === newNoti.id)) return prev;
+        return [newNoti, ...prev];
+      });
+      setUnreadCount((prev) => prev + 1);
+    });
+
+    return () => {
+      removeListener();
+    };
+  }, [addNotificationListener]);
+
   const loadNotifications = useCallback(async () => {
     const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
     if (!token) return;
@@ -112,9 +134,9 @@ export default function CommunityPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNotificationClick = async (noti) => {
+  const handleNotificationClick = useCallback(async (noti) => {
     setNotificationsOpen(false);
-    if (!noti.is_read) {
+    if (!noti.is_read && noti.id) {
       setNotifications(prev =>
         prev.map(n => n.id === noti.id ? { ...n, is_read: true } : n)
       );
@@ -122,16 +144,88 @@ export default function CommunityPage() {
       await markNotificationAsRead(noti.id);
     }
     if (noti.post_id) {
-      const element = document.getElementById(`post-card-${noti.post_id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-        element.classList.add("ring-2", "ring-amber-500", "duration-500");
-        setTimeout(() => {
-          element.classList.remove("ring-2", "ring-amber-500");
-        }, 2000);
+      try {
+        const latestPost = await getPostDetail(noti.post_id);
+        if (latestPost) {
+          // If the post is not ours and we are on "mine" tab, switch to "all" tab
+          const isOwnPost = Number(latestPost.user_id) === Number(currentUser?.id);
+          if (!isOwnPost && feedTab === "mine") {
+            setFeedTab("all");
+          }
+
+          setDbPosts(prev => {
+            const exists = prev.some(p => p.id === latestPost.id);
+            if (exists) {
+              return prev.map(p => p.id === latestPost.id ? latestPost : p);
+            } else {
+              return [latestPost, ...prev];
+            }
+          });
+
+          setActiveNotificationPostId(latestPost.id);
+          setActiveNotificationCommentId(noti.comment_id || null);
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải chi tiết bài viết từ thông báo:", err);
       }
+
+      setTimeout(() => {
+        const element = document.getElementById(`post-card-${noti.post_id}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("ring-2", "ring-amber-500", "duration-500");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-amber-500");
+          }, 2000);
+        }
+      }, 300);
     }
-  };
+  }, [currentUser, feedTab]);
+
+  // Handle click on WebSocket toast (real-time popup)
+  useEffect(() => {
+    const handleWsClick = (e) => {
+      const { post_id, comment_id, noti_id } = e.detail;
+      if (post_id) {
+        const notiObj = {
+          id: noti_id,
+          post_id: Number(post_id),
+          comment_id: comment_id ? Number(comment_id) : null,
+          is_read: false
+        };
+        handleNotificationClick(notiObj);
+      }
+    };
+
+    window.addEventListener("ws_notification_click", handleWsClick);
+    return () => {
+      window.removeEventListener("ws_notification_click", handleWsClick);
+    };
+  }, [handleNotificationClick]);
+
+  // Handle URL query parameters on mount or change
+  useEffect(() => {
+    const postId = searchParams.get("post_id");
+    const commentId = searchParams.get("comment_id");
+    const notiId = searchParams.get("noti_id");
+
+    if (postId) {
+      const notiObj = {
+        id: notiId ? Number(notiId) : null,
+        post_id: Number(postId),
+        comment_id: commentId ? Number(commentId) : null,
+        is_read: !notiId
+      };
+      handleNotificationClick(notiObj);
+
+      // Clear search params to prevent multiple triggers
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete("post_id");
+      newParams.delete("comment_id");
+      newParams.delete("noti_id");
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, handleNotificationClick]);
 
   const handleMarkAllAsRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
@@ -575,7 +669,12 @@ export default function CommunityPage() {
               ) : postFeed.length ? (
                 postFeed.map((post) => (
                   <div key={post.id} id={`post-card-${post.id}`}>
-                    <CommunityPostCard post={post} showStatus={feedTab === "mine"} />
+                    <CommunityPostCard
+                      post={post}
+                      showStatus={feedTab === "mine"}
+                      autoOpenComments={activeNotificationPostId === post.id}
+                      highlightCommentId={activeNotificationPostId === post.id ? activeNotificationCommentId : null}
+                    />
                   </div>
                 ))
               ) : (

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
@@ -18,7 +19,11 @@ export default function ViewHeader({
     >
       <div className="mx-auto flex h-16 w-full items-center justify-between gap-4 px-6">
         <div className="flex min-w-0 items-center gap-3">
-          {logo ? <div className="shrink-0">{logo}</div> : null}
+          {logo ? (
+            <Link to="/" className="shrink-0 hover:opacity-85 transition-opacity cursor-pointer">
+              {logo}
+            </Link>
+          ) : null}
           <div className="min-w-0">
             <div className="truncate text-lg font-semibold leading-none">
               {t('app.title')}
