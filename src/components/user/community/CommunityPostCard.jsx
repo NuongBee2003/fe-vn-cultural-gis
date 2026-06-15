@@ -7,6 +7,7 @@ import CommentItem from "./CommentItem";
 import { useNotify } from "@/context/NotifyContext";
 import MentionInput, { getPlainTextFromMarkup } from "@/components/ui/input/MentionInput";
 import { useMentionUsers } from "@/hooks/useMentionUsers";
+import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -38,9 +39,42 @@ function getStatusBadge(status) {
 
 // ─── main component ──────────────────────────────────────────────────────────
 
-export default function CommunityPostCard({ post, showStatus = false }) {
+export default function CommunityPostCard({ post, showStatus = false, highlightCommentId = null }) {
   const notify = useNotify();
   const mentionUsers = useMentionUsers(); // singleton cache — không gọi API thêm
+  
+  const isLogin = localStorage.getItem("isLogin") === "true" || !!localStorage.getItem("token");
+
+  const [localComments, setLocalComments] = useState(post.comments || []);
+  const [liked, setLiked] = useState(post.likedYN === "Y");
+  const [likeCount, setLikeCount] = useState(post.likeCount || 0);
+  const [isLiking, setIsLiking] = useState(false);
+  const [likesModalOpen, setLikesModalOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+
+  const [mainCommentDraft, setMainCommentDraft] = useState("");
+  const [mainMentionIds, setMainMentionIds] = useState([]);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+  
+  const [replyToId, setReplyToId] = useState(null);
+  const [draft, setDraft] = useState("");
+  const [draftMentionIds, setDraftMentionIds] = useState([]);
+
+  // Image Gallery states
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const allAssets = post.assets || [];
+  const galleryImages = allAssets.map(a => a.url);
+
+  const handleImageClick = (index) => {
+    setGalleryIndex(index);
+    setGalleryOpen(true);
+  };
 
   /**
    * Render text và highlight @username.
@@ -282,18 +316,76 @@ export default function CommunityPostCard({ post, showStatus = false }) {
           </div>
 
           {/* Ảnh */}
-          {primaryAsset && (
+          {allAssets.length > 0 && (
             <div className="mt-4">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                <img src={primaryAsset.url} alt="Ảnh bài viết" className="h-72 w-full object-cover sm:h-96" loading="lazy" />
-              </div>
-              {extraAssets.length > 0 && (
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {extraAssets.map((asset) => (
-                    <div key={asset.id} className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                      <img src={asset.url} alt="Ảnh bài viết" className="h-28 w-full object-cover" loading="lazy" />
+              {allAssets.length === 1 && (
+                <div 
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer"
+                  onClick={() => handleImageClick(0)}
+                >
+                  <img src={allAssets[0].url} alt="Ảnh bài viết" className="max-h-[500px] w-full object-contain bg-black/5" loading="lazy" />
+                </div>
+              )}
+              {allAssets.length === 2 && (
+                <div className="grid grid-cols-2 gap-2">
+                  {allAssets.map((asset, idx) => (
+                    <div 
+                      key={asset.id} 
+                      className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-64"
+                      onClick={() => handleImageClick(idx)}
+                    >
+                      <img src={asset.url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
                     </div>
                   ))}
+                </div>
+              )}
+              {allAssets.length === 3 && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div 
+                    className="col-span-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-64 sm:h-80"
+                    onClick={() => handleImageClick(0)}
+                  >
+                    <img src={allAssets[0].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div 
+                    className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-40"
+                    onClick={() => handleImageClick(1)}
+                  >
+                    <img src={allAssets[1].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div 
+                    className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-40"
+                    onClick={() => handleImageClick(2)}
+                  >
+                    <img src={allAssets[2].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                </div>
+              )}
+              {allAssets.length >= 4 && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div 
+                    className="col-span-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-64 sm:h-80"
+                    onClick={() => handleImageClick(0)}
+                  >
+                    <img src={allAssets[0].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div 
+                    className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-40"
+                    onClick={() => handleImageClick(1)}
+                  >
+                    <img src={allAssets[1].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div 
+                    className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 cursor-pointer h-40"
+                    onClick={() => handleImageClick(2)}
+                  >
+                    <img src={allAssets[2].url} alt="Ảnh bài viết" className="h-full w-full object-cover" loading="lazy" />
+                    {allAssets.length > 3 && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="text-white text-2xl font-semibold">+{allAssets.length - 3}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -390,6 +482,17 @@ export default function CommunityPostCard({ post, showStatus = false }) {
       {/* Modal danh sách người thích */}
       {likesModalOpen && (
         <PostLikesModal postId={post.id} onClose={() => setLikesModalOpen(false)} />
+      )}
+
+      {/* Image Gallery */}
+      {galleryImages.length > 0 && (
+        <ImageMasonryGallery
+          open={galleryOpen}
+          onClose={() => setGalleryOpen(false)}
+          images={galleryImages}
+          title={post.title || "Hình ảnh bài viết"}
+          initialIndex={galleryIndex}
+        />
       )}
     </>
   );
