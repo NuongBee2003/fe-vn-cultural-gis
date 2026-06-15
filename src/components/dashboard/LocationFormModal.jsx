@@ -21,6 +21,42 @@ import { Input } from "@/components/ui/input/input";
 import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
 import { useCategories, useAssetsByLocationId } from "@/api/useLocationQuery";
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { createCustomIcon } from "@/utils/icons";
+
+// Helper component to handle map sizing in modal
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
+// Helper component to change map center
+function ChangeMapCenter({ center }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && center[0] && center[1]) {
+      map.setView(center, 15);
+    }
+  }, [center, map]);
+  return null;
+}
+
+// Helper component to handle map click events
+function MapClickHandler({ onClick }) {
+  useMapEvents({
+    click(e) {
+      onClick(e.latlng);
+    },
+  });
+  return null;
+}
 
 const EMPTY_FORM = {
   name: "",
@@ -41,6 +77,10 @@ export default function LocationFormModal({
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState(null);
+
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [isSearchingAddress, setIsSearchingAddress] = useState(false);
+  const [shouldSearch, setShouldSearch] = useState(false);
 
   // ── Ảnh ─────────────────────────────────────────────────
   // Mỗi item: { file?: File, url: string }
@@ -114,7 +154,26 @@ export default function LocationFormModal({
     }
     setErrors({});
     setNotification(null);
+    setSearchSuggestions([]);
+    setShouldSearch(false);
   }, [isOpen, initialData]);
+
+  // ── Debounce tự động tìm kiếm địa chỉ ───────────────────
+  useEffect(() => {
+    if (!shouldSearch) return;
+
+    if (!formData.address.trim()) {
+      setSearchSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      handleSearchAddress(formData.address);
+      setShouldSearch(false);
+    }, 1000); // Tự động tìm kiếm sau 1 giây ngừng gõ
+
+    return () => clearTimeout(timer);
+  }, [formData.address, shouldSearch]);
 
   // ── Validation ───────────────────────────────────────────
   const validate = () => {
@@ -192,6 +251,59 @@ export default function LocationFormModal({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (name === "address") {
+      setShouldSearch(true);
+    }
+  };
+
+  const handleSearchAddress = async (query) => {
+    if (!query || !query.trim()) return;
+    setShouldSearch(false); // Ngăn debounce tự chạy lại nếu đã kích hoạt tìm kiếm
+    setIsSearchingAddress(true);
+    setSearchSuggestions([]);
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query.trim())}&limit=5&addressdetails=1`;
+      const resp = await fetch(url, { headers: { "Accept-Language": "vi" } });
+      const results = await resp.json();
+      setSearchSuggestions(results || []);
+      if (!results || results.length === 0) {
+        setNotification({ type: "error", message: "Không tìm thấy địa chỉ nào khớp." });
+        setTimeout(() => setNotification(null), 3000);
+      }
+    } catch (err) {
+      console.error("Geocoding error:", err);
+      setNotification({ type: "error", message: "Lỗi kết nối dịch vụ tìm kiếm địa chỉ." });
+      setTimeout(() => setNotification(null), 3000);
+    } finally {
+      setIsSearchingAddress(false);
+    }
+  };
+
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      const resp = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+        { headers: { "Accept-Language": "vi" } }
+      );
+      const data = await resp.json();
+      if (data && data.display_name) {
+        setFormData((prev) => ({
+          ...prev,
+          address: data.display_name,
+        }));
+      }
+    } catch (err) {
+      console.error("Reverse geocoding error:", err);
+    }
+  };
+
+  const handleMapClick = (latlng) => {
+    setFormData((prev) => ({
+      ...prev,
+      lat: String(latlng.lat.toFixed(6)),
+      lng: String(latlng.lng.toFixed(6)),
+    }));
+    reverseGeocode(latlng.lat, latlng.lng);
   };
 
   // ── Submit ───────────────────────────────────────────────
@@ -356,17 +468,52 @@ export default function LocationFormModal({
               🗺️ Vị trí
             </h3>
 
-            {/* Address */}
+            {/* Address with Nominatim Search */}
             <div>
               <label className="block text-sm font-medium mb-1">Địa chỉ</label>
-              <Input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="01 Công xã Paris, Bến Nghé, Quận 1, TP.HCM"
-                disabled={isBusy}
-              />
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="01 Công xã Paris, Bến Nghé, Quận 1, TP.HCM"
+                  disabled={isBusy}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={() => handleSearchAddress(formData.address)}
+                  disabled={isBusy || isSearchingAddress}
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 shrink-0 border h-9"
+                >
+                  {isSearchingAddress ? "Đang tìm..." : "Tìm kiếm"}
+                </Button>
+              </div>
+
+              {/* Suggestions Dropdown */}
+              {searchSuggestions.length > 0 && (
+                <div className="mt-2 rounded-lg border bg-background shadow-lg max-h-48 overflow-y-auto z-20 relative">
+                  {searchSuggestions.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: item.display_name,
+                          lat: String(Number(item.lat).toFixed(6)),
+                          lng: String(Number(item.lon).toFixed(6)),
+                        }));
+                        setSearchSuggestions([]);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-secondary transition-colors border-b last:border-b-0 line-clamp-2"
+                    >
+                      {item.display_name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Lat / Lng */}
@@ -401,6 +548,57 @@ export default function LocationFormModal({
                   <p className="text-xs text-red-500 mt-1">{errors.lng}</p>
                 )}
               </div>
+            </div>
+
+            {/* Leaflet Map for click-to-pin location */}
+            <div className="relative">
+              <div className="h-60 w-full rounded-lg border mt-2 overflow-hidden relative z-0">
+                <MapContainer
+                  center={(() => {
+                    const latVal = Number(formData.lat);
+                    const lngVal = Number(formData.lng);
+                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                    return hasValidLatLng ? [latVal, lngVal] : [10.779960, 106.699190];
+                  })()}
+                  zoom={(() => {
+                    const latVal = Number(formData.lat);
+                    const lngVal = Number(formData.lng);
+                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                    return hasValidLatLng ? 15 : 12;
+                  })()}
+                  zoomControl={true}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <MapResizer />
+                  <ChangeMapCenter
+                    center={(() => {
+                      const latVal = Number(formData.lat);
+                      const lngVal = Number(formData.lng);
+                      const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                      return hasValidLatLng ? [latVal, lngVal] : null;
+                    })()}
+                  />
+                  <MapClickHandler onClick={handleMapClick} />
+                  {(() => {
+                    const latVal = Number(formData.lat);
+                    const lngVal = Number(formData.lng);
+                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                    return hasValidLatLng ? (
+                      <Marker
+                        position={[latVal, lngVal]}
+                        icon={createCustomIcon("#B8922E", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`)}
+                      />
+                    ) : null;
+                  })()}
+                </MapContainer>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                💡 <i>Bạn có thể click trực tiếp lên bản đồ trên để chọn vị trí và lấy địa chỉ tự động.</i>
+              </p>
             </div>
           </section>
 
