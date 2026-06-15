@@ -84,11 +84,46 @@ export default function CultureFoodPage() {
   const handleCardClick = async (item) => {
     try {
       const detail = await getCuisineDetail(item.id);
-      const restaurants = detail.cuisine_places ? detail.cuisine_places.map(cp => ({
-        name: cp.place?.name || "",
-        address: cp.place?.locations?.[0]?.address || cp.place?.description || "",
-        price: cp.notes ? cp.notes.replace("Giá trung bình: ", "").replace("Mức giá gợi ý: ", "") : ""
-      })) : [];
+      
+      const restaurants = [];
+      if (detail.cuisine_places) {
+        detail.cuisine_places.forEach(cp => {
+          const place = cp.place;
+          const locations = place?.locations || [];
+          const price = cp.notes ? cp.notes.replace("Giá trung bình: ", "").replace("Mức giá gợi ý: ", "") : "";
+          
+          if (locations.length > 0) {
+            locations.forEach(loc => {
+              restaurants.push({
+                id: loc.id,
+                placeId: place.id,
+                lat: loc.lat ? Number(loc.lat) : null,
+                lng: loc.lng ? Number(loc.lng) : null,
+                name: place.name || "",
+                address: loc.address || place.description || "",
+                price: price,
+                categoryName: place.category?.name || "Quán ăn",
+                markerColor: place.category?.color || "#f97316",
+                iconMarker: place.category?.icon_marker || ""
+              });
+            });
+          } else {
+            // Fallback nếu place không có location nào
+            restaurants.push({
+              id: null,
+              placeId: place?.id || null,
+              lat: null,
+              lng: null,
+              name: place?.name || "",
+              address: place?.description || "",
+              price: price,
+              categoryName: place?.category?.name || "Quán ăn",
+              markerColor: place?.category?.color || "#f97316",
+              iconMarker: place?.category?.icon_marker || ""
+            });
+          }
+        });
+      }
 
       const mappedSelected = {
         ...item,

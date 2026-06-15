@@ -16,7 +16,7 @@ function getAuthToken() {
 /**
  * 1. Lấy danh sách bài viết đã duyệt cho user (hoặc bài của chính họ nếu có đăng nhập)
  */
-export async function getPosts() {
+export async function getPosts(params) {
   try {
     const token = getAuthToken();
     const headers = {};
@@ -24,7 +24,18 @@ export async function getPosts() {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`${BASE_URL}/post`, {
+    const queryParams = new URLSearchParams();
+    if (params?.date_from) {
+      queryParams.append("date_from", params.date_from);
+    }
+    if (params?.date_to) {
+      queryParams.append("date_to", params.date_to);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `${BASE_URL}/post?${queryString}` : `${BASE_URL}/post`;
+
+    const res = await fetch(url, {
       method: "GET",
       headers: headers
     });

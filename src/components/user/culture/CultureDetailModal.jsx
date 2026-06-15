@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { X, MapPin, ListOrdered, Store } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { X, MapPin, ListOrdered, Store, Loader2 } from "lucide-react";
 
 export default function CultureDetailModal({
   item,
@@ -7,6 +8,93 @@ export default function CultureDetailModal({
   badge,
   extraTags = [],
 }) {
+  const navigate = useNavigate();
+  const [geocodingId, setGeocodingId] = useState(null);
+
+  const handleRestaurantClick = async (res, index) => {
+    if (geocodingId !== null) return; // đang xử lý
+
+    // Nếu đã có tọa độ → navigate luôn
+    if (res.lat && res.lng) {
+      onClose();
+      navigate(`/?lat=${res.lat}&lng=${res.lng}&location_id=${res.id || ""}&place_id=${res.placeId || ""}&name=${encodeURIComponent(res.name)}&category_name=${encodeURIComponent(res.categoryName || "")}&marker_color=${encodeURIComponent(res.markerColor || "")}&icon_marker=${encodeURIComponent(res.iconMarker || "")}`);
+      return;
+    }
+
+    // Chưa có tọa độ → thử geocode qua Nominatim với cơ chế fallback thông minh
+    setGeocodingId(index);
+    try {
+      const address = res.address || "";
+      
+      // Tạo danh sách các query tìm kiếm từ chi tiết đến rút gọn
+      const queries = [address];
+      
+      // 1. Bỏ số nhà/số hẻm ở đầu (ví dụ: "78 Tôn Thất Tùng" -> "Tôn Thất Tùng")
+      const addressWithoutNumber = address.replace(/^([Hh]ẻm\s+)?\d+[a-zA-Z]?(\/\d+)*(-[0-9a-zA-Z]+)?\s+/, "");
+      if (addressWithoutNumber !== address) {
+        queries.push(addressWithoutNumber);
+      }
+      
+      // 2. Tên đường + Quận + Tỉnh/TP (bỏ số nhà và tên phường để Nominatim dễ nhận biết hơn)
+      const parts = address.split(",").map(p => p.trim());
+      if (parts.length >= 3) {
+        const streetPart = parts[0].replace(/^([Hh]ẻm\s+)?\d+[a-zA-Z]?(\/\d+)*(-[0-9a-zA-Z]+)?\s+/, "");
+        const districtPart = parts.find(p => p.toLowerCase().includes("quận") || p.toLowerCase().includes("q."));
+        const cityPart = parts.find(p => p.toLowerCase().includes("hồ chí minh") || p.toLowerCase().includes("tp") || p.toLowerCase().includes("hà nội") || p.toLowerCase().includes("đà nẵng") || p.toLowerCase().includes("thành phố"));
+        
+        if (streetPart && districtPart && cityPart) {
+          queries.push(`${streetPart}, ${districtPart}, ${cityPart}`);
+        } else if (streetPart && districtPart) {
+          queries.push(`${streetPart}, ${districtPart}, Vietnam`);
+        }
+      }
+      
+      // 3. Tên đường + Tỉnh/TP
+      if (parts.length >= 2) {
+        const streetPart = parts[0].replace(/^([Hh]ẻm\s+)?\d+[a-zA-Z]?(\/\d+)*(-[0-9a-zA-Z]+)?\s+/, "");
+        const cityPart = parts[parts.length - 1];
+        queries.push(`${streetPart}, ${cityPart}`);
+      }
+
+      // Loại bỏ trùng lặp và rỗng
+      const uniqueQueries = Array.from(new Set(queries.filter(Boolean)));
+      
+      let lat = null;
+      let lon = null;
+
+      // Thử gọi API Nominatim lần lượt cho các query
+      for (const q of uniqueQueries) {
+        try {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
+          const resp = await fetch(url, { headers: { "Accept-Language": "vi" } });
+          const results = await resp.json();
+          if (results && results.length > 0) {
+            lat = results[0].lat;
+            lon = results[0].lon;
+            break; // Tìm thấy tọa độ → thoát vòng lặp
+          }
+        } catch (e) {
+          // Bỏ qua lỗi kết nối của query này, thử query tiếp theo
+        }
+      }
+
+      if (lat && lon) {
+        onClose();
+        navigate(`/?lat=${lat}&lng=${lon}&location_id=${res.id || ""}&place_id=${res.placeId || ""}&name=${encodeURIComponent(res.name)}&address=${encodeURIComponent(res.address || "")}&category_name=${encodeURIComponent(res.categoryName || "")}&marker_color=${encodeURIComponent(res.markerColor || "")}&icon_marker=${encodeURIComponent(res.iconMarker || "")}`);
+      } else {
+        // Hoàn toàn không geocode được → navigate với tên để search
+        onClose();
+        navigate(`/?q=${encodeURIComponent(res.name)}`);
+      }
+    } catch {
+      // Lỗi mạng hoặc lỗi khác → navigate với tên để search
+      onClose();
+      navigate(`/?q=${encodeURIComponent(res.name)}`);
+    } finally {
+      setGeocodingId(null);
+    }
+  };
+
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
@@ -169,11 +257,17 @@ export default function CultureDetailModal({
                 {detail.restaurants.map((res, i) => (
                   <div
                     key={i}
-                    className="p-3.5 rounded-xl border border-stone-100 bg-stone-50/50 hover:border-amber-250 transition-colors flex justify-between items-start gap-3"
+                    onClick={() => handleRestaurantClick(res, i)}
+                    className={`p-3.5 rounded-xl border border-stone-100 bg-stone-50/50 transition-colors flex justify-between items-start gap-3 cursor-pointer hover:bg-amber-50/30 hover:border-amber-200 ${
+                      geocodingId === i ? "opacity-60 pointer-events-none" : ""
+                    }`}
                   >
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-stone-800 leading-snug">
+                      <h4 className="text-sm font-semibold text-stone-800 leading-snug flex items-center gap-2">
                         {res.name}
+                        {geocodingId === i && (
+                          <Loader2 size={13} className="animate-spin text-amber-500 shrink-0" />
+                        )}
                       </h4>
                       <p className="text-xs text-stone-500 mt-1 flex items-start gap-1">
                         <MapPin size={11} className="shrink-0 mt-0.5 text-stone-400" />

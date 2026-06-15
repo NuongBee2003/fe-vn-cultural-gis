@@ -167,8 +167,31 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   const selectFromSearch = useCallback((location) => {
     if (!location?.lat || !location?.lng) return;
 
+    // Hủy các cập nhật bbox do bản đồ di chuyển trước đó (debounce 500ms) để không ghi đè bbox hẹp
+    if (bboxTimerRef.current) {
+      clearTimeout(bboxTimerRef.current);
+    }
+
+    // Tự động tìm thêm markerColor và iconMarker từ Category nếu địa điểm ghim chưa có
+    let markerColor = location.markerColor;
+    let iconMarker = location.iconMarker;
+    
+    if (!markerColor || !iconMarker) {
+      const catName = location.category || "Quán ăn";
+      const cat = categories.find((c) => c.name === catName);
+      if (cat) {
+        markerColor = markerColor || cat.color;
+        iconMarker = iconMarker || cat.icon_marker;
+      }
+    }
+
     // Đánh dấu để không bị effect filter ép close
-    const pinned = { ...location, _fromSearch: true };
+    const pinned = { 
+      ...location, 
+      markerColor: markerColor || "#3b82f6",
+      iconMarker: iconMarker || "",
+      _fromSearch: true 
+    };
     setPinnedLocation(pinned);
     setSelected({ location: pinned });
 
@@ -176,7 +199,7 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     const delta = 0.01; // ~1km
     const newBbox = `${location.lng - delta},${location.lat - delta},${location.lng + delta},${location.lat + delta}`;
     setBbox(newBbox);
-  }, []);
+  }, [categories]);
 
   useEffect(() => {
     onSelectFromSearch?.(selectFromSearch);
@@ -194,17 +217,17 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     }
   }, [apiLocations, pinnedLocation]);
 
-  // Đóng panel nếu location không còn trong filtered (do filter category thay đổi, v.v.)
+  // Đóng panel nếu filter category thay đổi và địa điểm đang chọn không khớp với category đó
   useEffect(() => {
     if (!selected) return;
     const { location } = selected;
     if (location._fromSearch) return; // đang pin, không đóng
-    const stillVisible = filtered.some((loc) => loc.id === location.id);
-    if (!stillVisible) {
+
+    if (activeFilter !== "all" && location.category !== activeFilter) {
       setSelected(null);
       clearRoute();
     }
-  }, [filtered, selected, clearRoute]);
+  }, [activeFilter, selected, clearRoute]);
 
   const selectedFlyPosition = useMemo(() => {
     return selected ? [selected.location.lat, selected.location.lng] : null;
@@ -356,10 +379,12 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
         )}
 
         {filtered.map((location) => {
-          const key = location.id;
+          const key = location.id || `temp-${location.lat}-${location.lng}-${location.name}`;
           const isActive =
             selected &&
-            selected.location.id === location.id;
+            (selected.location.id && location.id
+              ? selected.location.id === location.id
+              : selected.location.lat === location.lat && selected.location.lng === location.lng);
 
           return (
             <Marker
@@ -368,7 +393,7 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
               icon={createCustomIcon(location.markerColor || "#3b82f6", location.iconMarker || "", { active: isActive })}
               zIndexOffset={isActive ? 1000 : 0}
               eventHandlers={{
-                click: () => selectLocation(location, key),
+                click: () => selectLocation(location),
               }}
             />
           );
