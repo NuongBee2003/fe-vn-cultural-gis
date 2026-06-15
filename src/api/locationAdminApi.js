@@ -82,6 +82,18 @@ export async function deleteLocation(id) {
   return handleResponse(res);
 }
 
+/**
+ * Xóa một địa điểm (Place)
+ * @param {number} id Place ID
+ */
+export async function deletePlace(id) {
+  const res = await fetch(`${API_URL}/place/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: getAuthHeaders().Authorization || "" },
+  });
+  return handleResponse(res);
+}
+
 // ─── React Query Hooks ────────────────────────────────────
 
 function invalidateLocations(queryClient) {
@@ -111,6 +123,14 @@ export function useDeleteLocation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteLocation,
+    onSuccess: () => invalidateLocations(queryClient),
+  });
+}
+
+export function useDeletePlace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePlace,
     onSuccess: () => invalidateLocations(queryClient),
   });
 }

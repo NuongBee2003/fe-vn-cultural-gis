@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLocations } from "@/api/useLocationQuery";
-import { useCreateLocation, useUpdateLocation, useDeleteLocation } from "@/api/locationAdminApi";
+import { useCreateLocation, useUpdateLocation, useDeletePlace } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
@@ -66,7 +66,7 @@ export default function PlacesManagementPage() {
 
   const createMutation = useCreateLocation();
   const updateMutation = useUpdateLocation();
-  const deleteMutation = useDeleteLocation();
+  const deleteMutation = useDeletePlace();
 
   // ── Server-side search (tìm toàn bộ DB, hỗ trợ tiếng Việt) ──
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -123,7 +123,7 @@ export default function PlacesManagementPage() {
           }
         }
       }
-      deleteMutation.mutate(location.id);
+      deleteMutation.mutate(location.placeId);
     }
   };
 

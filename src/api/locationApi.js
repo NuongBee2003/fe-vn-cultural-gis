@@ -12,8 +12,8 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3002/api/v1";
 export function mapDbLocationToFe(dbLoc) {
   if (!dbLoc) return null;
   
-  // Extract images từ place.assets, sắp xếp theo is_primary
-  const assets = dbLoc.place?.assets || [];
+  // Extract images từ dbLoc.assets, sắp xếp theo is_primary
+  const assets = dbLoc.assets || [];
   const sortedAssets = [...assets].sort((a, b) => {
     // is_primary = true (1) lên đầu
     if (a.is_primary && !b.is_primary) return -1;
