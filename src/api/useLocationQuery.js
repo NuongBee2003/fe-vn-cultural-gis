@@ -9,7 +9,7 @@ import {
   createPlaceReview,
   createPlace,
   getCategories,
-  getAssetsByPlaceId,
+  getAssetsByLocationId,
   getAllLocationsByCategory,
   searchPlaceLocationsByDB,
 } from "./locationApi";
@@ -120,13 +120,13 @@ export function useCategories() {
 }
 
 /**
- * 7. Hook lấy danh sách assets (hình ảnh) theo place_id
+ * 7. Hook lấy danh sách assets (hình ảnh) theo location_id
  */
-export function useAssetsByPlaceId(placeId) {
+export function useAssetsByLocationId(locationId) {
   return useQuery({
-    queryKey: ["assets", "place", placeId],
-    queryFn: () => getAssetsByPlaceId(placeId),
-    enabled: !!placeId,
+    queryKey: ["assets", "location", locationId],
+    queryFn: () => getAssetsByLocationId(locationId),
+    enabled: !!locationId,
     staleTime: 5 * 60 * 1000, // Cache 5 phút
   });
 }

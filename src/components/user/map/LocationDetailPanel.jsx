@@ -3,7 +3,7 @@ import { MapPin, Navigation, Route, X, ImageOff } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 import ReviewSection from "@/components/user/map/ReviewSection";
-import { useAssetsByPlaceId } from "@/api/useLocationQuery";
+import { useAssetsByLocationId } from "@/api/useLocationQuery";
 
 export default function LocationDetailPanel({
   location,
@@ -18,8 +18,8 @@ export default function LocationDetailPanel({
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
-  // Lấy danh sách hình ảnh từ API theo place_id
-  const { data: assets = [], isLoading: isLoadingAssets } = useAssetsByPlaceId(location.placeId);
+  // Lấy danh sách hình ảnh từ API theo location_id
+  const { data: assets = [], isLoading: isLoadingAssets } = useAssetsByLocationId(location.id);
   
   // Chuyển đổi assets thành array URL
   const galleryImages = assets.length > 0 ? assets.map(asset => asset.url) : [];

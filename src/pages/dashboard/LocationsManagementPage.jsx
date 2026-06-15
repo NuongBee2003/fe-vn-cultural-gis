@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAllLocations } from "@/api/useLocationQuery";
-import { useAssetsByPlaceId } from "@/api/useLocationQuery";
+import { useAssetsByLocationId } from "@/api/useLocationQuery";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { X } from "lucide-react";
@@ -18,8 +18,8 @@ import {
 
 const PAGE_SIZES = [5, 10, 15, 20];
 
-function ImageGalleryModal({ isOpen, onClose, placeId, placeName }) {
-  const { data: assets = [], isLoading } = useAssetsByPlaceId(placeId);
+function ImageGalleryModal({ isOpen, onClose, locationId, placeName }) {
+  const { data: assets = [], isLoading } = useAssetsByLocationId(locationId);
 
   if (!isOpen) return null;
 
@@ -282,7 +282,7 @@ export default function LocationsManagementPage() {
         <ImageGalleryModal
           isOpen={showImages}
           onClose={handleCloseImages}
-          placeId={selectedLocation.placeId}
+          locationId={selectedLocation.id}
           placeName={selectedLocation.name}
         />
       )}

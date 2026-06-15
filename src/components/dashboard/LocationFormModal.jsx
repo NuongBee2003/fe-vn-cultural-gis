@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
-import { useCategories, useAssetsByPlaceId } from "@/api/useLocationQuery";
+import { useCategories, useAssetsByLocationId } from "@/api/useLocationQuery";
 
 const EMPTY_FORM = {
   name: "",
@@ -58,11 +58,11 @@ export default function LocationFormModal({
 
   // ── Fetch ảnh hiện có từ API khi edit ────────────────────
   const isEditMode = isOpen && !!initialData;
-  const placeId = initialData?.placeId ?? null;
+  const locationId = initialData?.id ?? null;
 
   // Chỉ fetch khi modal đang mở ở chế độ edit
-  const { data: fetchedAssets = [], isLoading: isLoadingAssets } = useAssetsByPlaceId(
-    isEditMode ? placeId : null
+  const { data: fetchedAssets = [], isLoading: isLoadingAssets } = useAssetsByLocationId(
+    isEditMode ? locationId : null
   );
 
   // Khi fetch assets xong → sync vào imagePreviews

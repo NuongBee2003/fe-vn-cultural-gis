@@ -273,13 +273,13 @@ export async function getCategories() {
 }
 
 /**
- * 8. Lấy danh sách assets (hình ảnh) theo place_id
- * @param {number} placeId ID của place cần lấy assets
+ * 8. Lấy danh sách assets (hình ảnh) theo location_id
+ * @param {number} locationId ID của location cần lấy assets
  */
-export async function getAssetsByPlaceId(placeId) {
+export async function getAssetsByLocationId(locationId) {
   try {
-    console.log("📡 Fetching assets for placeId:", placeId);
-    const res = await fetch(`${BASE_URL}/location/assets/${placeId}`);
+    console.log("📡 Fetching assets for locationId:", locationId);
+    const res = await fetch(`${BASE_URL}/location/assets/${locationId}`);
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -289,7 +289,7 @@ export async function getAssetsByPlaceId(placeId) {
     console.log("✅ Assets fetched successfully:", result);
     return result.data || [];
   } catch (error) {
-    console.error(`❌ Lỗi khi fetch getAssetsByPlaceId (${placeId}):`, error);
+    console.error(`❌ Lỗi khi fetch getAssetsByLocationId (${locationId}):`, error);
     throw error;
   }
 }
