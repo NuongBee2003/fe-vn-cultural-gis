@@ -57,8 +57,6 @@ function getInitials(name) {
 export default function CommunityPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
-  const [category, setCategory] = useState("all");
-  const [locationId, setLocationId] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -164,10 +162,10 @@ export default function CommunityPage() {
     }
   }, [createModalOpen]); // check again if modal changes (in case of login state updates)
 
-  const loadPosts = useCallback(async () => {
+  const loadPosts = useCallback(async (filters = {}) => {
     try {
       setLoading(true);
-      const data = await getPosts();
+      const data = await getPosts(filters);
       setDbPosts(data);
     } catch (err) {
       console.error("Lỗi khi load posts:", err);
@@ -177,19 +175,16 @@ export default function CommunityPage() {
   }, []);
 
   const handlePostCreated = useCallback(() => {
-    loadPosts();
+    loadPosts({ date_from: dateFrom, date_to: dateTo });
     setFeedTab("mine");
-  }, [loadPosts]);
+  }, [loadPosts, dateFrom, dateTo]);
 
   useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
+    loadPosts({ date_from: dateFrom, date_to: dateTo });
+  }, [loadPosts, dateFrom, dateTo]);
 
   const postFeed = useMemo(() => {
     const query = search.trim().toLowerCase();
-    const fromDate = parseDateInput(dateFrom, false);
-    const toDate = parseDateInput(dateTo, true);
-    const locationFilterId = locationId === "all" ? null : Number(locationId);
 
     /** @type {any[]} */
     const enriched = dbPosts.map((p) => {
@@ -207,7 +202,9 @@ export default function CommunityPage() {
         category: p.location?.place?.category?.name || p.location?.place?.category || null,
         location: p.location ? {
           id: p.location.id,
-          name: p.location.place?.name || p.location.address || ""
+          name: p.location.place?.name || p.location.address || "",
+          lat: p.location.lat ? Number(p.location.lat) : null,
+          lng: p.location.lng ? Number(p.location.lng) : null
         } : null,
         created_at: p.created_at,
         createdAtLabel,
@@ -240,26 +237,7 @@ export default function CommunityPage() {
         })
       : enriched;
 
-    const filteredByMeta = filtered.filter((post) => {
-      if (category !== "all" && post.category !== category) {
-        return false;
-      }
-
-      if (locationFilterId !== null) {
-        const pid = post.location?.id || null;
-        if (pid !== locationFilterId) return false;
-      }
-
-      if (fromDate || toDate) {
-        const time = new Date(post.created_at).getTime();
-        if (fromDate && time < fromDate.getTime()) return false;
-        if (toDate && time > toDate.getTime()) return false;
-      }
-
-      return true;
-    });
-
-    const filteredByTab = filteredByMeta.filter((post) => {
+    const filteredByTab = filtered.filter((post) => {
       if (feedTab === "mine") {
         return Number(post.user_id) === Number(currentUser?.id);
       } else {
@@ -277,25 +255,12 @@ export default function CommunityPage() {
 
     return sorted;
   }, [
-    category,
-    dateFrom,
-    dateTo,
     dbPosts,
-    locationId,
     search,
     sort,
     feedTab,
     currentUser,
   ]);
-
-  const categoryOptions = useMemo(() => {
-    const set = new Set();
-    for (const post of dbPosts) {
-      const cat = post.location?.place?.category?.name || post.location?.place?.category;
-      if (cat) set.add(cat);
-    }
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "vi"));
-  }, [dbPosts]);
 
   useEffect(() => {
     const el = pageScrollRef.current;
@@ -378,38 +343,6 @@ export default function CommunityPage() {
               onChange={(e) => setDateTo(e.target.value)}
               className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
             />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-600">Thể loại</span>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
-            >
-              <option value="all">Tất cả</option>
-              {categoryOptions.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-600">Địa điểm</span>
-            <select
-              value={locationId}
-              onChange={(e) => setLocationId(e.target.value)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
-            >
-              <option value="all">Tất cả</option>
-              {COMMUNITY_LOCATIONS.map((loc) => (
-                <option key={loc.id} value={String(loc.id)}>
-                  {loc.name}
-                </option>
-              ))}
-            </select>
           </label>
         </div>
       </div>

@@ -14,7 +14,7 @@ export default function LocationDetailPanel({
   isRouteActive = false,
   onClearRoute,
 }) {
-  const style = CATEGORY_STYLES[location.category];
+  const style = CATEGORY_STYLES[location.category] ?? { bg: "rgba(100,100,100,0.75)", color: "#fff" };
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
