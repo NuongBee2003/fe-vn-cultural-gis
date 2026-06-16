@@ -176,20 +176,26 @@ export default function CategoriesManagementPage() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={async () => {
+                    onClick={() => {
                       if (
                         window.confirm(
                           `Bạn có chắc chắn muốn xóa danh mục "${category.name}"?`
                         )
                       ) {
-                        if (category.icon_marker && category.icon_marker.includes("supabase.co")) {
-                          try {
-                            await deleteImageFromSupabase(category.icon_marker, SUPABASE_BUCKETS.ICON_LOCATION);
-                          } catch (err) {
-                            console.error("Lỗi xóa icon trên Supabase:", err);
+                        deleteMutation.mutate(category.id, {
+                          onSuccess: async () => {
+                            if (category.icon_marker && category.icon_marker.includes("supabase.co")) {
+                              try {
+                                await deleteImageFromSupabase(category.icon_marker, SUPABASE_BUCKETS.ICON_LOCATION);
+                              } catch (err) {
+                                console.error("Lỗi xóa icon trên Supabase:", err);
+                              }
+                            }
+                          },
+                          onError: (error) => {
+                            alert(error.message || "Không thể xóa danh mục này");
                           }
-                        }
-                        deleteMutation.mutate(category.id);
+                        });
                       }
                     }}
                     disabled={deleteMutation.isPending}

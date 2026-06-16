@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useAllLocations, useAllLocationsByCategory, useCategories, useSearchLocations } from "@/api/useLocationQuery";
-import { useCreateLocation, useUpdateLocation, useDeletePlace } from "@/api/locationAdminApi";
+import { useAllPlaces, useCategories } from "@/api/useLocationQuery";
+import { useCreatePlace, useUpdatePlace, useDeletePlace } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
@@ -48,27 +48,6 @@ export default function PlacesManagementPage() {
   // ── API ───────────────────────────────────────────────
   const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
 
-  const isFiltering = categoryFilter.name !== "all";
-
-  // Cả hai query đều nhận page + pageSize để phân trang hoạt động đúng
-  const allQuery = useAllLocations(page, pageSize);
-  const byCategoryQuery = useAllLocationsByCategory(
-    page,
-    pageSize,
-    categoryFilter.id,
-    { enabled: isFiltering } // chỉ fetch khi đang filter, tránh request thừa
-  );
-
-  const { data: apiData, isLoading, error } = isFiltering ? byCategoryQuery : allQuery;
-
-  const locations = apiData?.data || [];
-  const meta = apiData?.meta || { total: 0, page: 1, limit: pageSize, totalPages: 0 };
-
-  const createMutation = useCreateLocation();
-  const updateMutation = useUpdateLocation();
-  const deleteMutation = useDeletePlace();
-
-  // ── Server-side search (tìm toàn bộ DB, hỗ trợ tiếng Việt) ──
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -78,22 +57,23 @@ export default function PlacesManagementPage() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  const isServerSearching = debouncedSearch.length > 0;
-  const {
-    data: searchResults = [],
-    isFetching: isSearchFetching,
-  } = useSearchLocations(debouncedSearch, 100); // lấy nhiều để phân trang client-side
+  const { data: apiData, isLoading, error } = useAllPlaces(
+    page,
+    pageSize,
+    categoryFilter.name !== "all" ? categoryFilter.id : null,
+    debouncedSearch
+  );
 
-  // Phân trang client-side cho search results
-  const searchTotalPages = isServerSearching
-    ? Math.max(1, Math.ceil(searchResults.length / pageSize))
-    : 1;
-  const pagedSearchResults = isServerSearching
-    ? searchResults.slice((page - 1) * pageSize, page * pageSize)
-    : [];
+  const places = apiData?.data || [];
+  const meta = apiData?.meta || { total: 0, page: 1, limit: pageSize, totalPages: 0 };
 
-  // Kết quả hiển thị: nếu đang search → dùng pagedSearchResults, ngược lại dùng locations từ API
-  const filteredLocations = isServerSearching ? pagedSearchResults : locations;
+  const createMutation = useCreatePlace();
+  const updateMutation = useUpdatePlace();
+  const deleteMutation = useDeletePlace();
+
+  // Kết quả hiển thị: dùng places trực tiếp từ API có phân trang
+  const filteredPlaces = places;
+  const isFiltering = categoryFilter.name !== "all";
 
   // ── Handlers ──────────────────────────────────────────
   const handleCreate = () => {
@@ -101,19 +81,27 @@ export default function PlacesManagementPage() {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (location) => {
-    setSelectedPlace(location);
+  const handleEdit = (place) => {
+    setSelectedPlace(place);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (location) => {
+  const handleDelete = async (place) => {
     if (
       window.confirm(
-        t('dashboard.places.confirmDelete', { name: location.name })
+        t('dashboard.places.confirmDelete', { name: place.name })
       )
     ) {
-      if (location.images && location.images.length > 0) {
-        for (const imgUrl of location.images) {
+      const placeImages = [];
+      for (const loc of place.locations || []) {
+        if (loc.assets) {
+          placeImages.push(...loc.assets.map(a => a.url));
+        } else if (loc.images) {
+          placeImages.push(...loc.images);
+        }
+      }
+      if (placeImages.length > 0) {
+        for (const imgUrl of placeImages) {
           if (imgUrl && imgUrl.includes("supabase.co")) {
             try {
               await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.LOCATION_IMAGES);
@@ -123,7 +111,7 @@ export default function PlacesManagementPage() {
           }
         }
       }
-      deleteMutation.mutate(location.placeId);
+      deleteMutation.mutate(place.id);
     }
   };
 
@@ -197,9 +185,7 @@ export default function PlacesManagementPage() {
     createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   // Tính totalPages an toàn
-  const totalPages = isServerSearching
-    ? searchTotalPages
-    : meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
+  const totalPages = meta.totalPages || Math.ceil(meta.total / pageSize) || 1;
 
   return (
     <main className="px-6 py-5">
@@ -346,13 +332,6 @@ export default function PlacesManagementPage() {
           <div className="flex h-64 items-center justify-center">
             <p className="text-red-500 text-sm">Lỗi khi tải dữ liệu: {error.message}</p>
           </div>
-        ) : isSearchFetching ? (
-          <div className="flex h-64 items-center justify-center">
-            <div className="flex flex-col items-center gap-3 text-muted-foreground">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B8922E]" />
-              <p className="text-sm">Đang tìm kiếm...</p>
-            </div>
-          </div>
         ) : (
           <Table className="min-w-full">
             <TableHeader>
@@ -368,100 +347,128 @@ export default function PlacesManagementPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredLocations.length > 0 ? (
-                filteredLocations.map((location, index) => (
-                  <TableRow key={`${location.id}-${index}`}>
-                    <TableCell className="text-muted-foreground text-xs">
-                      {(page - 1) * pageSize + index + 1}
-                    </TableCell>
+              {filteredPlaces.length > 0 ? (
+                filteredPlaces.map((place, index) => {
+                  const addresses = (place.locations || []).map(l => l.address).filter(Boolean);
+                  const placeImages = [];
+                  for (const loc of place.locations || []) {
+                    if (loc.assets) {
+                      placeImages.push(...loc.assets.map(a => a.url));
+                    } else if (loc.images) {
+                      placeImages.push(...loc.images);
+                    }
+                  }
 
-                    <TableCell className="font-medium max-w-[200px]">
-                      <span className="line-clamp-2">{location.name}</span>
-                    </TableCell>
+                  return (
+                    <TableRow key={`${place.id}-${index}`}>
+                      <TableCell className="text-muted-foreground text-xs">
+                        {(page - 1) * pageSize + index + 1}
+                      </TableCell>
 
-                    <TableCell>
-                      <span className="inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
-                        {location.category || "—"}
-                      </span>
-                    </TableCell>
+                      <TableCell className="font-medium max-w-[200px]">
+                        <span className="line-clamp-2">{place.name}</span>
+                      </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[240px]">
-                      <span className="line-clamp-2">{location.address || "—"}</span>
-                    </TableCell>
+                      <TableCell>
+                        <span className="inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
+                          {place.category?.name || "—"}
+                        </span>
+                      </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[240px]">
-                      <span className="line-clamp-2 text-center">{location.description || "—"}</span>
-                    </TableCell>
-
-                    <TableCell>
-                      {location.images && location.images.length > 0 ? (
-                        <button
-                          type="button"
-                          onClick={() => handleViewImages(location)}
-                          className="group relative block w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent hover:border-[#B8922E] transition-all hover:shadow-lg"
-                          title={`Xem ${location.images.length} ảnh`}
-                        >
-                          <img
-                            src={location.images[0]}
-                            alt={location.name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                          {location.images.length > 1 && (
-                            <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm">
-                              {location.images.length} ảnh
-                            </div>
+                      <TableCell className="text-sm text-muted-foreground max-w-[240px]">
+                        <div className="flex flex-col gap-1">
+                          {addresses.length > 0 ? (
+                            addresses.map((addr, idx) => (
+                              <span key={idx} className="line-clamp-1 border-b border-muted/50 pb-0.5 last:border-0 last:pb-0" title={addr}>
+                                📍 {addr}
+                              </span>
+                            ))
+                          ) : (
+                            "—"
                           )}
-                        </button>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-linear-to-br from-gray-100 to-gray-200 border-2 border-dashed border-gray-300">
-                          <ImageOff size={20} className="text-gray-400 mb-1" />
-                          <span className="text-[9px] text-gray-500 font-medium text-center px-1">Chưa có ảnh</span>
                         </div>
-                      )}
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell className="text-xs font-mono whitespace-nowrap">
-                      {location.lat != null && location.lng != null
-                        ? `${Number(location.lat).toFixed(5)}, ${Number(location.lng).toFixed(5)}`
-                        : "—"}
-                    </TableCell>
+                      <TableCell className="text-sm text-muted-foreground max-w-[240px]">
+                        <span className="line-clamp-2 text-center">{place.description || "—"}</span>
+                      </TableCell>
 
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        onClick={() => handleViewReviews(location)}
-                      >
-                        {t('map.reviews')}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        onClick={() => handleEdit(location)}
-                        disabled={isMutating}
-                      >
-                        {t('common.edit')}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        type="button"
-                        onClick={() => handleDelete(location)}
-                        disabled={deleteMutation.isPending}
-                      >
-                        {deleteMutation.isPending ? "..." : t('common.delete')}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      <TableCell>
+                        {placeImages.length > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => handleViewImages({ name: place.name, images: placeImages })}
+                            className="group relative block w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent hover:border-[#B8922E] transition-all hover:shadow-lg"
+                            title={`Xem ${placeImages.length} ảnh`}
+                          >
+                            <img
+                              src={placeImages[0]}
+                              alt={place.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                            {placeImages.length > 1 && (
+                              <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm">
+                                {placeImages.length} ảnh
+                              </div>
+                            )}
+                          </button>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-linear-to-br from-gray-100 to-gray-200 border-2 border-dashed border-gray-300">
+                            <ImageOff size={20} className="text-gray-400 mb-1" />
+                            <span className="text-[9px] text-gray-500 font-medium text-center px-1">Chưa có ảnh</span>
+                          </div>
+                        )}
+                      </TableCell>
+
+                      <TableCell className="text-xs font-mono whitespace-nowrap">
+                        <div className="flex flex-col gap-1">
+                          {(place.locations || []).map((loc, idx) => (
+                            <span key={idx} className="block">
+                              {loc.lat != null && loc.lng != null
+                                ? `${Number(loc.lat).toFixed(5)}, ${Number(loc.lng).toFixed(5)}`
+                                : "—"}
+                            </span>
+                          ))}
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => handleViewReviews(place)}
+                        >
+                          {t('map.reviews')}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => handleEdit(place)}
+                          disabled={isMutating}
+                        >
+                          {t('common.edit')}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          type="button"
+                          onClick={() => handleDelete(place)}
+                          disabled={deleteMutation.isPending}
+                        >
+                          {deleteMutation.isPending ? "..." : t('common.delete')}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
-                    {isServerSearching
+                    {debouncedSearch
                       ? t('dashboard.places.noSearchResult', { query: debouncedSearch })
-                      : isFiltering
+                      : categoryFilter.name !== "all"
                       ? t('dashboard.places.noPlaceInCategory', { category: categoryFilter.name })
                       : t('dashboard.places.noData')}
                   </TableCell>
@@ -472,26 +479,22 @@ export default function PlacesManagementPage() {
               <TableRow>
                 <TableCell colSpan={8}>
                   <div className="text-sm text-muted-foreground">
-                    {isServerSearching ? (
+                    {debouncedSearch ? (
                       <>
-                        {t('map.resultsHint').split('·')[0].trim()}{" "}
-                        <span className="font-medium text-foreground">
-                          {searchResults.length}
-                        </span>{" "}
-                        {t('common.results')} "{debouncedSearch}"
+                        Hiển thị các kết quả tìm kiếm cho "{debouncedSearch}"
                       </>
                     ) : (
                       <>
                         {t('common.showing')}{" "}
                         <span className="font-medium text-foreground">
-                          {locations.length}
+                          {places.length}
                         </span>{" "}
                         {t('common.of')}{" "}
                         <span className="font-medium text-foreground">
                           {meta.total}
                         </span>{" "}
-                        {t('common.locations')}
-                        {isFiltering && (
+                        địa điểm
+                        {categoryFilter.name !== "all" && (
                           <span> {t('dashboard.places.showingInCategory', { category: categoryFilter.name })}</span>
                         )}
                       </>
@@ -538,7 +541,7 @@ export default function PlacesManagementPage() {
         <ReviewsManagementModal
           isOpen={showReviews}
           onClose={handleCloseReviews}
-          placeId={selectedPlaceForReviews.placeId}
+          placeId={selectedPlaceForReviews.id || selectedPlaceForReviews.placeId}
           placeName={selectedPlaceForReviews.name}
         />
       )}

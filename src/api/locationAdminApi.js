@@ -94,12 +94,36 @@ export async function deletePlace(id) {
   return handleResponse(res);
 }
 
+/**
+ * Tạo mới địa điểm (Place + locations + assets)
+ */
+export async function createPlace(data) {
+  const res = await fetch(`${API_URL}/place`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
+/**
+ * Cập nhật địa điểm (Place + locations + assets)
+ */
+export async function updatePlace(id, data) {
+  const res = await fetch(`${API_URL}/place/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
 // ─── React Query Hooks ────────────────────────────────────
 
 function invalidateLocations(queryClient) {
-  // Invalidate tất cả queries bắt đầu bằng "locations" (prefix match)
-  // → bao gồm ["locations","all",page,limit], ["locations","geo",bbox,...], v.v.
+  // Invalidate tất cả queries bắt đầu bằng "locations" hoặc "places"
   queryClient.invalidateQueries({ queryKey: ["locations"] });
+  queryClient.invalidateQueries({ queryKey: ["places"] });
   queryClient.invalidateQueries({ queryKey: ["assets"] });
 }
 
@@ -131,6 +155,22 @@ export function useDeletePlace() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deletePlace,
+    onSuccess: () => invalidateLocations(queryClient),
+  });
+}
+
+export function useCreatePlace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createPlace,
+    onSuccess: () => invalidateLocations(queryClient),
+  });
+}
+
+export function useUpdatePlace() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => updatePlace(id, data),
     onSuccess: () => invalidateLocations(queryClient),
   });
 }

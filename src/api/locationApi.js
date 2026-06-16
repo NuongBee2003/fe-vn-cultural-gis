@@ -144,6 +144,32 @@ export async function getAllLocationsByCategory(page = 1, limit = 20, categoryId
 }
 
 /**
+ * Lấy danh sách Places có phân trang, lọc theo categoryId và tìm kiếm query
+ */
+export async function getAllPlaces(page = 1, limit = 20, categoryId = null, query = "") {
+  try {
+    const params = new URLSearchParams({ page, limit });
+    if (categoryId) params.append("categoryId", categoryId);
+    if (query) params.append("query", query);
+
+    const res = await fetch(`${BASE_URL}/place?${params.toString()}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    return {
+      data: result.data || [],
+      meta: result.meta || { total: 0, page: 1, limit: 20, totalPages: 0 },
+    };
+  } catch (error) {
+    console.error(`Lỗi khi fetch getAllPlaces:`, error);
+    throw error;
+  }
+}
+
+/**
  * 3. Lấy chi tiết thông tin của 1 Location từ ID
  * @param {number} locationId ID của location cần xem chi tiết
  */

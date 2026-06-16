@@ -1,18 +1,6 @@
 /**
  * LocationFormModal.jsx
- * Form modal để tạo mới hoặc cập nhật địa điểm.
- *
- * Fields tương ứng BE API (POST/PUT /api/v1/location):
- *   [Nhóm 1 — Place]
- *     name, description, category_id
- *   [Nhóm 2 — Location]
- *     lat, lng, address
- *   [Nhóm 3 — Assets / Ảnh]
- *     images[] — upload lên Supabase bucket "location-images"
- *
- * Tham khảo CategoryFormModal nhưng khác key:
- *   Category dùng: SUPABASE_BUCKETS.ICON_LOCATION  → field "icon_marker"
- *   Location dùng: SUPABASE_BUCKETS.LOCATION_IMAGES → field "images" (array)
+ * Form modal để tạo mới hoặc cập nhật địa điểm (Place) kèm danh sách chi nhánh (Locations).
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -20,10 +8,11 @@ import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
-import { useCategories, useAssetsByLocationId } from "@/api/useLocationQuery";
+import { useCategories } from "@/api/useLocationQuery";
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { createCustomIcon } from "@/utils/icons";
+import { X, MapPin } from "lucide-react";
 
 // Helper component to handle map sizing in modal
 function MapResizer() {
@@ -58,15 +47,6 @@ function MapClickHandler({ onClick }) {
   return null;
 }
 
-const EMPTY_FORM = {
-  name: "",
-  description: "",
-  category_id: "",
-  address: "",
-  lat: "",
-  lng: "",
-};
-
 export default function LocationFormModal({
   isOpen,
   onClose,
@@ -74,83 +54,67 @@ export default function LocationFormModal({
   initialData = null,
   isLoading = false,
 }) {
-  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  
+  // Trạng thái danh sách chi nhánh (locations)
+  const [locations, setLocations] = useState([
+    { address: "", lat: "", lng: "", imagePreviews: [] }
+  ]);
+  const [activeLocationIndex, setActiveLocationIndex] = useState(0);
+
   const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState(null);
 
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [isSearchingAddress, setIsSearchingAddress] = useState(false);
   const [shouldSearch, setShouldSearch] = useState(false);
-
-  // ── Ảnh ─────────────────────────────────────────────────
-  // Mỗi item: { file?: File, url: string }
-  // file = null  → URL đã có sẵn (ảnh cũ, giữ nguyên)
-  // file = File  → chưa upload, sẽ upload khi submit
-  const [imagePreviews, setImagePreviews] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-  // Đánh dấu đã sync ảnh từ API (tránh overwrite khi user đã thêm ảnh mới)
-  const [assetsSynced, setAssetsSynced] = useState(false);
+
   const fileInputRef = useRef(null);
 
   // ── Danh mục ─────────────────────────────────────────────
   const { data: rawCategories = [] } = useCategories();
   const categories = Array.isArray(rawCategories) ? rawCategories : [];
 
-  // ── Fetch ảnh hiện có từ API khi edit ────────────────────
-  const isEditMode = isOpen && !!initialData;
-  const locationId = initialData?.id ?? null;
-
-  // Chỉ fetch khi modal đang mở ở chế độ edit
-  const { data: fetchedAssets = [], isLoading: isLoadingAssets } = useAssetsByLocationId(
-    isEditMode ? locationId : null
-  );
-
-  // Khi fetch assets xong → sync vào imagePreviews
-  useEffect(() => {
-    if (!isEditMode || isLoadingAssets || assetsSynced) return;
-
-    // Sort: is_primary lên đầu
-    const sorted = [...fetchedAssets].sort((a, b) => {
-      if (a.is_primary && !b.is_primary) return -1;
-      if (!a.is_primary && b.is_primary) return 1;
-      return (a.id || 0) - (b.id || 0);
-    });
-
-    const fromApi = sorted.map((asset) => ({ file: null, url: asset.url }));
-
-    // Giữ lại ảnh mới (có file) user đã chọn trước khi API load xong
-    setImagePreviews((prev) => {
-      const newFiles = prev.filter((item) => item.file !== null);
-      return [...fromApi, ...newFiles];
-    });
-    setAssetsSynced(true);
-  }, [fetchedAssets, isLoadingAssets, isEditMode, assetsSynced]);
-
-  // ── Reset khi mở / đóng ──────────────────────────────────
+  // ── Reset/Sync khi mở / đóng ──────────────────────────────
   useEffect(() => {
     if (!isOpen) return;
 
     if (initialData) {
-      setFormData({
-        name: initialData.name || "",
-        description: initialData.description || "",
-        category_id:
-          initialData.category_id ?? initialData.categoryId ?? "",
-        address: initialData.address || "",
-        lat: initialData.lat != null ? String(initialData.lat) : "",
-        lng: initialData.lng != null ? String(initialData.lng) : "",
+      setName(initialData.name || "");
+      setDescription(initialData.description || "");
+      setCategoryId(initialData.category_id ?? initialData.categoryId ?? "");
+      
+      const mappedLocs = (initialData.locations || []).map((loc) => {
+        // Sắp xếp assets: is_primary lên đầu
+        const sortedAssets = [...(loc.assets || [])].sort((a, b) => {
+          if (a.is_primary && !b.is_primary) return -1;
+          if (!a.is_primary && b.is_primary) return 1;
+          return (a.id || 0) - (b.id || 0);
+        });
+        const imagePreviews = sortedAssets.map((asset) => ({
+          file: null,
+          url: asset.url
+        }));
+        return {
+          id: loc.id,
+          address: loc.address || "",
+          lat: loc.lat != null ? String(loc.lat) : "",
+          lng: loc.lng != null ? String(loc.lng) : "",
+          imagePreviews
+        };
       });
-      // Tạm populate từ initialData.images trong khi API fetch ảnh mới nhất
-      const existing = (initialData.images || []).map((url) => ({
-        file: null,
-        url,
-      }));
-      setImagePreviews(existing);
-      setAssetsSynced(false); // Reset để trigger fetch lại ảnh từ API
+
+      setLocations(mappedLocs.length > 0 ? mappedLocs : [{ address: "", lat: "", lng: "", imagePreviews: [] }]);
+      setActiveLocationIndex(0);
     } else {
-      setFormData(EMPTY_FORM);
-      setImagePreviews([]);
-      setAssetsSynced(false);
+      setName("");
+      setDescription("");
+      setCategoryId("");
+      setLocations([{ address: "", lat: "", lng: "", imagePreviews: [] }]);
+      setActiveLocationIndex(0);
     }
     setErrors({});
     setNotification(null);
@@ -158,41 +122,89 @@ export default function LocationFormModal({
     setShouldSearch(false);
   }, [isOpen, initialData]);
 
-  // ── Debounce tự động tìm kiếm địa chỉ ───────────────────
+  // ── Debounce tự động tìm kiếm địa chỉ cho chi nhánh đang active ──
+  const activeLoc = locations[activeLocationIndex] || { address: "", lat: "", lng: "", imagePreviews: [] };
+
   useEffect(() => {
     if (!shouldSearch) return;
 
-    if (!formData.address.trim()) {
+    if (!activeLoc.address.trim()) {
       setSearchSuggestions([]);
       return;
     }
 
     const timer = setTimeout(() => {
-      handleSearchAddress(formData.address);
+      handleSearchAddress(activeLoc.address);
       setShouldSearch(false);
-    }, 1000); // Tự động tìm kiếm sau 1 giây ngừng gõ
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [formData.address, shouldSearch]);
+  }, [activeLoc.address, shouldSearch]);
+
+  // Helper để cập nhật thông tin chi nhánh active
+  const updateActiveLocation = (fields) => {
+    setLocations((prev) => {
+      const next = [...prev];
+      next[activeLocationIndex] = {
+        ...next[activeLocationIndex],
+        ...fields
+      };
+      return next;
+    });
+  };
+
+  const handleAddLocation = () => {
+    setLocations((prev) => [
+      ...prev,
+      { address: "", lat: "", lng: "", imagePreviews: [] }
+    ]);
+    setActiveLocationIndex(locations.length);
+  };
+
+  const handleRemoveLocation = (indexToRemove) => {
+    if (locations.length <= 1) return;
+    
+    // Revoke các object URL của blob ảnh mới trước khi xóa khỏi state
+    const targetLoc = locations[indexToRemove];
+    if (targetLoc && targetLoc.imagePreviews) {
+      targetLoc.imagePreviews.forEach(item => {
+        if (item.url && item.url.startsWith("blob:")) {
+          URL.revokeObjectURL(item.url);
+        }
+      });
+    }
+
+    setLocations((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    if (activeLocationIndex >= indexToRemove && activeLocationIndex > 0) {
+      setActiveLocationIndex((prev) => prev - 1);
+    }
+  };
 
   // ── Validation ───────────────────────────────────────────
   const validate = () => {
     const errs = {};
-    if (!formData.name.trim()) {
+    if (!name.trim()) {
       errs.name = "Tên địa điểm không được để trống";
-    } else if (formData.name.trim().length < 2) {
+    } else if (name.trim().length < 2) {
       errs.name = "Tên phải có ít nhất 2 ký tự";
     }
-    if (formData.lat && isNaN(Number(formData.lat))) {
-      errs.lat = "Vĩ độ phải là số";
-    } else if (formData.lat && (Number(formData.lat) < -90 || Number(formData.lat) > 90)) {
-      errs.lat = "Vĩ độ: -90 đến 90";
-    }
-    if (formData.lng && isNaN(Number(formData.lng))) {
-      errs.lng = "Kinh độ phải là số";
-    } else if (formData.lng && (Number(formData.lng) < -180 || Number(formData.lng) > 180)) {
-      errs.lng = "Kinh độ: -180 đến 180";
-    }
+
+    locations.forEach((loc, idx) => {
+      if (!loc.address.trim()) {
+        errs[`loc_${idx}_address`] = "Địa chỉ chi nhánh không được để trống";
+      }
+      if (!loc.lat || isNaN(Number(loc.lat))) {
+        errs[`loc_${idx}_lat`] = "Vĩ độ phải là số";
+      } else if (Number(loc.lat) < -90 || Number(loc.lat) > 90) {
+        errs[`loc_${idx}_lat`] = "Vĩ độ: -90 đến 90";
+      }
+      if (!loc.lng || isNaN(Number(loc.lng))) {
+        errs[`loc_${idx}_lng`] = "Kinh độ phải là số";
+      } else if (Number(loc.lng) < -180 || Number(loc.lng) > 180) {
+        errs[`loc_${idx}_lng`] = "Kinh độ: -180 đến 180";
+      }
+    });
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -221,44 +233,55 @@ export default function LocationFormModal({
       setNotification({ type: "error", message: fileErrors.join("\n") });
     }
 
-    setImagePreviews((prev) => [...prev, ...newPreviews]);
+    updateActiveLocation({
+      imagePreviews: [...(activeLoc.imagePreviews || []), ...newPreviews]
+    });
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // ── Xóa ảnh ─────────────────────────────────────────────
   const handleRemoveImage = (index) => {
-    setImagePreviews((prev) => {
-      const next = [...prev];
-      if (next[index].file && next[index].url.startsWith("blob:")) {
-        URL.revokeObjectURL(next[index].url);
-      }
-      next.splice(index, 1);
-      return next;
-    });
+    const nextPreviews = [...(activeLoc.imagePreviews || [])];
+    const removedItem = nextPreviews[index];
+    if (removedItem.file && removedItem.url.startsWith("blob:")) {
+      URL.revokeObjectURL(removedItem.url);
+    }
+    nextPreviews.splice(index, 1);
+    updateActiveLocation({ imagePreviews: nextPreviews });
   };
 
   // ── Đặt ảnh primary (đưa lên đầu) ───────────────────────
   const handleSetPrimary = (index) => {
-    setImagePreviews((prev) => {
-      const next = [...prev];
-      const [item] = next.splice(index, 1);
-      return [item, ...next];
-    });
+    const nextPreviews = [...(activeLoc.imagePreviews || [])];
+    const [item] = nextPreviews.splice(index, 1);
+    nextPreviews.unshift(item);
+    updateActiveLocation({ imagePreviews: nextPreviews });
   };
 
-  // ── Field change ─────────────────────────────────────────
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-    if (name === "address") {
+  // ── Field changes ────────────────────────────────────────
+  const handlePlaceFieldChange = (e) => {
+    const { name: fieldName, value } = e.target;
+    if (fieldName === "name") setName(value);
+    if (fieldName === "description") setDescription(value);
+    if (fieldName === "category_id") setCategoryId(value);
+    if (errors[fieldName]) setErrors((prev) => ({ ...prev, [fieldName]: "" }));
+  };
+
+  const handleLocationFieldChange = (e) => {
+    const { name: fieldName, value } = e.target;
+    updateActiveLocation({ [fieldName]: value });
+    
+    const errKey = `loc_${activeLocationIndex}_${fieldName}`;
+    if (errors[errKey]) setErrors((prev) => ({ ...prev, [errKey]: "" }));
+    
+    if (fieldName === "address") {
       setShouldSearch(true);
     }
   };
 
   const handleSearchAddress = async (query) => {
     if (!query || !query.trim()) return;
-    setShouldSearch(false); // Ngăn debounce tự chạy lại nếu đã kích hoạt tìm kiếm
+    setShouldSearch(false);
     setIsSearchingAddress(true);
     setSearchSuggestions([]);
     try {
@@ -287,10 +310,9 @@ export default function LocationFormModal({
       );
       const data = await resp.json();
       if (data && data.display_name) {
-        setFormData((prev) => ({
-          ...prev,
-          address: data.display_name,
-        }));
+        updateActiveLocation({ address: data.display_name });
+        const errKey = `loc_${activeLocationIndex}_address`;
+        if (errors[errKey]) setErrors((prev) => ({ ...prev, [errKey]: "" }));
       }
     } catch (err) {
       console.error("Reverse geocoding error:", err);
@@ -298,11 +320,15 @@ export default function LocationFormModal({
   };
 
   const handleMapClick = (latlng) => {
-    setFormData((prev) => ({
-      ...prev,
+    updateActiveLocation({
       lat: String(latlng.lat.toFixed(6)),
       lng: String(latlng.lng.toFixed(6)),
-    }));
+    });
+    const latErrKey = `loc_${activeLocationIndex}_lat`;
+    const lngErrKey = `loc_${activeLocationIndex}_lng`;
+    if (errors[latErrKey] || errors[lngErrKey]) {
+      setErrors((prev) => ({ ...prev, [latErrKey]: "", [lngErrKey]: "" }));
+    }
     reverseGeocode(latlng.lat, latlng.lng);
   };
 
@@ -315,43 +341,69 @@ export default function LocationFormModal({
       setIsUploading(true);
       setNotification(null);
 
-      // Upload ảnh mới (có File), giữ nguyên URL ảnh cũ
-      const uploadedUrls = await Promise.all(
-        imagePreviews.map(async (item) => {
-          if (item.file) {
-            // Upload lên bucket LOCATION_IMAGES (khác với ICON_LOCATION của category)
-            return await uploadImageToSupabase(
-              item.file,
-              SUPABASE_BUCKETS.LOCATION_IMAGES
-            );
-          }
-          return item.url;
-        })
-      );
+      // Upload ảnh cho từng chi nhánh
+      const finalLocations = [];
+      for (const loc of locations) {
+        const uploadedUrls = await Promise.all(
+          (loc.imagePreviews || []).map(async (item) => {
+            if (item.file) {
+              return await uploadImageToSupabase(item.file, SUPABASE_BUCKETS.LOCATION_IMAGES);
+            }
+            return item.url;
+          })
+        );
 
-      // Xóa ảnh cũ bị loại bỏ trên Supabase Storage
-      if (initialData && initialData.images) {
-        const deletedImages = initialData.images.filter(img => !uploadedUrls.includes(img));
-        for (const imgUrl of deletedImages) {
-          if (imgUrl && imgUrl.includes("supabase.co")) {
-            try {
-              await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.LOCATION_IMAGES);
-            } catch (err) {
-              console.error("Lỗi xóa ảnh địa điểm cũ:", err);
+        // Dọn dẹp ảnh cũ trên Supabase Storage nếu bị xóa
+        if (initialData && loc.id) {
+          const originalLoc = (initialData.locations || []).find((l) => l.id === loc.id);
+          if (originalLoc && originalLoc.assets) {
+            const prevUrls = originalLoc.assets.map((a) => a.url);
+            const deletedUrls = prevUrls.filter((url) => !uploadedUrls.includes(url));
+            for (const imgUrl of deletedUrls) {
+              if (imgUrl && imgUrl.includes("supabase.co")) {
+                try {
+                  await deleteImageFromSupabase(imgUrl, SUPABASE_BUCKETS.LOCATION_IMAGES);
+                } catch (err) {
+                  console.error("Lỗi xóa ảnh cũ trên Supabase:", err);
+                }
+              }
+            }
+          }
+        }
+
+        finalLocations.push({
+          ...(loc.id && { id: loc.id }),
+          address: loc.address.trim(),
+          lat: Number(loc.lat),
+          lng: Number(loc.lng),
+          images: uploadedUrls
+        });
+      }
+
+      // Xóa ảnh của các chi nhánh bị xóa hoàn toàn khỏi Place
+      if (initialData && initialData.locations) {
+        const incomingIds = locations.filter((l) => l.id).map((l) => l.id);
+        const removedLocs = initialData.locations.filter((l) => !incomingIds.includes(l.id));
+        for (const rloc of removedLocs) {
+          if (rloc.assets) {
+            for (const asset of rloc.assets) {
+              if (asset.url && asset.url.includes("supabase.co")) {
+                try {
+                  await deleteImageFromSupabase(asset.url, SUPABASE_BUCKETS.LOCATION_IMAGES);
+                } catch (err) {
+                  console.error("Lỗi xóa ảnh chi nhánh bị xóa trên Supabase:", err);
+                }
+              }
             }
           }
         }
       }
 
-      // Build payload
       const payload = {
-        name: formData.name.trim(),
-        ...(formData.description.trim() && { description: formData.description.trim() }),
-        ...(formData.category_id && { category_id: Number(formData.category_id) }),
-        ...(formData.address.trim() && { address: formData.address.trim() }),
-        ...(formData.lat !== "" && { lat: Number(formData.lat) }),
-        ...(formData.lng !== "" && { lng: Number(formData.lng) }),
-        images: uploadedUrls,
+        name: name.trim(),
+        description: description.trim() || null,
+        category_id: categoryId ? Number(categoryId) : null,
+        locations: finalLocations
       };
 
       await onSubmit(payload);
@@ -396,9 +448,7 @@ export default function LocationFormModal({
             disabled={isBusy}
             className="rounded-full p-1.5 hover:bg-secondary transition-colors disabled:opacity-40"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X size={18} />
           </button>
         </div>
 
@@ -418,9 +468,9 @@ export default function LocationFormModal({
               <Input
                 type="text"
                 name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Nhà Thờ Đức Bà"
+                value={name}
+                onChange={handlePlaceFieldChange}
+                placeholder="Ví dụ: Chùa Bà Thiên Hậu"
                 disabled={isBusy}
               />
               {errors.name && (
@@ -433,9 +483,9 @@ export default function LocationFormModal({
               <label className="block text-sm font-medium mb-1">Mô tả</label>
               <textarea
                 name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Công trình kiến trúc Pháp cổ tại trung tâm TP.HCM..."
+                value={description}
+                onChange={handlePlaceFieldChange}
+                placeholder="Nhập mô tả về địa điểm..."
                 disabled={isBusy}
                 rows={3}
                 className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 resize-none"
@@ -447,8 +497,8 @@ export default function LocationFormModal({
               <label className="block text-sm font-medium mb-1">Danh mục</label>
               <select
                 name="category_id"
-                value={formData.category_id}
-                onChange={handleChange}
+                value={categoryId}
+                onChange={handlePlaceFieldChange}
                 disabled={isBusy}
                 className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
               >
@@ -462,158 +512,211 @@ export default function LocationFormModal({
             </div>
           </section>
 
-          {/* ══ NHÓM 2: Vị trí (Location) ════════════════ */}
+          {/* ══ NHÓM 2: Danh sách chi nhánh (Locations) ════════ */}
           <section className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5">
-              🗺️ Vị trí
-            </h3>
-
-            {/* Address with Nominatim Search */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Địa chỉ</label>
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="01 Công xã Paris, Bến Nghé, Quận 1, TP.HCM"
-                  disabled={isBusy}
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  onClick={() => handleSearchAddress(formData.address)}
-                  disabled={isBusy || isSearchingAddress}
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 shrink-0 border h-9"
-                >
-                  {isSearchingAddress ? "Đang tìm..." : "Tìm kiếm"}
-                </Button>
-              </div>
-
-              {/* Suggestions Dropdown */}
-              {searchSuggestions.length > 0 && (
-                <div className="mt-2 rounded-lg border bg-background shadow-lg max-h-48 overflow-y-auto z-20 relative">
-                  {searchSuggestions.map((item, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          address: item.display_name,
-                          lat: String(Number(item.lat).toFixed(6)),
-                          lng: String(Number(item.lon).toFixed(6)),
-                        }));
-                        setSearchSuggestions([]);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs hover:bg-secondary transition-colors border-b last:border-b-0 line-clamp-2"
-                    >
-                      {item.display_name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Lat / Lng */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-medium mb-1">Vĩ độ (Latitude)</label>
-                <Input
-                  type="number"
-                  name="lat"
-                  value={formData.lat}
-                  onChange={handleChange}
-                  placeholder="10.779960"
-                  step="any"
-                  disabled={isBusy}
-                />
-                {errors.lat && (
-                  <p className="text-xs text-red-500 mt-1">{errors.lat}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Kinh độ (Longitude)</label>
-                <Input
-                  type="number"
-                  name="lng"
-                  value={formData.lng}
-                  onChange={handleChange}
-                  placeholder="106.699190"
-                  step="any"
-                  disabled={isBusy}
-                />
-                {errors.lng && (
-                  <p className="text-xs text-red-500 mt-1">{errors.lng}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Leaflet Map for click-to-pin location */}
-            <div className="relative">
-              <div className="h-60 w-full rounded-lg border mt-2 overflow-hidden relative z-0">
-                <MapContainer
-                  center={(() => {
-                    const latVal = Number(formData.lat);
-                    const lngVal = Number(formData.lng);
-                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
-                    return hasValidLatLng ? [latVal, lngVal] : [10.779960, 106.699190];
-                  })()}
-                  zoom={(() => {
-                    const latVal = Number(formData.lat);
-                    const lngVal = Number(formData.lng);
-                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
-                    return hasValidLatLng ? 15 : 12;
-                  })()}
-                  zoomControl={true}
-                  style={{ width: "100%", height: "100%" }}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <MapResizer />
-                  <ChangeMapCenter
-                    center={(() => {
-                      const latVal = Number(formData.lat);
-                      const lngVal = Number(formData.lng);
-                      const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
-                      return hasValidLatLng ? [latVal, lngVal] : null;
-                    })()}
-                  />
-                  <MapClickHandler onClick={handleMapClick} />
-                  {(() => {
-                    const latVal = Number(formData.lat);
-                    const lngVal = Number(formData.lng);
-                    const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
-                    return hasValidLatLng ? (
-                      <Marker
-                        position={[latVal, lngVal]}
-                        icon={createCustomIcon("#B8922E", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`)}
-                      />
-                    ) : null;
-                  })()}
-                </MapContainer>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-1">
-                💡 <i>Bạn có thể click trực tiếp lên bản đồ trên để chọn vị trí và lấy địa chỉ tự động.</i>
-              </p>
-            </div>
-          </section>
-
-          {/* ══ NHÓM 3: Ảnh địa điểm (Assets) ═══════════ */}
-          {/* Upload lên Supabase bucket: "location-images"  */}
-          {/* Khác với category dùng bucket: "icon_location" */}
-          <section className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5">
-              🖼️ Ảnh địa điểm
-              <span className="normal-case font-normal ml-2 text-muted-foreground/70">
-                — Ảnh đầu tiên sẽ là ảnh chính (primary)
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5 flex items-center justify-between">
+              <span>🗺️ Chi nhánh (Vị trí)</span>
+              <span className="text-[11px] normal-case text-muted-foreground font-normal">
+                Bắt buộc có ít nhất 1 chi nhánh
               </span>
             </h3>
 
-            {/* Hiển thị số lượng ảnh hiện có khi đang update */}
+            {/* Tabs chọn chi nhánh */}
+            <div className="flex flex-wrap gap-2 mb-2 border-b pb-3">
+              {locations.map((loc, idx) => (
+                <div key={idx} className="flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveLocationIndex(idx);
+                      setSearchSuggestions([]);
+                    }}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors flex items-center gap-1.5
+                      ${activeLocationIndex === idx
+                        ? "bg-[#B8922E] text-white border-[#B8922E]"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border-input"
+                      }`}
+                  >
+                    <MapPin size={12} />
+                    Chi nhánh {idx + 1}
+                    {locations.length > 1 && (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveLocation(idx);
+                        }}
+                        className="hover:bg-black/20 rounded-full p-0.5 ml-1 inline-flex items-center justify-center transition-colors"
+                        title="Xóa chi nhánh này"
+                      >
+                        <X size={10} />
+                      </span>
+                    )}
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddLocation}
+                className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-dashed border-[#B8922E]/40 text-[#B8922E] hover:bg-[#B8922E]/5 transition-colors"
+              >
+                + Thêm chi nhánh
+              </button>
+            </div>
+
+            {/* Chi tiết chi nhánh active */}
+            <div className="space-y-4 pt-1">
+              {/* Address with Nominatim Search */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Địa chỉ chi nhánh {activeLocationIndex + 1} <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    name="address"
+                    value={activeLoc.address}
+                    onChange={handleLocationFieldChange}
+                    placeholder="Nhập địa chỉ chi nhánh..."
+                    disabled={isBusy}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => handleSearchAddress(activeLoc.address)}
+                    disabled={isBusy || isSearchingAddress}
+                    className="bg-secondary text-secondary-foreground hover:bg-secondary/80 shrink-0 border h-9"
+                  >
+                    {isSearchingAddress ? "Đang tìm..." : "Tìm kiếm"}
+                  </Button>
+                </div>
+                {errors[`loc_${activeLocationIndex}_address`] && (
+                  <p className="text-xs text-red-500 mt-1">{errors[`loc_${activeLocationIndex}_address`]}</p>
+                )}
+
+                {/* Suggestions Dropdown */}
+                {searchSuggestions.length > 0 && (
+                  <div className="mt-2 rounded-lg border bg-background shadow-lg max-h-48 overflow-y-auto z-20 relative">
+                    {searchSuggestions.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          updateActiveLocation({
+                            address: item.display_name,
+                            lat: String(Number(item.lat).toFixed(6)),
+                            lng: String(Number(item.lon).toFixed(6)),
+                          });
+                          setSearchSuggestions([]);
+                          const latErrKey = `loc_${activeLocationIndex}_lat`;
+                          const lngErrKey = `loc_${activeLocationIndex}_lng`;
+                          if (errors[latErrKey] || errors[lngErrKey]) {
+                            setErrors((prev) => ({ ...prev, [latErrKey]: "", [lngErrKey]: "" }));
+                          }
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-secondary transition-colors border-b last:border-b-0 line-clamp-2"
+                      >
+                        {item.display_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Lat / Lng */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Vĩ độ (Latitude)</label>
+                  <Input
+                    type="number"
+                    name="lat"
+                    value={activeLoc.lat}
+                    onChange={handleLocationFieldChange}
+                    placeholder="Ví dụ: 10.779960"
+                    step="any"
+                    disabled={isBusy}
+                  />
+                  {errors[`loc_${activeLocationIndex}_lat`] && (
+                    <p className="text-xs text-red-500 mt-1">{errors[`loc_${activeLocationIndex}_lat`]}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Kinh độ (Longitude)</label>
+                  <Input
+                    type="number"
+                    name="lng"
+                    value={activeLoc.lng}
+                    onChange={handleLocationFieldChange}
+                    placeholder="Ví dụ: 106.699190"
+                    step="any"
+                    disabled={isBusy}
+                  />
+                  {errors[`loc_${activeLocationIndex}_lng`] && (
+                    <p className="text-xs text-red-500 mt-1">{errors[`loc_${activeLocationIndex}_lng`]}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Leaflet Map for click-to-pin location */}
+              <div className="relative">
+                <div className="h-60 w-full rounded-lg border mt-2 overflow-hidden relative z-0">
+                  <MapContainer
+                    center={(() => {
+                      const latVal = Number(activeLoc.lat);
+                      const lngVal = Number(activeLoc.lng);
+                      const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                      return hasValidLatLng ? [latVal, lngVal] : [10.779960, 106.699190];
+                    })()}
+                    zoom={(() => {
+                      const latVal = Number(activeLoc.lat);
+                      const lngVal = Number(activeLoc.lng);
+                      const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                      return hasValidLatLng ? 15 : 12;
+                    })()}
+                    zoomControl={true}
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <MapResizer />
+                    <ChangeMapCenter
+                      center={(() => {
+                        const latVal = Number(activeLoc.lat);
+                        const lngVal = Number(activeLoc.lng);
+                        const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                        return hasValidLatLng ? [latVal, lngVal] : null;
+                      })()}
+                    />
+                    <MapClickHandler onClick={handleMapClick} />
+                    {(() => {
+                      const latVal = Number(activeLoc.lat);
+                      const lngVal = Number(activeLoc.lng);
+                      const hasValidLatLng = !isNaN(latVal) && latVal !== 0 && !isNaN(lngVal) && lngVal !== 0;
+                      return hasValidLatLng ? (
+                        <Marker
+                          position={[latVal, lngVal]}
+                          icon={createCustomIcon("#B8922E", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`)}
+                        />
+                      ) : null;
+                    })()}
+                  </MapContainer>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                  💡 <i>Nhấp chuột vào bản đồ trên để đánh dấu tọa độ và lấy địa chỉ tự động cho chi nhánh này.</i>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* ══ NHÓM 3: Ảnh chi nhánh (Assets) ═══════════ */}
+          <section className="space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5">
+              🖼️ Ảnh chi nhánh {activeLocationIndex + 1}
+              <span className="normal-case font-normal ml-2 text-muted-foreground/70 text-[11px]">
+                — Ảnh đầu sẽ là ảnh chính (primary)
+              </span>
+            </h3>
 
             {/* Upload trigger */}
             <div>
@@ -638,26 +741,23 @@ export default function LocationFormModal({
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                Thêm ảnh
+                Thêm ảnh chi nhánh
               </label>
               <p className="text-xs text-muted-foreground mt-1.5">
-                JPEG, PNG, WebP, GIF · tối đa {IMAGE_UPLOAD_CONFIG.MAX_SIZE_MB}MB / ảnh · có thể chọn nhiều
+                JPEG, PNG, WebP · tối đa {IMAGE_UPLOAD_CONFIG.MAX_SIZE_MB}MB/ảnh
               </p>
             </div>
 
             {/* Preview grid */}
-            {imagePreviews.length > 0 ? (
+            {(activeLoc.imagePreviews || []).length > 0 ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-medium text-muted-foreground">
-                    {imagePreviews.length} ảnh
-                  </p>
-                  <p className="text-[10px] text-muted-foreground/70">
-                    Kéo thả để sắp xếp | Click để xem lớn
+                    {(activeLoc.imagePreviews || []).length} ảnh của chi nhánh {activeLocationIndex + 1}
                   </p>
                 </div>
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                  {imagePreviews.map((item, index) => (
+                  {(activeLoc.imagePreviews || []).map((item, index) => (
                     <div
                       key={item.url + index}
                       className={`relative group aspect-square rounded-lg overflow-hidden border-2 bg-secondary
@@ -668,7 +768,7 @@ export default function LocationFormModal({
                         alt={`Ảnh ${index + 1}`}
                         className="w-full h-full object-cover cursor-pointer"
                         onClick={() => window.open(item.url, '_blank')}
-                        title="Click để xem ảnh gốc"
+                        title="Xem ảnh lớn"
                       />
 
                       {/* Primary badge */}
@@ -715,14 +815,8 @@ export default function LocationFormModal({
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-secondary/30">
-                <svg className="h-12 w-12 text-muted-foreground/40 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <p className="text-sm text-muted-foreground font-medium">Chưa có ảnh nào</p>
-                <p className="text-xs text-muted-foreground/70 mt-1">
-                  Click "Thêm ảnh" ở trên để tải lên
-                </p>
+              <div className="flex flex-col items-center justify-center py-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-secondary/30">
+                <p className="text-xs text-muted-foreground font-medium">Chi nhánh này chưa có ảnh nào</p>
               </div>
             )}
           </section>
@@ -756,8 +850,8 @@ export default function LocationFormModal({
           <div className="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center z-10">
             <div className="bg-background rounded-xl px-8 py-6 shadow-lg flex flex-col items-center gap-3">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#B8922E]" />
-              <p className="text-sm font-medium">Đang tải ảnh lên Supabase...</p>
-              <p className="text-xs text-muted-foreground">bucket: location-images</p>
+              <p className="text-sm font-medium">Đang xử lý hình ảnh và dữ liệu...</p>
+              <p className="text-xs text-muted-foreground">Vui lòng chờ giây lát</p>
             </div>
           </div>
         )}

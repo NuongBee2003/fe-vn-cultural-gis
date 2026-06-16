@@ -12,6 +12,7 @@ import {
   getAssetsByLocationId,
   getAllLocationsByCategory,
   searchPlaceLocationsByDB,
+  getAllPlaces,
 } from "./locationApi";
 
 /**
@@ -65,6 +66,18 @@ export function useAllLocations(page = 1, limit = 20) {
     queryKey: ["locations", "all", page, limit],
     queryFn: () => getAllLocations(page, limit),
     staleTime: 1 * 60 * 1000, // Cache 1 phút
+  });
+}
+
+/**
+ * Hook lấy tất cả Places với phân trang, lọc theo categoryId và tìm kiếm query
+ */
+export function useAllPlaces(page = 1, limit = 20, categoryId = null, query = "") {
+  return useQuery({
+    queryKey: ["places", "all", page, limit, categoryId, query],
+    queryFn: () => getAllPlaces(page, limit, categoryId, query),
+    staleTime: 1 * 60 * 1000, // Cache 1 phút
+    placeholderData: keepPreviousData,
   });
 }
 export function useAllLocationsByCategory(page = 1, limit = 20, categoryId, options = {}) {
