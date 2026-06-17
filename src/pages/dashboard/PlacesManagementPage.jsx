@@ -541,8 +541,9 @@ export default function PlacesManagementPage() {
         <ReviewsManagementModal
           isOpen={showReviews}
           onClose={handleCloseReviews}
-          placeId={selectedPlaceForReviews.id || selectedPlaceForReviews.placeId}
+          placeId={selectedPlaceForReviews.id}
           placeName={selectedPlaceForReviews.name}
+          locationId={null}
         />
       )}
     </main>

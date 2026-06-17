@@ -293,6 +293,7 @@ export default function LocationsManagementPage() {
           onClose={handleCloseReviews}
           placeId={selectedLocation.placeId}
           placeName={selectedLocation.name}
+          locationId={selectedLocation.id}
         />
       )}
     </main>

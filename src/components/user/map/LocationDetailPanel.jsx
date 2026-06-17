@@ -161,7 +161,7 @@ export default function LocationDetailPanel({
             </div>
           )}
 
-          <ReviewSection placeId={location.placeId} />
+          <ReviewSection placeId={location.placeId} locationId={location.id} />
 
           <div className="mt-3 flex items-center gap-1 text-[11px] text-gray-400">
             <MapPin size={11} />

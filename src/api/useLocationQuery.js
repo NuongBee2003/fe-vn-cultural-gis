@@ -97,11 +97,12 @@ export function useCreateReview() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ placeId, rating, comment, token }) => 
-      createPlaceReview(placeId, rating, comment, token),
+    mutationFn: ({ placeId, rating, comment, token, locationId }) => 
+      createPlaceReview(placeId, rating, comment, token, locationId),
     onSuccess: (data, variables) => {
       // Invalidate cache của place này để buộc tải lại danh sách review mới nhất
       queryClient.invalidateQueries({ queryKey: ["place", variables.placeId] });
+      queryClient.invalidateQueries({ queryKey: ["place-reviews", variables.placeId] });
     },
   });
 }
@@ -164,26 +165,59 @@ export function useSearchLocations(query, limit = 10) {
  * 9. Hook lấy reviews + rating_avg của một Place
  * Dùng GET /api/v1/place/:id (trả về locations[].reviews[])
  */
-export function usePlaceReviews(placeId) {
+export function usePlaceReviews(placeId, locationId = null) {
   return useQuery({
-    queryKey: ["place-reviews", placeId],
+    queryKey: ["place-reviews", placeId, locationId],
     queryFn: () => getPlaceDetail(placeId),
     enabled: !!placeId,
     staleTime: 2 * 60 * 1000,
     select: (data) => {
-      // Gom tất cả reviews từ locations[]
-      const allReviews = [];
-      for (const loc of data?.locations || []) {
-        if (Array.isArray(loc.reviews)) allReviews.push(...loc.reviews);
+      let filteredReviews = [];
+      if (locationId) {
+        // Chỉ lấy reviews thuộc chi nhánh này
+        const loc = (data?.locations || []).find(l => l.id === locationId);
+        if (loc && Array.isArray(loc.reviews)) {
+          filteredReviews = loc.reviews.map(r => ({
+            ...r,
+            locationAddress: loc.address
+          }));
+        }
+      } else {
+        // Gom tất cả reviews từ các chi nhánh
+        for (const loc of data?.locations || []) {
+          if (Array.isArray(loc.reviews)) {
+            filteredReviews.push(
+              ...loc.reviews.map(r => ({
+                ...r,
+                locationAddress: loc.address
+              }))
+            );
+          }
+        }
       }
+
       // Sắp xếp mới nhất lên đầu
-      allReviews.sort(
+      filteredReviews.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
+
+      // Tính rating_avg cụ thể cho tập review đã lọc
+      let totalRating = 0;
+      let count = 0;
+      for (const r of filteredReviews) {
+        const rating = Number(r.rating);
+        if (!Number.isNaN(rating)) {
+          totalRating += rating;
+          count++;
+        }
+      }
+      const ratingAvg = count > 0 ? Number((totalRating / count).toFixed(2)) : null;
+
       return {
-        reviews: allReviews,
-        rating_avg: data?.rating_avg ?? null,
-        total: allReviews.length,
+        reviews: filteredReviews,
+        rating_avg: ratingAvg,
+        total: filteredReviews.length,
+        locations: data?.locations || [],
       };
     },
   });

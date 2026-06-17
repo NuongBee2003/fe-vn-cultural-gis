@@ -1,6 +1,6 @@
 import { useState} from "react";
 import Pagination from "@/components/ui/pagination/Pagination";
-import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare } from "lucide-react";
+import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare, MapPin } from "lucide-react";
 import { usePlaceReviews } from "@/api/useLocationQuery";
 import { useDeleteReview } from "@/api/locationAdminApi";
 
@@ -127,10 +127,15 @@ function ReviewRow({ review, placeId }) {
           <p className="mt-2 text-sm text-gray-400 italic">Không có nội dung đánh giá.</p>
         )}
 
-        <div className="mt-2.5 flex items-center gap-3">
+        <div className="mt-2.5 flex items-center gap-3 flex-wrap">
           <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
             ID #{review.id}
           </span>
+          {review.locationAddress && (
+            <span className="text-[10px] text-gray-500 bg-amber-50/50 px-2 py-0.5 rounded border border-amber-100/50 truncate max-w-[200px]" title={review.locationAddress}>
+              📍 {review.locationAddress}
+            </span>
+          )}
         </div>
       </div>
 
@@ -160,30 +165,49 @@ function ReviewRow({ review, placeId }) {
 
 // ── Main ReviewsManagementModal ───────────────────────────────────────────────
 
-export default function ReviewsManagementModal({ isOpen, onClose, placeId, placeName }) {
+export default function ReviewsManagementModal({ isOpen, onClose, placeId, placeName, locationId = null }) {
   const [filterRating, setFilterRating] = useState(0); // 0 = tất cả
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest"); // newest, oldest, rating-desc, rating-asc
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const { data, isLoading } = usePlaceReviews(placeId);
+  // Luôn fetch tất cả reviews của Place để hỗ trợ lọc động các chi nhánh trên giao diện
+  const { data, isLoading } = usePlaceReviews(placeId, null);
+
+  const [selectedBranchId, setSelectedBranchId] = useState(locationId || null);
 
   if (!isOpen) return null;
 
   const allReviews = data?.reviews ?? [];
-  const ratingAvg = data?.rating_avg;
-  const total = data?.total ?? 0;
+  const locations = data?.locations ?? [];
 
-  // 1. Phân phối sao (luôn tính trên tổng số reviews gốc)
+  // Xác định chi nhánh đang hiển thị (nếu selectedBranchId là null thì lấy chi nhánh đầu tiên, nếu không có chi nhánh nào thì lấy "all")
+  const activeBranchId = selectedBranchId !== null
+    ? selectedBranchId
+    : (locations[0]?.id || "all");
+
+  const activeLocation = locations.find((l) => l.id === activeBranchId);
+
+  // Lọc reviews theo chi nhánh đang hoạt động
+  const branchReviews = activeBranchId === "all"
+    ? allReviews
+    : allReviews.filter((r) => r.location_id === activeBranchId);
+
+  // Tính rating_avg cụ thể cho chi nhánh đang hoạt động
+  const ratings = branchReviews.map((r) => Number(r.rating)).filter((val) => !Number.isNaN(val));
+  const ratingAvg = ratings.length > 0 ? Number((ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)) : 0.0;
+  const total = branchReviews.length;
+
+  // 1. Phân phối sao (tính trên tập reviews của chi nhánh đang hoạt động)
   const starDistribution = [5, 4, 3, 2, 1].map((rating) => {
-    const count = allReviews.filter((r) => r.rating === rating).length;
+    const count = branchReviews.filter((r) => r.rating === rating).length;
     const percent = total > 0 ? Math.round((count / total) * 100) : 0;
     return { rating, count, percent };
   });
 
   // 2. Lọc & Tìm kiếm
-  const filteredReviews = allReviews.filter((r) => {
+  const filteredReviews = branchReviews.filter((r) => {
     // Lọc theo số sao
     if (filterRating !== 0 && r.rating !== filterRating) return false;
 
@@ -220,6 +244,7 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
     setSearchQuery("");
     setSortBy("newest");
     setCurrentPage(1);
+    setSelectedBranchId(locationId || null);
   };
 
   return (
@@ -233,8 +258,14 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
               <MessageSquare className="text-gray-500" size={18} />
               <h2 className="text-base font-bold text-gray-900">Quản lý đánh giá người dùng</h2>
             </div>
-            <p className="text-[12px] text-gray-500 mt-1.5 font-medium truncate max-w-md">
+            <p className="text-[12px] text-gray-500 mt-1.5 font-medium truncate max-w-2xl">
               Địa điểm: <span className="text-gray-800 font-semibold">{placeName}</span>
+              {activeLocation && (
+                <span className="text-gray-400 font-normal">
+                  {" — "}
+                  {activeLocation.address}
+                </span>
+              )}
             </p>
           </div>
           <button
@@ -323,6 +354,32 @@ export default function ReviewsManagementModal({ isOpen, onClose, placeId, place
               {/* Bộ lọc & Tìm kiếm */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tìm kiếm & Sắp xếp</h3>
+
+                {/* Lọc theo Chi nhánh (nếu có nhiều hơn 1 chi nhánh và locationId prop là null) */}
+                {!locationId && locations.length > 1 && (
+                  <div className="relative">
+                    <MapPin size={12} className="absolute left-3 top-3 text-gray-400" />
+                    <select
+                      value={activeBranchId}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedBranchId(val === "all" ? "all" : Number(val));
+                        setCurrentPage(1);
+                      }}
+                      className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-amber-400 transition bg-white appearance-none"
+                    >
+                      <option value="all">Tất cả chi nhánh ({allReviews.length})</option>
+                      {locations.map((loc, idx) => {
+                        const count = allReviews.filter((r) => r.location_id === loc.id).length;
+                        return (
+                          <option key={loc.id} value={loc.id}>
+                            Chi nhánh {idx + 1}: {loc.address || `ID #${loc.id}`} ({count})
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                )}
 
                 {/* Ô tìm kiếm */}
                 <div className="relative">

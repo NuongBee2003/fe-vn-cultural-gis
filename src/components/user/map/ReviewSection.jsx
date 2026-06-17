@@ -122,7 +122,7 @@ function ReviewCard({ review }) {
 
 // ── WriteReviewForm ───────────────────────────────────────────────────────────
 
-function WriteReviewForm({ placeId, onSuccess }) {
+function WriteReviewForm({ placeId, locationId, onSuccess }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
@@ -141,12 +141,12 @@ function WriteReviewForm({ placeId, onSuccess }) {
     setError("");
 
     mutate(
-      { placeId, rating, comment: comment.trim(), token },
+      { placeId, rating, comment: comment.trim(), token, locationId },
       {
         onSuccess: () => {
           setRating(0);
           setComment("");
-          queryClient.invalidateQueries({ queryKey: ["place-reviews", placeId] });
+          queryClient.invalidateQueries({ queryKey: ["place-reviews", placeId, locationId] });
           onSuccess?.();
         },
         onError: (err) => setError(err?.message || "Có lỗi xảy ra, thử lại nhé."),
@@ -199,13 +199,13 @@ function WriteReviewForm({ placeId, onSuccess }) {
 
 const PAGE_SIZE = 5;
 
-export default function ReviewSection({ placeId }) {
+export default function ReviewSection({ placeId, locationId }) {
   const [showAll, setShowAll] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const navigate = useNavigate();
 
-  const { data, isLoading } = usePlaceReviews(placeId);
+  const { data, isLoading } = usePlaceReviews(placeId, locationId);
 
   const handleWriteReviewClick = () => {
     const token =
@@ -292,6 +292,7 @@ export default function ReviewSection({ placeId }) {
       {showForm && (
         <WriteReviewForm
           placeId={placeId}
+          locationId={locationId}
           onSuccess={() => setShowForm(false)}
         />
       )}
