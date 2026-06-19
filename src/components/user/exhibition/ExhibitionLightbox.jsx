@@ -8,10 +8,51 @@ import {
   Calendar,
   Volume2
 } from "lucide-react";
+import { toggleLikeExhibition } from "@/api/exhibitionApi";
 
-export default function ExhibitionLightbox({ item, onClose }) {
+export default function ExhibitionLightbox({ item, onClose, onLikeUpdate }) {
   const { i18n } = useTranslation();
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const [likesCount, setLikesCount] = useState(item?.likes || 0);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (item?.id) {
+      setLikesCount(item.likes || 0);
+      try {
+        const likedList = JSON.parse(localStorage.getItem("likedExhibitions") || "[]");
+        setIsLiked(likedList.includes(item.id));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [item]);
+
+  const handleLikeToggle = async () => {
+    if (!item?.id) return;
+    try {
+      const action = isLiked ? "unlike" : "like";
+      const res = await toggleLikeExhibition(item.id, action);
+      if (res) {
+        setLikesCount(res.likes);
+        const likedList = JSON.parse(localStorage.getItem("likedExhibitions") || "[]");
+        let updatedList;
+        if (isLiked) {
+          updatedList = likedList.filter(id => id !== item.id);
+        } else {
+          updatedList = [...likedList, item.id];
+        }
+        localStorage.setItem("likedExhibitions", JSON.stringify(updatedList));
+        setIsLiked(!isLiked);
+        if (onLikeUpdate) {
+          onLikeUpdate(item.id, res.likes);
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi khi toggle like:", err);
+    }
+  };
 
   const speak = (text) => {
     if ("speechSynthesis" in window) {
@@ -171,8 +212,23 @@ export default function ExhibitionLightbox({ item, onClose }) {
             </li>
             
             <li className="flex items-center gap-2">
-              <Heart size={15} className="text-stone-400 shrink-0" />
-              <span>{item.likes} lượt thích</span>
+              <button
+                type="button"
+                onClick={handleLikeToggle}
+                className="flex items-center gap-2 text-stone-600 hover:text-rose-600 transition-colors group cursor-pointer"
+              >
+                <Heart
+                  size={15}
+                  className={`shrink-0 transition-transform active:scale-125 group-hover:scale-110 ${
+                    isLiked
+                      ? "fill-rose-500 text-rose-500"
+                      : "text-stone-400 group-hover:text-rose-500"
+                  }`}
+                />
+                <span className={isLiked ? "text-rose-600 font-semibold" : ""}>
+                  {likesCount} lượt thích
+                </span>
+              </button>
             </li>
 
             <li className="flex items-center gap-2">

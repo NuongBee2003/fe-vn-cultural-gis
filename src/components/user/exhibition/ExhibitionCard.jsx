@@ -1,6 +1,6 @@
 import { Heart, MapPin } from "lucide-react";
 
-export default function ExhibitionCard({ item, onClick }) {
+export default function ExhibitionCard({ item, onClick, showStatus }) {
   return (
     <button
       type="button"
@@ -24,6 +24,21 @@ export default function ExhibitionCard({ item, onClick }) {
       </div>
 
       <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+        {showStatus && item.status === "pending" && (
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/95 text-white backdrop-blur-xs border border-amber-400 shadow-sm animate-pulse">
+            Chờ duyệt
+          </span>
+        )}
+        {showStatus && item.status === "rejected" && (
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-600/95 text-white backdrop-blur-xs border border-rose-500 shadow-sm">
+            Từ chối
+          </span>
+        )}
+        {showStatus && item.status === "accepted" && (
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-600/95 text-white backdrop-blur-xs border border-emerald-500 shadow-sm">
+            Đã duyệt
+          </span>
+        )}
 
         {item.styleTag && (
           <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/50 text-white backdrop-blur-sm">
@@ -37,10 +52,10 @@ export default function ExhibitionCard({ item, onClick }) {
         {item.likes}
       </div>
 
-      {item.placeName && (
+      {(item.placeName || item.province) && (
         <div className="absolute bottom-3 left-3 right-3 flex items-center gap-1 text-white/90 text-[10px] opacity-100 group-hover:opacity-0 transition-opacity">
           <MapPin size={10} className="shrink-0" />
-          <span className="truncate">{item.placeName}</span>
+          <span className="truncate">{item.placeName ? `${item.placeName}, ${item.province}` : item.province}</span>
         </div>
       )}
     </button>

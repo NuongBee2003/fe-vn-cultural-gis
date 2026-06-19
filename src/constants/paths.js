@@ -35,6 +35,8 @@ export const PATHS = {
 
   DASHBOARD_EXPERIENCES: "/dashboard/experiences",
 
+  DASHBOARD_EXHIBITIONS: "/dashboard/exhibitions",
+
   DASHBOARD_CULTURE: "/dashboard/culture",
 
   DASHBOARD_CULTURE_CUISINES: "/dashboard/culture/cuisines",

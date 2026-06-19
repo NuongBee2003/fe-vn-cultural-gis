@@ -11,6 +11,7 @@ import UsersManagementPage from "@/pages/dashboard/UsersManagementPage";
 import CuisineManagementPage from "@/pages/dashboard/CuisineManagementPage";
 import CustomManagementPage from "@/pages/dashboard/CustomManagementPage";
 import FolkArtManagementPage from "@/pages/dashboard/FolkArtManagementPage";
+import ExhibitionsManagementPage from "@/pages/dashboard/ExhibitionsManagementPage";
 import HolidaysPage from "@/pages/holiday/HolidaysPage";
 import HistoryPage from "@/pages/history/HistoryPage";
 import ExhibitionPage from "@/pages/exhibition/ExhibitionPage";
@@ -192,6 +193,11 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_EXPERIENCES,
         element: dashPage("Quản lý trải nghiệm", "Các trải nghiệm văn hóa"),
         title: "Quản lý trải nghiệm",
+      },
+      {
+        path: PATHS.DASHBOARD_EXHIBITIONS,
+        element: <ExhibitionsManagementPage />,
+        title: "Quản lý triển lãm ảo",
       },
       {
         path: PATHS.DASHBOARD_CULTURE,

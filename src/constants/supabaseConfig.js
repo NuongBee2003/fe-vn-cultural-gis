@@ -6,6 +6,7 @@ export const SUPABASE_BUCKETS = {
   CUISINE_IMAGES: 'cuisines',        // Ảnh ẩm thực
   CUSTOM_IMAGES: 'customs',          // Ảnh phong tục
   FOLK_ART_IMAGES: 'folk-arts',      // Ảnh nghệ thuật dân gian
+  EXHIBITION_IMAGES: 'exhibitions',  // Ảnh triển lãm ảo
 };
 
 // Cấu hình tải ảnh

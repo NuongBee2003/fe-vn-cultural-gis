@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Heart, MessageCircle, Send, Share2, Loader2, Pencil, Trash2, Check, X as XIcon, MapPin } from "lucide-react";
 import { createComment, updateComment, deleteComment } from "@/api/commentApi";
 import { toggleLikePost, getPostDetail } from "@/api/postApi";
 import PostLikesModal from "./PostLikesModal";
@@ -41,6 +42,7 @@ function getStatusBadge(status) {
 
 export default function CommunityPostCard({ post, showStatus = false, highlightCommentId = null }) {
   const notify = useNotify();
+  const navigate = useNavigate();
   const mentionUsers = useMentionUsers(); // singleton cache — không gọi API thêm
   
   const isLogin = localStorage.getItem("isLogin") === "true" || !!localStorage.getItem("token");
@@ -297,9 +299,20 @@ export default function CommunityPostCard({ post, showStatus = false, highlightC
                 </span>
               ) : null}
               {post.location?.name ? (
-                <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (post.location.lat && post.location.lng) {
+                      navigate(
+                        `/?lat=${post.location.lat}&lng=${post.location.lng}&location_id=${post.location.id}&name=${encodeURIComponent(post.location.name)}`
+                      );
+                    }
+                  }}
+                  className="rounded-full bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1 text-[11px] font-medium text-indigo-700 transition-colors cursor-pointer border-none flex items-center gap-1.5"
+                >
+                  <MapPin size={11} className="shrink-0" />
                   {post.location.name}
-                </span>
+                </button>
               ) : null}
             </div>
           ) : null}

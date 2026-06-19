@@ -48,10 +48,10 @@ export const DASHBOARD_NAV_ITEMS = [
     to: "/dashboard/categories",
   },
   {
-    label: "Quản lý trải nghiệm",
-    labelKey: "dashboard.nav.experiences",
+    label: "Quản lý triển lãm ảo",
+    labelKey: "dashboard.nav.exhibitions",
     icon: LayoutGrid,
-    to: "/dashboard/experiences",
+    to: "/dashboard/exhibitions",
   },
   {
     label: "Quản lý văn hóa",
