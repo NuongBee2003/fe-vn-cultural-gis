@@ -20,6 +20,7 @@ import CultureFoodPage from "@/pages/culture/CultureFoodPage";
 import CultureCustomsPage from "@/pages/culture/CultureCustomsPage";
 import CultureFolkArtPage from "@/pages/culture/CultureFolkArtPage";
 import CommunityPage from "@/pages/community/CommunityPage";
+import PostModalPage from "@/pages/community/PostModalPage";
 import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -34,6 +35,15 @@ export const routeConfig = [
     path: PATHS.HOME,
     element: <MapLayout />,
     title: "Di Sản Việt — Bản đồ văn hóa",
+  },
+  {
+    path: "/post/:id",
+    element: (
+      <MapLayout>
+        <PostModalPage />
+      </MapLayout>
+    ),
+    title: "Chi tiết bài viết",
   },
   {
     path: PATHS.HOLIDAYS,

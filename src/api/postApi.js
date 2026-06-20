@@ -296,3 +296,34 @@ export async function getPostLikes(id) {
   }
 }
 
+/**
+ * 9. Chia sẻ bài viết (Lấy link chia sẻ)
+ * @param {number|string} id ID bài viết
+ */
+export async function sharePost(id) {
+  try {
+    const token = getAuthToken();
+    const headers = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${BASE_URL}/post/${id}/share`, {
+      method: "POST",
+      headers: headers
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    return result.data; // Trả về { shareUrl }
+  } catch (error) {
+    console.error(`❌ Lỗi khi chia sẻ bài viết ${id}:`, error);
+    throw error;
+  }
+}
+
+

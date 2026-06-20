@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
 import CreatePostModal from "@/components/user/community/CreatePostModal";
+import CommunityPostDetailModal from "@/components/user/community/CommunityPostDetailModal";
 
 import {
   COMMUNITY_ASSETS,
@@ -65,6 +66,7 @@ export default function CommunityPage() {
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [dbPosts, setDbPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activePostId, setActivePostId] = useState(null);
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -164,6 +166,7 @@ export default function CommunityPage() {
 
           setActiveNotificationPostId(latestPost.id);
           setActiveNotificationCommentId(noti.comment_id || null);
+          setActivePostId(latestPost.id);
         }
       } catch (err) {
         console.error("Lỗi khi tải chi tiết bài viết từ thông báo:", err);
@@ -672,8 +675,7 @@ export default function CommunityPage() {
                     <CommunityPostCard
                       post={post}
                       showStatus={feedTab === "mine"}
-                      autoOpenComments={activeNotificationPostId === post.id}
-                      highlightCommentId={activeNotificationPostId === post.id ? activeNotificationCommentId : null}
+                      onCommentClick={(postId) => setActivePostId(postId)}
                     />
                   </div>
                 ))
@@ -710,6 +712,17 @@ export default function CommunityPage() {
           <CreatePostModal
             onClose={() => setCreateModalOpen(false)}
             onPostCreated={handlePostCreated}
+          />
+        )}
+
+        {activePostId && (
+          <CommunityPostDetailModal
+            postId={activePostId}
+            onClose={() => {
+              setActivePostId(null);
+              setActiveNotificationCommentId(null);
+            }}
+            highlightCommentId={activePostId === activeNotificationPostId ? activeNotificationCommentId : null}
           />
         )}
       </div>

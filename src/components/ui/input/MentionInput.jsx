@@ -42,27 +42,20 @@ const suggestionsStyle = {
 
 const singleLineStyle = {
   control: {
+    fontFamily: "inherit",
     fontSize: "0.875rem",
     lineHeight: "1.5",
     backgroundColor: "transparent",
     height: "100%",
     width: "100%",
-    color: "#334155", // Màu chữ bình thường (slate-700)
+    color: "#1e293b",
   },
   "&singleLine": {
     display: "block",
     width: "100%",
     height: "100%",
     highlighter: {
-      height: "100%",
-      padding: "9px 1rem",
-      border: "none",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      substring: {
-        visibility: "visible",
-        color: "#334155",
-      },
+      display: "none",
     },
     input: {
       height: "100%",
@@ -71,8 +64,12 @@ const singleLineStyle = {
       outline: "none",
       backgroundColor: "transparent",
       boxSizing: "border-box",
-      color: "transparent", // Ẩn chữ của input
-      caretColor: "#334155", // Vẫn giữ con trỏ chuột màu đen
+      color: "#1e293b",
+      caretColor: "#1e293b",
+      fontFamily: "inherit",
+      "&::placeholder": {
+        color: "#94a3b8",
+      },
     },
   },
   suggestions: suggestionsStyle,
@@ -80,21 +77,16 @@ const singleLineStyle = {
 
 const multiLineStyle = {
   control: {
+    fontFamily: "inherit",
     fontSize: "0.875rem",
     lineHeight: "1.5",
     backgroundColor: "transparent",
-    color: "#334155",
+    color: "#1e293b",
   },
   "&multiLine": {
     control: { minHeight: "72px" },
     highlighter: {
-      padding: "0.5rem 0.75rem",
-      border: "none",
-      boxSizing: "border-box",
-      substring: {
-        visibility: "visible",
-        color: "#334155",
-      },
+      display: "none",
     },
     input: {
       padding: "0.5rem 0.75rem",
@@ -103,8 +95,12 @@ const multiLineStyle = {
       backgroundColor: "transparent",
       boxSizing: "border-box",
       resize: "none",
-      color: "transparent",
-      caretColor: "#334155",
+      color: "#1e293b",
+      caretColor: "#1e293b",
+      fontFamily: "inherit",
+      "&::placeholder": {
+        color: "#94a3b8",
+      },
     },
   },
   suggestions: suggestionsStyle,
@@ -184,14 +180,11 @@ export default function MentionInput({
         rows={rows}
         allowSpaceInQuery
         allowSuggestionsAboveCursor
+        suggestionsPlacement="above"
+        forceSuggestionsAboveCursor={true}
         appendSpaceOnAdd
         style={multiLine ? multiLineStyle : singleLineStyle}
-        className="w-full h-full"
-        classNames={{
-          control: "mention-input__control",
-          highlighter: "mention-input__highlighter",
-          input: "mention-input__input",
-        }}
+        className="mentions-input w-full h-full"
         a11ySuggestionsListLabel="Gợi ý người dùng"
       >
         <Mention
