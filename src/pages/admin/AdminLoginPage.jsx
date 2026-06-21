@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import { authApi } from "@/api/authApi";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
+import { useNotify } from "@/context/NotifyContext";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const notify = useNotify();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const expired = sessionStorage.getItem("sessionExpired");
+    if (expired === "true") {
+      setError("Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.");
+      if (notify && notify.error) {
+        notify.error("Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.", "Hết phiên làm việc");
+      }
+      sessionStorage.removeItem("sessionExpired");
+    }
+  }, [notify]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

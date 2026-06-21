@@ -58,6 +58,14 @@ export default function LoginPage() {
     }
   }, []);
 
+  useEffect(() => {
+    const expired = sessionStorage.getItem("sessionExpired");
+    if (expired === "true") {
+      notify.error("Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.", "Hết phiên làm việc");
+      sessionStorage.removeItem("sessionExpired");
+    }
+  }, [notify]);
+
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
@@ -576,7 +584,8 @@ export default function LoginPage() {
                   if (window.google) {
                     try {
                       window.google.accounts.id.prompt();
-                    } catch (e) {
+                    } catch (err) {
+                      console.error("Lỗi Google Sign-In Prompt:", err);
                       notify.error("Không thể khởi động Google Sign-In. Vui lòng kiểm tra cấu hình.");
                     }
                   } else {

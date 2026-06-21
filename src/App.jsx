@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { routeConfig } from "@/routes";
+import { setupTokenExpirationCheck } from "@/utils/tokenManager";
 
 function renderRoute(route) {
   if (route.children?.length) {
@@ -21,6 +23,11 @@ function renderRoute(route) {
 }
 
 export default function App() {
+  useEffect(() => {
+    // Chủ động kiểm tra thời hạn token và lên lịch tự động đăng xuất
+    setupTokenExpirationCheck();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
