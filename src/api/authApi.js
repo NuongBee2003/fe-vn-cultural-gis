@@ -61,4 +61,42 @@ export const authApi = {
     const user = authApi.getUser();
     return user && user.role === 'admin';
   },
+
+  // Forgot Password
+  forgotPassword: async (email) => {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Gửi yêu cầu OTP thất bại');
+    }
+
+    return data;
+  },
+
+  // Reset Password
+  resetPassword: async (email, otp, newPassword) => {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, otp, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Đặt lại mật khẩu thất bại');
+    }
+
+    return data;
+  },
 };

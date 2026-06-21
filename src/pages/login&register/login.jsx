@@ -167,7 +167,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
       await authApi.forgotPassword(email.trim());
-      await notify.success("Đã gửi mã OTP thử nghiệm!", "Vui lòng kiểm tra");
+      await notify.success("Đã gửi mã OTP thành công!", "Vui lòng kiểm tra email");
       setForgotStep(2);
     } catch (err) {
       setError(err?.message || "Email không tồn tại hoặc có lỗi xảy ra.");
@@ -400,7 +400,7 @@ export default function LoginPage() {
               // FORM QUÊN MẬT KHẨU - BƯỚC 2: NHẬP OTP & NEW PASSWORD
               <form onSubmit={handleResetPasswordSubmit} className="space-y-5">
                 <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-xl p-3.5 leading-relaxed font-medium">
-                  Hệ thống đã giả lập gửi mã OTP về email **{email}**. Để hoàn tất kiểm tra, vui lòng nhập mã OTP thử nghiệm là <strong className="text-amber-950 font-bold bg-amber-100 px-1.5 py-0.5 rounded">123456</strong>.
+                  Hệ thống đã gửi một mã OTP gồm 6 chữ số về địa chỉ email **{email}**. Vui lòng kiểm tra hộp thư (bao gồm cả thư rác/spam) và nhập mã để xác thực.
                 </div>
 
                 {/* OTP Code */}
@@ -413,7 +413,7 @@ export default function LoginPage() {
                     <Lock size={18} className="text-gray-400 mr-3 shrink-0" />
                     <input
                       type="text"
-                      placeholder="Nhập mã OTP (123456)"
+                      placeholder="Nhập mã OTP gồm 6 chữ số"
                       maxLength={6}
                       className="flex-1 outline-none bg-transparent text-sm tracking-widest font-mono font-bold"
                       value={otp}
