@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { Search, SlidersHorizontal, X, Bell } from "lucide-react";
+import { Search, X, Bell, Calendar as CalendarIcon } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 import CommunityPostCard from "@/components/user/community/CommunityPostCard";
 import CreatePostModal from "@/components/user/community/CreatePostModal";
 import CommunityPostDetailModal from "@/components/user/community/CommunityPostDetailModal";
+
+import { Calendar } from "@/common/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/common/ui/popover";
+import { format, addDays } from "date-fns";
+import { vi } from "date-fns/locale";
 
 import {
   COMMUNITY_ASSETS,
@@ -31,23 +36,6 @@ function formatDateTime(isoString) {
   }).format(date);
 }
 
-function parseDateInput(value, endOfDay = false) {
-  if (!value) return null;
-  const parts = String(value).split("-").map((v) => Number(v));
-  if (parts.length !== 3 || parts.some((n) => !Number.isFinite(n))) return null;
-  const [year, month, day] = parts;
-  if (!year || !month || !day) return null;
-  return new Date(
-    year,
-    month - 1,
-    day,
-    endOfDay ? 23 : 0,
-    endOfDay ? 59 : 0,
-    endOfDay ? 59 : 0,
-    endOfDay ? 999 : 0,
-  );
-}
-
 function getInitials(name) {
   const cleaned = String(name || "").trim();
   if (!cleaned) return "?";
@@ -59,10 +47,40 @@ function getInitials(name) {
 
 export default function CommunityPage() {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("newest");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const defaultRange = useMemo(() => {
+    const to = new Date();
+    const from = addDays(to, -6);
+    return { from, to };
+  }, []);
+
+  const [dateFrom, setDateFrom] = useState(format(defaultRange.from, "yyyy-MM-dd"));
+  const [dateTo, setDateTo] = useState(format(defaultRange.to, "yyyy-MM-dd"));
+  const [tempRange, setTempRange] = useState({
+    from: defaultRange.from,
+    to: defaultRange.to,
+  });
+
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const parseLocalDatePickerDate = useCallback((dateStr) => {
+    if (!dateStr) return undefined;
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return undefined;
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    return new Date(year, month, day, 0, 0, 0, 0);
+  }, []);
+
+  // Sync tempRange when opening filter panel
+  useEffect(() => {
+    if (filtersOpen) {
+      setTempRange({
+        from: parseLocalDatePickerDate(dateFrom),
+        to: parseLocalDatePickerDate(dateTo),
+      });
+    }
+  }, [filtersOpen, dateFrom, dateTo, parseLocalDatePickerDate]);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [dbPosts, setDbPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -329,8 +347,11 @@ export default function CommunityPage() {
 
     const filtered = query
       ? enriched.filter((post) => {
-          const hay = `${post.title} ${post.content} ${post.author.name}`.toLowerCase();
-          return hay.includes(query);
+          const t = String(post.title || "").toLowerCase();
+          const c = String(post.content || "").toLowerCase();
+          const a = String(post.author?.name || "").toLowerCase();
+          const loc = String(post.location?.name || "").toLowerCase();
+          return t.includes(query) || c.includes(query) || a.includes(query) || loc.includes(query);
         })
       : enriched;
 
@@ -338,23 +359,21 @@ export default function CommunityPage() {
       if (feedTab === "mine") {
         return Number(post.user_id) === Number(currentUser?.id);
       } else {
-        // Tab tất cả bài viết chỉ hiện bài đã duyệt (accepted/published)
-        return post.status === "published" || post.status === "accepted";
+        // Feed tab is 'all', meaning anyone's published/accepted posts
+        return post.status === "published";
       }
     });
 
     const sorted = [...filteredByTab].sort((a, b) => {
-      const ta = new Date(a.created_at).getTime();
-      const tb = new Date(b.created_at).getTime();
-      if (Number.isNaN(ta) || Number.isNaN(tb)) return 0;
-      return sort === "oldest" ? ta - tb : tb - ta;
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return timeB - timeA;
     });
 
     return sorted;
   }, [
     dbPosts,
     search,
-    sort,
     feedTab,
     currentUser,
   ]);
@@ -406,42 +425,106 @@ export default function CommunityPage() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  const handleRangeSelect = (range) => {
+    if (!range) {
+      setTempRange({ from: undefined, to: undefined });
+      return;
+    }
+    if (range.from && !range.to) {
+      setTempRange({
+        from: range.from,
+        to: addDays(range.from, 6),
+      });
+    } else {
+      setTempRange(range);
+    }
+  };
+
+  const handleApplyFilters = () => {
+    setDateFrom(tempRange.from ? format(tempRange.from, "yyyy-MM-dd") : "");
+    setDateTo(tempRange.to ? format(tempRange.to, "yyyy-MM-dd") : "");
+    setFiltersOpen(false);
+  };
+
+  const handleResetFilters = () => {
+    const to = new Date();
+    const from = addDays(to, -6);
+    const range = { from, to };
+    setTempRange(range);
+    setDateFrom(format(from, "yyyy-MM-dd"));
+    setDateTo(format(to, "yyyy-MM-dd"));
+    setFiltersOpen(false);
+  };
+
   const filtersPanel = (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-white">
       <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-        <p className="text-sm font-semibold text-slate-900">Bộ lọc</p>
+        <p className="text-sm font-semibold text-slate-900 font-sans">Bộ lọc</p>
         <button
           type="button"
           onClick={() => setFiltersOpen(false)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-slate-50"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
           aria-label="Đóng bộ lọc"
         >
           <X size={18} className="text-slate-600" />
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        <div className="space-y-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-600">Từ ngày</span>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
-            />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-slate-600">Đến ngày</span>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
-            />
-          </label>
+      <div className="min-h-0 flex-1 overflow-y-auto p-4 space-y-5">
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-sans">
+            Khoảng thời gian
+          </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="flex w-full items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-700 outline-none hover:bg-slate-50 transition-colors focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70 cursor-pointer font-sans"
+              >
+                <CalendarIcon size={16} className="text-slate-400" />
+                <span className="truncate font-medium">
+                  {tempRange?.from ? (
+                    tempRange.to ? (
+                      `${format(tempRange.from, "dd/MM/yyyy")} - ${format(tempRange.to, "dd/MM/yyyy")}`
+                    ) : (
+                      format(tempRange.from, "dd/MM/yyyy")
+                    )
+                  ) : (
+                    "Chọn khoảng ngày..."
+                  )}
+                </span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 z-[2200]" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={tempRange?.from || new Date()}
+                selected={tempRange}
+                onSelect={handleRangeSelect}
+                numberOfMonths={1}
+                locale={vi}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
+      </div>
+
+      <div className="border-t border-slate-100 p-4 flex gap-3 bg-slate-50">
+        <button
+          type="button"
+          onClick={handleResetFilters}
+          className="flex-1 h-10 text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer font-sans"
+        >
+          Mặc định
+        </button>
+        <button
+          type="button"
+          onClick={handleApplyFilters}
+          className="flex-1 h-10 text-xs font-semibold text-brand-on-primary bg-amber-400 hover:bg-amber-500 rounded-xl transition-colors cursor-pointer font-sans shadow-sm"
+        >
+          Xác nhận
+        </button>
       </div>
     </div>
   );
@@ -502,24 +585,14 @@ export default function CommunityPage() {
 
                   {!headerCollapsed ? (
                     <>
-                      <select
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value)}
-                        className="h-11 rounded-full border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none focus-visible:border-amber-400 focus-visible:ring-3 focus-visible:ring-amber-200/70"
-                        aria-label="Sắp xếp"
-                      >
-                        <option value="newest">Mới nhất</option>
-                        <option value="oldest">Cũ nhất</option>
-                      </select>
-
                       <button
                         type="button"
                         onClick={() => setFiltersOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                        aria-label="Mở bộ lọc"
-                        title="Lọc"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
+                        aria-label="Lọc theo ngày"
+                        title="Lọc theo ngày"
                       >
-                        <SlidersHorizontal size={18} className="text-slate-600" />
+                        <CalendarIcon size={18} className="text-slate-600" />
                       </button>
 
                       {isLogin && (
