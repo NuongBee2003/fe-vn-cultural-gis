@@ -659,14 +659,20 @@ export default function CuisineManagementPage() {
                   {locationResults.length > 0 && (
                     <div className="absolute left-0 right-0 z-30 mt-1 max-h-48 overflow-y-auto rounded-lg border border-input bg-background py-1 shadow-lg">
                       {locationResults.map((loc) => {
-                        const isAlreadySelected = selectedLocations.some((l) => l.id === loc.id);
+                        const isAlreadySelected = selectedLocations.some((l) => l.id === loc.placeId);
                         return (
                           <button
                             key={loc.id}
                             type="button"
                             onClick={() => {
                               if (!isAlreadySelected) {
-                                setSelectedLocations((prev) => [...prev, loc]);
+                                setSelectedLocations((prev) => [
+                                  ...prev,
+                                  {
+                                    id: loc.placeId,
+                                    name: loc.name,
+                                  },
+                                ]);
                               }
                               setLocationQuery("");
                               setLocationResults([]);
