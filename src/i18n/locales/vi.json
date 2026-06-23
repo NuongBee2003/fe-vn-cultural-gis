@@ -47,6 +47,7 @@
     "cultureFood": "Ẩm thực",
     "cultureCustoms": "Phong tục tập quán",
     "cultureFolkArt": "Nghệ thuật dân gian",
+    "businessLanding": "Giải pháp doanh nghiệp",
     "navigation": "Điều hướng",
     "openSidebar": "Mở sidebar",
     "closeSidebar": "Đóng sidebar"
@@ -123,7 +124,11 @@
       "cultureCustoms": "Quản lý phong tục",
       "cultureFolkArts": "Quản lý nghệ thuật dân gian",
       "reports": "Báo cáo",
-      "hotPlaces": "Địa điểm hot"
+      "hotPlaces": "Địa điểm hot",
+      "businessOverview": "Tổng quan doanh nghiệp",
+      "myPlaces": "Quản lý địa điểm của tôi",
+      "myProducts": "Quản lý sản phẩm shop",
+      "pricing": "Nâng cấp dịch vụ"
     },
     "places": {
       "title": "Quản lý địa điểm",

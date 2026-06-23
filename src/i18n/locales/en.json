@@ -47,6 +47,7 @@
     "cultureFood": "Cuisine",
     "cultureCustoms": "Customs & Traditions",
     "cultureFolkArt": "Folk Art",
+    "businessLanding": "Business Solutions",
     "navigation": "Navigation",
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar"
@@ -123,7 +124,11 @@
       "cultureCustoms": "Manage Customs",
       "cultureFolkArts": "Manage Folk Arts",
       "reports": "Reports",
-      "hotPlaces": "Hot Places"
+      "hotPlaces": "Hot Places",
+      "businessOverview": "Business Overview",
+      "myPlaces": "Manage My Places",
+      "myProducts": "Manage Shop Products",
+      "pricing": "Upgrade Plan"
     },
     "places": {
       "title": "Manage Places",

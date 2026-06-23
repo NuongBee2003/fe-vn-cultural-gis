@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import { authApi } from "@/api/authApi";
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ children, allowedRoles = ["admin"] }) {
   const token = authApi.getToken();
   const user = authApi.getUser();
 
@@ -12,11 +12,11 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to={PATHS.ADMIN_LOGIN} replace />;
   }
 
-  // If user is not admin, redirect to home
-  if (user.role !== "admin") {
+  // If user role is not in the allowed list, redirect to home
+  if (!allowedRoles.includes(user.role)) {
     return <Navigate to={PATHS.HOME} replace />;
   }
 
-  // User is authenticated and is admin
+  // User is authenticated and has correct role
   return children;
 }

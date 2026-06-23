@@ -24,6 +24,7 @@ export const MENU_NAV_ITEMS = [
     children: [
       { label: "Triển lãm ảo", labelKey: "nav.exhibition", href: PATHS.EXHIBITION },
       { label: "Mua sắm", labelKey: "nav.shop", href: PATHS.SHOP },
+      { label: "Giải pháp doanh nghiệp", labelKey: "nav.businessLanding", href: PATHS.LANDING },
     ],
   },
   { label: "Cộng đồng", labelKey: "nav.community", icon: Users, href: PATHS.COMMUNITY },

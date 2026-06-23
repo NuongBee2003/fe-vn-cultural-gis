@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboardNav";
+import { authApi } from "@/api/authApi";
 
 function NavItemLink({ to, icon: Icon, label, labelKey }) {
   const { t } = useTranslation();
@@ -102,18 +103,20 @@ export default function DashboardSidebar() {
   const { pathname } = useLocation();
   const [openBase, setOpenBase] = React.useState(null);
 
+  const navItems = DASHBOARD_NAV_ITEMS;
+
   React.useEffect(() => {
-    const activeGroup = DASHBOARD_NAV_ITEMS.find(
+    const activeGroup = navItems.find(
       (item) => item.base && pathname.startsWith(item.base),
     );
     setOpenBase(activeGroup?.base ?? null);
-  }, [pathname]);
+  }, [pathname, navItems]);
 
   return (
     <aside className="flex h-full w-72 shrink-0 flex-col border-r border-border bg-background">
       <nav className="flex-1 overflow-auto p-2">
         <div className="flex flex-col gap-1">
-          {DASHBOARD_NAV_ITEMS.map((item) =>
+          {navItems.map((item) =>
             item.children ? (
               <NavGroup
                 key={item.labelKey || item.label}

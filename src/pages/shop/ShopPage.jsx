@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { productApi } from "@/api/productApi";
 import { 
   ShoppingBag, 
   Tag, 
@@ -32,7 +33,7 @@ export default function ShopPage() {
   const currentLang = i18n.language || "vi";
 
   // 30 Products Data Dataset
-  const products = useMemo(() => [
+  const STATIC_PRODUCTS = [
     {
       id: "shop-1",
       title: {
@@ -1083,10 +1084,50 @@ export default function ShopPage() {
         ]
       }
     }
-  ], []);
+  ];
+
+  const [dbProducts, setDbProducts] = useState([]);
+
+  useEffect(() => {
+    productApi.getAll("", 1, 100)
+      .then((res) => {
+        setDbProducts(res.data || []);
+      })
+      .catch((err) => {
+        console.error("Lỗi fetch shop products:", err);
+      });
+  }, []);
+
+  const products = useMemo(() => {
+    const mapped = dbProducts.map((p) => ({
+      id: `db-${p.id}`,
+      title: {
+        vi: p.name,
+        en: p.name,
+        zh: p.name
+      },
+      category: "custom",
+      categoryName: { vi: "Sản phẩm doanh nghiệp", en: "Business Products", zh: "商家产品" },
+      price: Number(p.price),
+      image: p.image_url || null,
+      affiliateUrl: p.affiliate_url || "",
+      summary: {
+        vi: p.description || "",
+        en: p.description || "",
+        zh: p.description || ""
+      },
+      details: {
+        vi: [p.description || "Chi tiết sản phẩm"],
+        en: [p.description || "Product details"],
+        zh: [p.description || "产品详情"]
+      }
+    }));
+    return [...mapped, ...STATIC_PRODUCTS];
+  }, [dbProducts]);
 
   const shopFilters = [
     { key: "all", label: { vi: "Tất cả", en: "All Products", zh: "全部商品" } },
+    { key: "custom", label: { vi: "Doanh nghiệp", en: "Business Products", zh: "商家 sản phẩm" } },
     { key: "combo", label: { vi: "Combo nghệ thuật", en: "Artistic Combos", zh: "艺术组合" } },
     { key: "hat", label: { vi: "Nón nghệ thuật", en: "Art Hats", zh: "艺术竹笠" } },
     { key: "bag", label: { vi: "Túi cỏ bàng", en: "Sedge Bags", zh: "蒲草手袋" } },
@@ -1188,7 +1229,7 @@ export default function ShopPage() {
                   onClick={() => setSelectedProduct(product)}
                 >
                   <img 
-                    src={product.image} 
+                    src={product.image || "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600"} 
                     alt={product.title[currentLang] || product.title.vi}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -1321,7 +1362,7 @@ export default function ShopPage() {
             {/* Product Image */}
             <div className="md:w-1/2 bg-stone-100 flex items-center justify-center">
               <img 
-                src={selectedProduct.image} 
+                src={selectedProduct.image || "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600"} 
                 alt={selectedProduct.title[currentLang]} 
                 className="w-full h-full object-cover max-h-[40vh] md:max-h-none"
               />

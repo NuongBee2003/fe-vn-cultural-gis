@@ -89,8 +89,9 @@ function stripDashboardPrefix(to) {
 export function getDashboardLeafRoutes() {
   /** @type {{ path: string; title: string }[]} */
   const leaves = [];
+  const items = DASHBOARD_NAV_ITEMS;
 
-  for (const item of DASHBOARD_NAV_ITEMS) {
+  for (const item of items) {
     if (item.children?.length) {
       for (const child of item.children) {
         leaves.push({ path: stripDashboardPrefix(child.to), title: child.label });
@@ -106,8 +107,9 @@ export function getDashboardLeafRoutes() {
 export function getDashboardRoutes() {
   /** @type {{ path: string; title: string }[]} */
   const routes = [];
+  const items = DASHBOARD_NAV_ITEMS;
 
-  for (const item of DASHBOARD_NAV_ITEMS) {
+  for (const item of items) {
     if (item.children?.length) {
       if (item.base) {
         routes.push({ path: stripDashboardPrefix(item.base), title: item.label });
@@ -124,7 +126,9 @@ export function getDashboardRoutes() {
 }
 
 export function getDashboardBreadcrumbs(pathname) {
-  for (const item of DASHBOARD_NAV_ITEMS) {
+  const items = DASHBOARD_NAV_ITEMS;
+  
+  for (const item of items) {
     if (item.children?.length) {
       const match = item.children.find((c) => c.to === pathname);
       if (match) {

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAllPlaces, useCategories } from "@/api/useLocationQuery";
 import { useCreatePlace, useUpdatePlace, useDeletePlace } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
+import { authApi } from "@/api/authApi";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { Input } from "@/components/ui/input/input";
@@ -71,8 +72,13 @@ export default function PlacesManagementPage() {
   const updateMutation = useUpdatePlace();
   const deleteMutation = useDeletePlace();
 
+  const user = authApi.getUser();
+  const isBusiness = user?.role === "business";
+
   // Kết quả hiển thị: dùng places trực tiếp từ API có phân trang
-  const filteredPlaces = places;
+  const filteredPlaces = isBusiness
+    ? places.filter((p) => Number(p.user_id) === Number(user.id))
+    : places;
   const isFiltering = categoryFilter.name !== "all";
 
   // ── Handlers ──────────────────────────────────────────

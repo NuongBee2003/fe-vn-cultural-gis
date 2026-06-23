@@ -28,6 +28,13 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import SettingsManagementPage from "@/pages/dashboard/SettingsManagementPage";
 import ReviewsManagementPage from "@/pages/dashboard/ReviewsManagementPage";
 
+import BusinessOverviewPage from "@/pages/dashboard/BusinessOverviewPage";
+import BusinessProductsPage from "@/pages/dashboard/BusinessProductsPage";
+import SubscriptionPackagesPage from "@/pages/dashboard/SubscriptionPackagesPage";
+import PaymentResultPage from "@/pages/dashboard/PaymentResultPage";
+import BusinessLayout from "@/layouts/BusinessLayout";
+import LandingPage from "@/pages/shop/LandingPage";
+
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
 }
@@ -141,7 +148,7 @@ export const routeConfig = [
   {
     path: PATHS.DASHBOARD,
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["admin"]}>
         <DashboardLayout />
       </ProtectedRoute>
     ),
@@ -240,6 +247,52 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_SETTINGS,
         element: <SettingsManagementPage />,
         title: "Cài đặt hệ thống",
+      },
+    ],
+  },
+  {
+    path: PATHS.LANDING,
+    element: <LandingPage />,
+    title: "Giải pháp doanh nghiệp - Di Sản Việt",
+  },
+  {
+    path: PATHS.BUSINESS_DASHBOARD,
+    element: (
+      <ProtectedRoute allowedRoles={["business", "admin", "user"]}>
+        <BusinessLayout />
+      </ProtectedRoute>
+    ),
+    title: "Business Portal",
+    protected: true,
+    children: [
+      {
+        index: true,
+        element: <Navigate to={PATHS.BUSINESS_OVERVIEW} replace />,
+      },
+      {
+        path: "overview",
+        element: <BusinessOverviewPage />,
+        title: "Tổng quan doanh nghiệp",
+      },
+      {
+        path: "products",
+        element: <BusinessProductsPage />,
+        title: "Quản lý sản phẩm",
+      },
+      {
+        path: "pricing",
+        element: <SubscriptionPackagesPage />,
+        title: "Gói dịch vụ",
+      },
+      {
+        path: "payment-result",
+        element: <PaymentResultPage />,
+        title: "Kết quả thanh toán",
+      },
+      {
+        path: "places",
+        element: <PlacesManagementPage />,
+        title: "Quản lý địa điểm của tôi",
       },
     ],
   },

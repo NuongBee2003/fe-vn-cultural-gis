@@ -1,21 +1,25 @@
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
 import ViewHeader from "@/layouts/dashboard/ViewHeader";
 import logoVcm from "@/assets/logo-vcm.png";
 import { useSettings } from "@/context/SettingsContext";
+import { authApi } from "@/api/authApi";
 
 export default function DashboardLayout() {
   const { appLogo } = useSettings();
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const navigate = useNavigate();
+  const user = authApi.getUser();
+
   const [username] = useState(() => {
-    const adminUser = localStorage.getItem("adminUser");
+    const adminUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
     if (adminUser) {
       try {
-        const user = JSON.parse(adminUser);
-        return user.username || "Admin";
+        const parsed = JSON.parse(adminUser);
+        return parsed.username || "User";
       } catch {
         return "";
       }
