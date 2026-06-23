@@ -25,6 +25,8 @@ import LoginPage from "@/pages/login&register/login";
 import RegisterPage from "@/pages/login&register/register";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import SettingsManagementPage from "@/pages/dashboard/SettingsManagementPage";
+import ReviewsManagementPage from "@/pages/dashboard/ReviewsManagementPage";
 
 function dashPage(title, description) {
   return <DashboardSectionPage title={title} description={description} />;
@@ -178,7 +180,7 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_COMMUNITY_REVIEWS,
-        element: dashPage("Quản lý đánh giá", "Đánh giá từ người dùng"),
+        element: <ReviewsManagementPage />,
         title: "Quản lý đánh giá",
       },
       {
@@ -233,6 +235,11 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_REPORTS_HOT_PLACES,
         element: dashPage("Địa điểm hot", "Báo cáo địa điểm phổ biến"),
         title: "Báo cáo — Địa điểm hot",
+      },
+      {
+        path: PATHS.DASHBOARD_SETTINGS,
+        element: <SettingsManagementPage />,
+        title: "Cài đặt hệ thống",
       },
     ],
   },

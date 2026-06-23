@@ -12,6 +12,7 @@ import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { authApi } from "@/api/authApi";
 import { useNotify } from "@/context/NotifyContext";
+import { useSettings } from "@/context/SettingsContext";
 
 const GoogleIcon = ({ size = 18, className = "" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={size} height={size} className={`shrink-0 ${className}`}>
@@ -25,6 +26,7 @@ const GoogleIcon = ({ size = 18, className = "" }) => (
 export default function RegisterPage() {
   const navigate = useNavigate();
   const notify = useNotify();
+  const { appName } = useSettings();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -181,7 +183,7 @@ export default function RegisterPage() {
           <div className="relative z-10">
             <div className="mb-6">
               <h1 className="text-5xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
-                VietCulture
+                {appName || "VietCulture"}
               </h1>
 
               <p className="text-xl font-semibold text-amber-200 mt-2 tracking-wide">
@@ -446,6 +448,7 @@ export default function RegisterPage() {
                     try {
                       window.google.accounts.id.prompt();
                     } catch (e) {
+                      console.error("Google Sign-In error:", e);
                       notify.error("Không thể khởi động Google Sign-In. Vui lòng kiểm tra cấu hình.");
                     }
                   } else {

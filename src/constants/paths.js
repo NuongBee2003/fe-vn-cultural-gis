@@ -47,5 +47,7 @@ export const PATHS = {
 
   DASHBOARD_REPORTS_HOT_PLACES: "/dashboard/reports/hot-places",
 
+  DASHBOARD_SETTINGS: "/dashboard/settings",
+
   NOT_FOUND: "*",
 };

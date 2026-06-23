@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function ViewHeader({
   logo,
@@ -10,6 +11,7 @@ export default function ViewHeader({
   name,
 }) {
   const { t } = useTranslation();
+  const { appName } = useSettings();
   return (
     <header
       className={cn(
@@ -26,7 +28,7 @@ export default function ViewHeader({
           ) : null}
           <div className="min-w-0">
             <div className="truncate text-lg font-semibold leading-none">
-              {t('app.title')}
+              {appName || t('app.title')}
             </div>
             <div className="mt-1 truncate text-sm text-muted-foreground">
               {t('app.subtitle')}

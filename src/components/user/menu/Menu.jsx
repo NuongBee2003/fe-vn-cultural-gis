@@ -19,6 +19,7 @@ import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
 import { MENU_NAV_ITEMS } from "@/constants/menuNav";
 import { PATHS } from "@/constants/paths";
+import { useSettings } from "@/context/SettingsContext";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 function getRoleBadge(role) {
@@ -45,6 +46,7 @@ function getRoleBadge(role) {
 }
 
 export default function Menu() {
+  const { appName, appLogo } = useSettings();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -116,20 +118,20 @@ export default function Menu() {
             >
               <div className="w-[34px] h-[34px] rounded-full border border-[var(--brand-primary)] flex items-center justify-center shrink-0 bg-white">
                 <img
-                  src={logoVcm}
-                  alt="VietCulture"
+                  src={appLogo || logoVcm}
+                  alt={appName || "VietCulture"}
                   className=" object-contain"
                 />
               </div>
               <div className="leading-tight overflow-hidden">
                 <div className="text-[9px] tracking-widest font-medium uppercase text-[var(--brand-primary)] whitespace-nowrap">
-                  VietCulture
+                  {(appName || "VietCulture").replace(/ map$/i, "").trim()}
                 </div>
                 <div
                   className="text-[14px] font-semibold text-[var(--muted-2)] whitespace-nowrap"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  Map
+                  {/(map)$/i.test(appName || "") ? "Map" : "Map"}
                 </div>
               </div>
             </NavLink>

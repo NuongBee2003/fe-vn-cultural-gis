@@ -5,6 +5,7 @@ import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { authApi } from "@/api/authApi";
 import { useNotify } from "@/context/NotifyContext";
+import { useSettings } from "@/context/SettingsContext";
 
 const GoogleIcon = ({ size = 18, className = "" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={size} height={size} className={`shrink-0 ${className}`}>
@@ -19,6 +20,7 @@ const GoogleIcon = ({ size = 18, className = "" }) => (
 export default function LoginPage() {
   const navigate = useNavigate();
   const notify = useNotify();
+  const { appName } = useSettings();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -233,7 +235,7 @@ export default function LoginPage() {
                 className="text-5xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                VietCulture
+                {appName || "VietCulture"}
               </h1>
 
               <p className="text-xl font-semibold text-amber-200 mt-2 tracking-wide">

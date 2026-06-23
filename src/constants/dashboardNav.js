@@ -7,6 +7,7 @@ import {
   Palette,
   Tags,
   Users,
+  Settings
 } from "lucide-react";
 
 /**
@@ -69,7 +70,15 @@ export const DASHBOARD_NAV_ITEMS = [
     labelKey: "dashboard.nav.reports",
     icon: BarChart3,
     base: "/dashboard/reports",
-    children: [{ label: "Địa điểm hot", labelKey: "dashboard.nav.hotPlaces", to: "/dashboard/reports/hot-places" }],
+    children: [
+      { label: "Địa điểm hot", labelKey: "dashboard.nav.hotPlaces", to: "/dashboard/reports/hot-places" }
+    ],
+  },
+  {
+    label: "Cài đặt hệ thống",
+    labelKey: "dashboard.nav.settings",
+    icon: Settings,
+    to: "/dashboard/settings",
   },
 ];
 

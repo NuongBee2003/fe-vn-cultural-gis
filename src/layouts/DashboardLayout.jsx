@@ -5,8 +5,10 @@ import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
 import ViewHeader from "@/layouts/dashboard/ViewHeader";
 import logoVcm from "@/assets/logo-vcm.png";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function DashboardLayout() {
+  const { appLogo } = useSettings();
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [username] = useState(() => {
     const adminUser = localStorage.getItem("adminUser");
@@ -29,7 +31,7 @@ export default function DashboardLayout() {
       <ViewHeader
         logo={
           <img
-            src={logoVcm}
+            src={appLogo || logoVcm}
             alt="Logo"
             className="h-10 w-auto max-w-[180px] object-contain"
           />

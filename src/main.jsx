@@ -6,6 +6,7 @@ import './i18n'          // khởi tạo i18n trước khi render
 import App from './App.jsx'
 import { NotifyProvider } from '@/context/NotifyContext.jsx'
 import { WebSocketProvider } from '@/context/WebSocketContext.jsx'
+import { SettingsProvider } from '@/context/SettingsContext.jsx'
 // Khởi tạo QueryClient để quản lý cache và state API
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +22,9 @@ createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <NotifyProvider>
         <WebSocketProvider>
-          <App />
+          <SettingsProvider>
+            <App />
+          </SettingsProvider>
         </WebSocketProvider>
       </NotifyProvider>
     </QueryClientProvider>
