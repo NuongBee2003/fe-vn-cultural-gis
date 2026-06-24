@@ -252,13 +252,35 @@ export const routeConfig = [
   },
   {
     path: PATHS.LANDING,
-    element: <LandingPage />,
+    element: (
+      <MapLayout>
+        <LandingPage />
+      </MapLayout>
+    ),
     title: "Giải pháp doanh nghiệp - Di Sản Việt",
+  },
+  {
+    path: PATHS.BUSINESS_PRICING,
+    element: (
+      <MapLayout>
+        <SubscriptionPackagesPage />
+      </MapLayout>
+    ),
+    title: "Gói dịch vụ",
+  },
+  {
+    path: PATHS.BUSINESS_PAYMENT_RESULT,
+    element: (
+      <MapLayout>
+        <PaymentResultPage />
+      </MapLayout>
+    ),
+    title: "Kết quả thanh toán",
   },
   {
     path: PATHS.BUSINESS_DASHBOARD,
     element: (
-      <ProtectedRoute allowedRoles={["business", "admin", "user"]}>
+      <ProtectedRoute allowedRoles={["business", "admin"]}>
         <BusinessLayout />
       </ProtectedRoute>
     ),
@@ -278,16 +300,6 @@ export const routeConfig = [
         path: "products",
         element: <BusinessProductsPage />,
         title: "Quản lý sản phẩm",
-      },
-      {
-        path: "pricing",
-        element: <SubscriptionPackagesPage />,
-        title: "Gói dịch vụ",
-      },
-      {
-        path: "payment-result",
-        element: <PaymentResultPage />,
-        title: "Kết quả thanh toán",
       },
       {
         path: "places",

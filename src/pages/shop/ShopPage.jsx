@@ -1088,6 +1088,15 @@ export default function ShopPage() {
 
   const [dbProducts, setDbProducts] = useState([]);
 
+  const getAbsoluteUrl = (url) => {
+    if (!url) return "";
+    const trimmed = url.trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+    return `https://${trimmed}`;
+  };
+
   useEffect(() => {
     productApi.getAll("", 1, 100)
       .then((res) => {
@@ -1265,15 +1274,21 @@ export default function ShopPage() {
                       </span>
                     </div>
 
-                    <a
-                      href={product.affiliateUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-amber-200 transition-colors duration-200"
-                    >
-                      {currentLang === "vi" ? "Mua ngay" : currentLang === "en" ? "Buy Now" : "前往购买"}
-                      <ArrowUpRight size={12} />
-                    </a>
+                    {product.affiliateUrl ? (
+                      <a
+                        href={getAbsoluteUrl(product.affiliateUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer border border-amber-200 transition-colors duration-200"
+                      >
+                        {currentLang === "vi" ? "Mua ngay" : currentLang === "en" ? "Buy Now" : "前往购买"}
+                        <ArrowUpRight size={12} />
+                      </a>
+                    ) : (
+                      <span className="text-[10px] text-stone-400 italic">
+                        {currentLang === "vi" ? "Chưa có link" : currentLang === "en" ? "No Link" : "暂无链接"}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1415,15 +1430,25 @@ export default function ShopPage() {
 
               {/* Action Box */}
               <div className="mt-auto pt-6 border-t border-stone-100 flex gap-3">
-                <a
-                  href={selectedProduct.affiliateUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-stone-900 hover:bg-amber-600 text-white cursor-pointer transition-colors duration-200 shadow-md text-center"
-                >
-                  <ExternalLink size={16} />
-                  {currentLang === "vi" ? "Đến nơi bán sản phẩm" : currentLang === "en" ? "Go to Product Page" : "前往购买商品"}
-                </a>
+                {selectedProduct.affiliateUrl ? (
+                  <a
+                    href={getAbsoluteUrl(selectedProduct.affiliateUrl)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-stone-900 hover:bg-amber-600 text-white cursor-pointer transition-colors duration-200 shadow-md text-center"
+                  >
+                    <ExternalLink size={16} />
+                    {currentLang === "vi" ? "Đến nơi bán sản phẩm" : currentLang === "en" ? "Go to Product Page" : "前往购买商品"}
+                  </a>
+                ) : (
+                  <button
+                    disabled
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-stone-100 text-stone-400 cursor-not-allowed text-center border border-stone-200"
+                  >
+                    <ExternalLink size={16} />
+                    {currentLang === "vi" ? "Chưa có liên kết mua" : currentLang === "en" ? "No Store Link" : "暂无购买链接"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

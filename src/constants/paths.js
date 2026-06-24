@@ -53,8 +53,8 @@ export const PATHS = {
   BUSINESS_DASHBOARD: "/business",
   BUSINESS_OVERVIEW: "/business/overview",
   BUSINESS_PRODUCTS: "/business/products",
-  BUSINESS_PRICING: "/business/pricing",
-  BUSINESS_PAYMENT_RESULT: "/business/payment-result",
+  BUSINESS_PRICING: "/pricing",
+  BUSINESS_PAYMENT_RESULT: "/payment-result",
   BUSINESS_PLACES: "/business/places",
 
   NOT_FOUND: "*",

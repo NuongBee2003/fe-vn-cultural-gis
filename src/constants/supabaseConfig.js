@@ -7,6 +7,7 @@ export const SUPABASE_BUCKETS = {
   CUSTOM_IMAGES: 'customs',          // Ảnh phong tục
   FOLK_ART_IMAGES: 'folk-arts',      // Ảnh nghệ thuật dân gian
   EXHIBITION_IMAGES: 'exhibitions',  // Ảnh triển lãm ảo
+  PRODUCT_IMAGES: 'product',         // Ảnh sản phẩm của business
 };
 
 // Cấu hình tải ảnh

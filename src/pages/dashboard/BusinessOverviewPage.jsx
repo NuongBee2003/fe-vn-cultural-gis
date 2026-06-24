@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPinned, PackageOpen, Award, Calendar, RefreshCw, XCircle } from "lucide-react";
+import { PATHS } from "@/constants/paths";
+import { MapPinned, PackageOpen, Award, Calendar, RefreshCw, XCircle, Store, Phone, User, Building } from "lucide-react";
 import { subscriptionApi } from "@/api/subscriptionApi";
 import { productApi } from "@/api/productApi";
 import { authApi } from "@/api/authApi";
@@ -113,58 +114,93 @@ export default function BusinessOverviewPage() {
 
       {/* Main Grid */}
       <div className="mt-6 grid gap-6 md:grid-cols-3">
-        {/* Package Card */}
-        <div className="md:col-span-1 relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-50/60 to-white p-6 shadow-sm hover:shadow-md transition-all">
-          <div className="absolute -right-8 -top-8 text-amber-500/10">
-            <Award className="h-32 w-32" />
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-600">
-              <Award className="h-6 w-6" />
+        {/* Left Column Stack */}
+        <div className="md:col-span-1 space-y-6">
+          {/* Package Card */}
+          <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-50/60 to-white p-6 shadow-sm hover:shadow-md transition-all text-slate-800">
+            <div className="absolute -right-8 -top-8 text-amber-500/10">
+              <Award className="h-32 w-32" />
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-600">Gói hiện tại</p>
-              <h2 className="text-xl font-bold text-slate-800">{pkgName}</h2>
+            
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-600">
+                <Award className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-amber-600">Gói hiện tại</p>
+                <h2 className="text-xl font-bold text-slate-800">{pkgName}</h2>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3.5 border-t border-amber-500/10 pt-4 text-sm">
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-slate-400" /> Ngày bắt đầu:</span>
+                <span className="font-semibold text-slate-800">
+                  {activeSub?.subscription?.start_date ? new Date(activeSub.subscription.start_date).toLocaleDateString("vi-VN") : "Hệ thống"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-slate-400" /> Ngày hết hạn:</span>
+                <span className="font-semibold text-slate-800">
+                  {activeSub?.subscription?.end_date ? new Date(activeSub.subscription.end_date).toLocaleDateString("vi-VN") : "Không thời hạn"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><Award className="h-4 w-4 text-slate-400" /> Trạng thái gói:</span>
+                <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${isDefault ? 'bg-slate-100 text-slate-600' : 'bg-emerald-100 text-emerald-700'}`}>
+                  {isDefault ? 'Mặc định (Free)' : 'Đang hoạt động'}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-2">
+              <Link to={PATHS.BUSINESS_PRICING} className="w-full">
+                <Button className="w-full bg-amber-500 text-white hover:bg-amber-600 shadow-sm shadow-amber-500/10 py-2 font-medium">
+                  Nâng cấp dịch vụ
+                </Button>
+              </Link>
+              {!isDefault && (
+                <Button 
+                  onClick={handleCancelSub} 
+                  variant="outline" 
+                  className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                >
+                  <XCircle className="mr-1.5 h-4 w-4" /> Hủy gói dịch vụ
+                </Button>
+              )}
             </div>
           </div>
 
-          <div className="mt-6 space-y-3.5 border-t border-amber-500/10 pt-4 text-sm">
-            <div className="flex justify-between items-center text-slate-600">
-              <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-slate-400" /> Ngày bắt đầu:</span>
-              <span className="font-semibold text-slate-800">
-                {activeSub?.subscription?.start_date ? new Date(activeSub.subscription.start_date).toLocaleDateString("vi-VN") : "Hệ thống"}
-              </span>
+          {/* Business Info Card */}
+          <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-50/60 to-white p-6 shadow-sm hover:shadow-md transition-all text-slate-800">
+            <div className="absolute -right-8 -top-8 text-blue-500/10">
+              <Store className="h-32 w-32" />
             </div>
-            <div className="flex justify-between items-center text-slate-600">
-              <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-slate-400" /> Ngày hết hạn:</span>
-              <span className="font-semibold text-slate-800">
-                {activeSub?.subscription?.end_date ? new Date(activeSub.subscription.end_date).toLocaleDateString("vi-VN") : "Không thời hạn"}
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-slate-600">
-              <span className="flex items-center gap-1.5"><Award className="h-4 w-4 text-slate-400" /> Trạng thái gói:</span>
-              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${isDefault ? 'bg-slate-100 text-slate-600' : 'bg-emerald-100 text-emerald-700'}`}>
-                {isDefault ? 'Mặc định (Free)' : 'Đang hoạt động'}
-              </span>
-            </div>
-          </div>
 
-          <div className="mt-6 flex flex-col gap-2">
-            <Link to="/business/pricing" className="w-full">
-              <Button className="w-full bg-amber-500 text-white hover:bg-amber-600 shadow-sm shadow-amber-500/10 py-2 font-medium">
-                Nâng cấp dịch vụ
-              </Button>
-            </Link>
-            {!isDefault && (
-              <Button 
-                onClick={handleCancelSub} 
-                variant="outline" 
-                className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-              >
-                <XCircle className="mr-1.5 h-4 w-4" /> Hủy gói dịch vụ
-              </Button>
-            )}
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-blue-500/10 p-2.5 text-blue-600">
+                <Store className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">Hồ sơ Doanh nghiệp</p>
+                <h2 className="text-xl font-bold text-slate-800 truncate max-w-[200px]">{user?.business_name || "Chưa cập nhật"}</h2>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3.5 border-t border-blue-500/10 pt-4 text-sm">
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><Building className="h-4 w-4 text-slate-400" /> Doanh nghiệp:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[150px]">{user?.business_name || "N/A"}</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-slate-400" /> Điện thoại:</span>
+                <span className="font-semibold text-slate-800">{user?.business_phone || "N/A"}</span>
+              </div>
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-1.5"><User className="h-4 w-4 text-slate-400" /> Tài khoản:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[150px]">{user?.username || "N/A"}</span>
+              </div>
+            </div>
           </div>
         </div>
 

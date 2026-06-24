@@ -14,6 +14,7 @@ import {
   ChevronUp,
   X,
   Crown,
+  Store,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
@@ -38,6 +39,13 @@ function getRoleBadge(role) {
       className: "bg-indigo-100 text-indigo-700 border-indigo-300",
     };
   }
+  if (r === "business") {
+    return {
+      label: "Doanh nghiệp",
+      icon: <Store size={11} />,
+      className: "bg-blue-100 text-blue-700 border-blue-300",
+    };
+  }
   return {
     label: "Người dùng",
     icon: <User size={11} />,
@@ -53,10 +61,31 @@ export default function Menu() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
-  const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
-  const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
-  const user = userRaw ? JSON.parse(userRaw) : null;
+  const getStoredUserInfo = () => {
+    const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+    const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
+    const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
+    const user = userRaw ? JSON.parse(userRaw) : null;
+    return { token, isLogin, user };
+  };
+
+  const [userInfo, setUserInfo] = useState(getStoredUserInfo());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setUserInfo(getStoredUserInfo());
+    };
+
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("local-storage-update", handleUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("local-storage-update", handleUpdate);
+    };
+  }, []);
+
+  const { token, isLogin, user } = userInfo;
 
   // Đóng popup khi click ngoài
   useEffect(() => {
@@ -251,6 +280,21 @@ export default function Menu() {
                     <div className="flex items-center gap-2">
                       <Shield size={13} className="text-amber-500" />
                       <span>Trang quản lý</span>
+                    </div>
+                    <span>→</span>
+                  </NavLink>
+                )}
+
+                {/* Trang doanh nghiệp nếu là business hoặc admin */}
+                {(String(user?.role || "").toLowerCase() === "business" || String(user?.role || "").toLowerCase() === "admin") && (
+                  <NavLink
+                    to={PATHS.BUSINESS_DASHBOARD}
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center justify-between rounded-xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 px-3 py-2.5 text-xs font-semibold text-blue-400 no-underline cursor-pointer transition-all mt-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Store size={13} className="text-blue-500" />
+                      <span>Trang doanh nghiệp</span>
                     </div>
                     <span>→</span>
                   </NavLink>

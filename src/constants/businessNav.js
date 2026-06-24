@@ -34,6 +34,6 @@ export const BUSINESS_NAV_ITEMS = [
     label: "Nâng cấp dịch vụ",
     labelKey: "dashboard.nav.pricing",
     icon: Settings,
-    to: "/business/pricing",
+    to: "/pricing",
   },
 ];

@@ -58,11 +58,15 @@ export default function PlacesManagementPage() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const user = authApi.getUser();
+  const isBusiness = user?.role !== "admin" || window.location.pathname.startsWith("/business");
+
   const { data: apiData, isLoading, error } = useAllPlaces(
     page,
     pageSize,
     categoryFilter.name !== "all" ? categoryFilter.id : null,
-    debouncedSearch
+    debouncedSearch,
+    isBusiness ? user?.id : null
   );
 
   const places = apiData?.data || [];
@@ -72,13 +76,8 @@ export default function PlacesManagementPage() {
   const updateMutation = useUpdatePlace();
   const deleteMutation = useDeletePlace();
 
-  const user = authApi.getUser();
-  const isBusiness = user?.role === "business";
-
   // Kết quả hiển thị: dùng places trực tiếp từ API có phân trang
-  const filteredPlaces = isBusiness
-    ? places.filter((p) => Number(p.user_id) === Number(user.id))
-    : places;
+  const filteredPlaces = places;
   const isFiltering = categoryFilter.name !== "all";
 
   // ── Handlers ──────────────────────────────────────────

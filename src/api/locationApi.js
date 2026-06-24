@@ -146,11 +146,12 @@ export async function getAllLocationsByCategory(page = 1, limit = 20, categoryId
 /**
  * Lấy danh sách Places có phân trang, lọc theo categoryId và tìm kiếm query
  */
-export async function getAllPlaces(page = 1, limit = 20, categoryId = null, query = "") {
+export async function getAllPlaces(page = 1, limit = 20, categoryId = null, query = "", userId = null) {
   try {
     const params = new URLSearchParams({ page, limit });
     if (categoryId) params.append("categoryId", categoryId);
     if (query) params.append("query", query);
+    if (userId) params.append("userId", userId);
 
     const res = await fetch(`${BASE_URL}/place?${params.toString()}`);
 

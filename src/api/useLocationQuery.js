@@ -72,10 +72,10 @@ export function useAllLocations(page = 1, limit = 20) {
 /**
  * Hook lấy tất cả Places với phân trang, lọc theo categoryId và tìm kiếm query
  */
-export function useAllPlaces(page = 1, limit = 20, categoryId = null, query = "") {
+export function useAllPlaces(page = 1, limit = 20, categoryId = null, query = "", userId = null) {
   return useQuery({
-    queryKey: ["places", "all", page, limit, categoryId, query],
-    queryFn: () => getAllPlaces(page, limit, categoryId, query),
+    queryKey: ["places", "all", page, limit, categoryId, query, userId],
+    queryFn: () => getAllPlaces(page, limit, categoryId, query, userId),
     staleTime: 1 * 60 * 1000, // Cache 1 phút
     placeholderData: keepPreviousData,
   });

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "@/api/authApi";
+import { PATHS } from "@/constants/paths";
 import { Button } from "@/components/ui/button/button";
 import { 
   MapPin, 
@@ -20,16 +21,17 @@ export default function LandingPage() {
 
   const handleCTAClick = () => {
     if (!user) {
-      navigate("/login?redirect=/business/pricing");
+      navigate(`/login?redirect=${PATHS.BUSINESS_PRICING}`);
     } else if (user.role === "business" || user.role === "admin") {
-      navigate("/business/overview");
+      navigate(PATHS.BUSINESS_OVERVIEW);
     } else {
-      navigate("/business/pricing");
+      navigate(PATHS.BUSINESS_PRICING);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
+    <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
+      <div className="h-full overflow-y-auto">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28">
         {/* Background Gradients */}
@@ -239,6 +241,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

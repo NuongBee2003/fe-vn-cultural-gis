@@ -18,7 +18,7 @@ export const subscriptionApi = {
     return result.data;
   },
 
-  subscribe: async (packageId) => {
+  subscribe: async (packageId, businessName = "", businessPhone = "") => {
     const token = getToken();
     const res = await fetch(`${BASE_URL}/subscription/subscribe`, {
       method: "POST",
@@ -26,7 +26,7 @@ export const subscriptionApi = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ packageId }),
+      body: JSON.stringify({ packageId, businessName, businessPhone }),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
