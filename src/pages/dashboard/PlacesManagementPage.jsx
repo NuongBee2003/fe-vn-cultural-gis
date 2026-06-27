@@ -385,7 +385,7 @@ export default function PlacesManagementPage() {
                           {addresses.length > 0 ? (
                             addresses.map((addr, idx) => (
                               <span key={idx} className="line-clamp-1 border-b border-muted/50 pb-0.5 last:border-0 last:pb-0" title={addr}>
-                                📍 {addr}
+                                {addr}
                               </span>
                             ))
                           ) : (
