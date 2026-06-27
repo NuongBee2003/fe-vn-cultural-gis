@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import { Award, Check, RefreshCw } from "lucide-react";
 import { subscriptionApi } from "@/api/subscriptionApi";
+import { authApi } from "@/api/authApi";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 
 const DEFAULT_PACKAGES = [
@@ -13,12 +15,10 @@ const DEFAULT_PACKAGES = [
     duration_days: 3650,
     max_places: 0,
     max_products: 3,
-    description: "Dành cho cá nhân trải nghiệm du lịch văn hóa",
+    description: "Gói miễn phí đăng tối đa 3 địa điểm",
     features: [
-      "Tối đa 0 địa điểm trên bản đồ",
-      "Tối đa 3 sản phẩm trên Shop",
-      "Sử dụng liên kết mua Affiliate link ngoài",
-      "Xem bản đồ và đóng góp bài viết cộng đồng"
+      "Hỗ trợ tối đa 0 địa điểm trên bản đồ",
+      "Hỗ trợ tối đa 3 sản phẩm trên Shop"
     ],
     bgGradient: "bg-slate-800/40 border-slate-700/80 text-white",
     btnColor: "bg-slate-700 hover:bg-slate-600 text-white rounded-xl",
@@ -31,13 +31,10 @@ const DEFAULT_PACKAGES = [
     duration_days: 30,
     max_places: 1,
     max_products: 20,
-    description: "Lựa chọn tốt cho doanh nghiệp hoặc chi nhánh văn hóa nhỏ",
+    description: "Gói Plus hỗ trợ 1 địa điểm và tối đa 20 sản phẩm",
     features: [
-      "Tối đa 1 địa điểm trên bản đồ (được tạo nhiều chi nhánh)",
-      "Tối đa 20 sản phẩm trên Shop",
-      "Ưu tiên hiển thị trên kết quả tìm kiếm bản đồ",
-      "Sử dụng liên kết mua Affiliate link ngoài",
-      "Quản lý dashboard tổng quan doanh nghiệp"
+      "Hỗ trợ tối đa 1 địa điểm trên bản đồ",
+      "Hỗ trợ tối đa 20 sản phẩm trên Shop"
     ],
     bgGradient: "bg-indigo-950/25 border-indigo-500/30 text-white shadow-md shadow-indigo-500/5",
     btnColor: "bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl",
@@ -50,14 +47,10 @@ const DEFAULT_PACKAGES = [
     duration_days: 30,
     max_places: 3,
     max_products: 50,
-    description: "Hỗ trợ truyền thông thương hiệu di sản và sản phẩm quy mô lớn",
+    description: "Gói Premium hỗ trợ tối đa 3 địa điểm và 50 sản phẩm",
     features: [
-      "Tối đa 3 địa điểm trên bản đồ (được tạo nhiều chi nhánh)",
-      "Tối đa 50 sản phẩm trên Shop",
-      "Vị trí hiển thị nổi bật với Marker đặc biệt trên bản đồ",
-      "Sử dụng liên kết mua Affiliate link ngoài",
-      "Báo cáo chi tiết lượt xem địa điểm và tương tác khách hàng",
-      "Hỗ trợ support VIP 24/7 từ quản trị viên"
+      "Hỗ trợ tối đa 3 địa điểm trên bản đồ",
+      "Hỗ trợ tối đa 50 sản phẩm trên Shop"
     ],
     bgGradient: "bg-amber-950/20 border-amber-500/40 text-white shadow-lg shadow-amber-500/10 scale-105 relative z-10",
     btnColor: "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold rounded-xl",
@@ -67,8 +60,11 @@ const DEFAULT_PACKAGES = [
 
 export default function SubscriptionPackagesPage() {
   const navigate = useNavigate();
-  const storedUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
-  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  const notify = useNotify();
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const [activeSub, setActiveSub] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,6 +78,20 @@ export default function SubscriptionPackagesPage() {
 
   const fetchActiveSub = async () => {
     try {
+      // 1. Đồng bộ profile mới nhất từ DB
+      const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+      if (token) {
+        try {
+          const profile = await authApi.getProfile();
+          if (profile) {
+            setCurrentUser(profile);
+          }
+        } catch (profileErr) {
+          console.error("Lỗi tải thông tin profile:", profileErr);
+        }
+      }
+
+      // 2. Lấy thông tin gói active
       const data = await subscriptionApi.getMyActive();
       setActiveSub(data);
     } catch (err) {
@@ -95,32 +105,10 @@ export default function SubscriptionPackagesPage() {
     fetchActiveSub();
   }, []);
 
-  const handleSubscribe = (pkg) => {
-    if (processingId) return;
-    
-    // Nếu là gói trùng với gói hiện tại
-    const isCurrentPkg = activePkgId === pkg.id;
-    if (isCurrentPkg) {
-      alert("Bạn đang sử dụng gói dịch vụ này!");
-      return;
-    }
-
-    setTargetPkg(pkg);
-    setShowBusinessForm(true);
-  };
-
-  const confirmSubscription = async (e) => {
-    e.preventDefault();
-    if (!targetPkg || processingId) return;
-
-    if (!businessName.trim() || !businessPhone.trim()) {
-      alert("Vui lòng nhập đầy đủ tên doanh nghiệp và số điện thoại!");
-      return;
-    }
-
-    setProcessingId(targetPkg.id);
+  const executeSubscribe = async (pkg, bName, bPhone) => {
+    setProcessingId(pkg.id);
     try {
-      const res = await subscriptionApi.subscribe(targetPkg.id, businessName.trim(), businessPhone.trim());
+      const res = await subscriptionApi.subscribe(pkg.id, bName.trim(), bPhone.trim());
       
       // Nếu là gói thanh toán phí, Backend trả về URL thanh toán VNPAY
       if (res.data && res.data.paymentUrl) {
@@ -130,8 +118,8 @@ export default function SubscriptionPackagesPage() {
           if (storedUserRaw) {
             try {
               const parsed = JSON.parse(storedUserRaw);
-              parsed.business_name = businessName.trim();
-              parsed.business_phone = businessPhone.trim();
+              parsed.business_name = bName.trim();
+              parsed.business_phone = bPhone.trim();
               localStorage.setItem(key, JSON.stringify(parsed));
             } catch (e) {
               console.error(e);
@@ -141,15 +129,15 @@ export default function SubscriptionPackagesPage() {
         console.log("Redirecting to VNPAY:", res.data.paymentUrl);
         window.location.href = res.data.paymentUrl;
       } else {
-        alert(`Nâng cấp gói "${targetPkg.name}" thành công!`);
+        notify.success(`Nâng cấp gói "${pkg.name}" thành công!`);
         ["adminUser", "user"].forEach((key) => {
           const storedUserRaw = localStorage.getItem(key);
           if (storedUserRaw) {
             try {
               const parsed = JSON.parse(storedUserRaw);
               parsed.role = "business";
-              parsed.business_name = businessName.trim();
-              parsed.business_phone = businessPhone.trim();
+              parsed.business_name = bName.trim();
+              parsed.business_phone = bPhone.trim();
               localStorage.setItem(key, JSON.stringify(parsed));
             } catch (e) {
               console.error(e);
@@ -162,12 +150,65 @@ export default function SubscriptionPackagesPage() {
       }
     } catch (err) {
       console.error(err);
-      alert(err.message || "Đăng ký gói thất bại");
+      notify.error(err.message || "Đăng ký gói thất bại");
     } finally {
       setProcessingId(null);
       setShowBusinessForm(false);
       setTargetPkg(null);
     }
+  };
+
+  const handleSubscribe = async (pkg) => {
+    if (!currentUser) {
+      notify.warning("Vui lòng đăng nhập trước khi nâng cấp gói dịch vụ!");
+      navigate(`/login?redirect=${PATHS.BUSINESS_PRICING}`);
+      return;
+    }
+
+    if (processingId) return;
+    
+    // Nếu là gói trùng với gói hiện tại
+    const isCurrentPkg = activePkgId === pkg.id;
+    if (isCurrentPkg) {
+      notify.info("Bạn đang sử dụng gói dịch vụ này!");
+      return;
+    }
+
+    // Không cho phép hạ cấp gói
+    if (currentPrice >= 0 && pkg.price < currentPrice) {
+      notify.warning("Bạn đang sử dụng gói dịch vụ cao hơn, không thể hạ cấp gói!");
+      return;
+    }
+
+    // Kiểm tra xem đã có thông tin doanh nghiệp hay chưa
+    const hasName = currentUser.business_name && currentUser.business_name.trim();
+    const hasPhone = currentUser.business_phone && currentUser.business_phone.trim();
+
+    if (hasName && hasPhone) {
+      // Tự động điền state
+      setBusinessName(currentUser.business_name.trim());
+      setBusinessPhone(currentUser.business_phone.trim());
+      // Thực hiện đăng ký luôn, bỏ qua bước nhập form
+      await executeSubscribe(pkg, currentUser.business_name, currentUser.business_phone);
+    } else {
+      // Nếu chưa có đầy đủ thông tin, hiện form yêu cầu điền
+      setBusinessName(currentUser.business_name || "");
+      setBusinessPhone(currentUser.business_phone || "");
+      setTargetPkg(pkg);
+      setShowBusinessForm(true);
+    }
+  };
+
+  const confirmSubscription = async (e) => {
+    e.preventDefault();
+    if (!targetPkg || processingId) return;
+
+    if (!businessName.trim() || !businessPhone.trim()) {
+      notify.warning("Vui lòng nhập đầy đủ tên doanh nghiệp và số điện thoại!");
+      return;
+    }
+
+    await executeSubscribe(targetPkg, businessName, businessPhone);
   };
 
   if (loading) {
@@ -183,9 +224,24 @@ export default function SubscriptionPackagesPage() {
     ? (currentUser?.role === "business" ? 1 : null) 
     : (activeSub?.package?.id || null);
 
+  const currentPrice = activeSub?.is_default
+    ? (currentUser?.role === "business" ? 0 : -1)
+    : (activeSub?.package?.price !== undefined ? Number(activeSub.package.price) : -1);
+
   return (
     <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
       <div className="h-full overflow-y-auto p-6 md:p-12">
+        {/* Top Header */}
+        <div className="max-w-6xl mx-auto flex items-center justify-between mb-8 pb-4 border-b border-slate-800">
+          <button 
+            onClick={() => navigate("/")}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl"
+          >
+            &larr; Quay lại Bản đồ Trang chủ
+          </button>
+          <span className="text-xs font-semibold text-slate-500">DI SẢN VIỆT - BUSINESS</span>
+        </div>
+
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto border-b border-slate-800 pb-6 mb-8">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
@@ -202,6 +258,7 @@ export default function SubscriptionPackagesPage() {
             const isCurrent = activePkgId === pkg.id;
             const isPremium = pkg.id === 3;
             const isUpgrading = processingId === pkg.id;
+            const isDowngrade = currentPrice >= 0 && pkg.price < currentPrice;
 
             return (
               <div 
@@ -255,8 +312,8 @@ export default function SubscriptionPackagesPage() {
                 <div className="mt-8">
                   <Button 
                     onClick={() => handleSubscribe(pkg)}
-                    disabled={isCurrent || isUpgrading}
-                    className={`w-full py-2.5 font-medium transition-all ${isCurrent ? 'bg-slate-800/80 text-slate-500 border border-slate-700 cursor-not-allowed' : pkg.btnColor}`}
+                    disabled={isCurrent || isUpgrading || isDowngrade}
+                    className={`w-full py-2.5 font-medium transition-all ${(isCurrent || isDowngrade) ? 'bg-slate-800/80 text-slate-500 border border-slate-700 cursor-not-allowed' : pkg.btnColor}`}
                   >
                     {isUpgrading ? (
                       <span className="flex items-center justify-center gap-1.5">
@@ -264,6 +321,8 @@ export default function SubscriptionPackagesPage() {
                       </span>
                     ) : isCurrent ? (
                       "Đang sử dụng"
+                    ) : isDowngrade ? (
+                      "Không thể hạ cấp"
                     ) : (
                       pkg.price === 0 ? "Kích hoạt miễn phí" : "Nâng cấp ngay"
                     )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { authApi } from "@/api/authApi";
@@ -19,6 +19,8 @@ const GoogleIcon = ({ size = 18, className = "" }) => (
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || PATHS.HOME;
   const notify = useNotify();
   const { appName } = useSettings();
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +28,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: ""
+  });
 
   // States for Forgot Password
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -81,7 +87,7 @@ export default function LoginPage() {
         localStorage.setItem("adminUser", JSON.stringify(res.user));
         
         await notify.success("Đăng nhập bằng Google thành công!", "Chào mừng!");
-        navigate(PATHS.HOME);
+        navigate(redirectPath);
       }
     } catch (err) {
       console.error(err);
@@ -126,7 +132,7 @@ export default function LoginPage() {
         localStorage.setItem("adminUser", JSON.stringify(res.user));
         
         await notify.success(`Đăng nhập Google (${mockName}) thành công!`, "Chào mừng!");
-        navigate(PATHS.HOME);
+        navigate(redirectPath);
       }
     } catch (err) {
       setError(err?.message || "Đăng nhập Google giả lập thất bại.");
@@ -139,10 +145,38 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!email || !password) {
-      setError("Vui lòng nhập đầy đủ email và mật khẩu.");
+    const newErrors = {
+      email: "",
+      password: ""
+    };
+    
+    let hasError = false;
+
+    if (!email.trim()) {
+      newErrors.email = "Vui lòng nhập email.";
+      hasError = true;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        newErrors.email = "Email không đúng định dạng.";
+        hasError = true;
+      }
+    }
+
+    if (!password) {
+      newErrors.password = "Vui lòng nhập mật khẩu.";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
       return;
     }
+
+    setErrors({
+      email: "",
+      password: ""
+    });
 
     try {
       setLoading(true);
@@ -155,7 +189,7 @@ export default function LoginPage() {
         localStorage.setItem("adminUser", JSON.stringify(res.user));
         
         await notify.success("Đăng nhập thành công!", "Chào mừng trở lại");
-        navigate(PATHS.HOME);
+        navigate(redirectPath);
       } else {
         setError("Đăng nhập thất bại. Không tìm thấy thông tin xác thực.");
       }
@@ -279,23 +313,31 @@ export default function LoginPage() {
 
             {!isForgotPassword ? (
               // FORM ĐĂNG NHẬP THƯỜNG
-              <form onSubmit={handleLogin} className="space-y-5">
+              <form onSubmit={handleLogin} className="space-y-5" noValidate>
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-semibold text-[#B8922E] mb-2">
                     Email
                   </label>
 
-                  <div className="flex items-center border border-gray-200 rounded-xl px-4 h-12 focus-within:border-[var(--brand-primary)] transition-all">
-                    <Mail size={18} className="text-gray-400 mr-3 shrink-0" />
+                  <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.email ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-gray-200 focus-within:border-[var(--brand-primary)]'}`}>
+                    <Mail size={18} className={`${errors.email ? 'text-red-500' : 'text-gray-400'} mr-3 shrink-0`} />
                     <input
                       type="email"
                       placeholder="Nhập email của bạn"
                       className="flex-1 outline-none bg-transparent text-sm"
                       value={email}
-                      onChange={(e) => { setEmail(e.target.value); }}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (errors.email) setErrors(prev => ({ ...prev, email: "" }));
+                      }}
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 {/* Password */}
@@ -318,14 +360,17 @@ export default function LoginPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center border border-gray-200 rounded-xl px-4 h-12 focus-within:border-[var(--brand-primary)] transition-all">
-                    <Lock size={18} className="text-gray-400 mr-3 shrink-0" />
+                  <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.password ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-gray-200 focus-within:border-[var(--brand-primary)]'}`}>
+                    <Lock size={18} className={`${errors.password ? 'text-red-500' : 'text-gray-400'} mr-3 shrink-0`} />
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Nhập mật khẩu"
                       className="flex-1 outline-none bg-transparent text-sm"
                       value={password}
-                      onChange={(e) => { setPassword(e.target.value); }}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (errors.password) setErrors(prev => ({ ...prev, password: "" }));
+                      }}
                     />
                     <button
                       type="button"
@@ -335,6 +380,11 @@ export default function LoginPage() {
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
+                  {errors.password && (
+                    <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 {/* Remember */}

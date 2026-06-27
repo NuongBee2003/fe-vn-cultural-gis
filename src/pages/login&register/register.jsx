@@ -35,6 +35,13 @@ export default function RegisterPage() {
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    username: "",
+    phone: "",
+    email: "",
+    password: "",
+    agree: ""
+  });
 
   // States for Mock Google Dialog
   const [showMockGoogleDialog, setShowMockGoogleDialog] = useState(false);
@@ -132,20 +139,74 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    
+    // Reset field errors
+    const newErrors = {
+      username: "",
+      phone: "",
+      email: "",
+      password: "",
+      agree: ""
+    };
+    
+    let hasError = false;
 
-    if (!username || !email || !password) {
-      setError("Vui lòng điền đầy đủ họ và tên, email và mật khẩu.");
-      return;
+    if (!username.trim()) {
+      newErrors.username = "Vui lòng nhập họ và tên.";
+      hasError = true;
+    }
+
+    if (!phone.trim()) {
+      newErrors.phone = "Vui lòng nhập số điện thoại.";
+      hasError = true;
+    } else {
+      const phoneRegex = /^0\d{9}$/;
+      if (!phoneRegex.test(phone.trim())) {
+        newErrors.phone = "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0.";
+        hasError = true;
+      }
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Vui lòng nhập email.";
+      hasError = true;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        newErrors.email = "Email không đúng định dạng.";
+        hasError = true;
+      }
+    }
+
+    if (!password) {
+      newErrors.password = "Vui lòng nhập mật khẩu.";
+      hasError = true;
+    } else if (password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+      hasError = true;
     }
 
     if (!agree) {
-      setError("Bạn phải đồng ý với điều khoản sử dụng.");
+      newErrors.agree = "Bạn phải đồng ý với điều khoản sử dụng.";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
       return;
     }
 
+    setErrors({
+      username: "",
+      phone: "",
+      email: "",
+      password: "",
+      agree: ""
+    });
+
     try {
       setLoading(true);
-      const res = await authApi.register(username.trim(), email.trim(), password);
+      const res = await authApi.register(username.trim(), email.trim(), password, phone.trim());
       if (res && res.token) {
         localStorage.setItem("isLogin", "true");
         localStorage.setItem("token", res.token);
@@ -160,7 +221,7 @@ export default function RegisterPage() {
       }
     } catch (err) {
       console.error(err);
-      setError(err?.message || "Đăng ký không thành công. Email có thể đã được sử dụng.");
+      setError(err?.message || "Đăng ký không thành công. Email hoặc số điện thoại có thể đã được sử dụng.");
     } finally {
       setLoading(false);
     }
@@ -218,7 +279,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleRegister} className="space-y-5">
+            <form onSubmit={handleRegister} className="space-y-5" noValidate>
 
               {/* Fullname */}
               <div>
@@ -226,10 +287,10 @@ export default function RegisterPage() {
                   Họ và tên
                 </label>
 
-                <div className="flex items-center border border-[#E5D3A1] bg-[#FFFDF8] rounded-xl px-4 h-12 focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2] transition-all">
+                <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.username ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-[#E5D3A1] bg-[#FFFDF8] focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2]'}`}>
                   <User
                     size={18}
-                    className="text-[#B8922E] mr-3 shrink-0"
+                    className={`${errors.username ? 'text-red-500' : 'text-[#B8922E]'} mr-3 shrink-0`}
                   />
 
                   <input
@@ -237,9 +298,17 @@ export default function RegisterPage() {
                     placeholder="Nhập họ và tên"
                     className="flex-1 outline-none bg-transparent text-sm"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if (errors.username) setErrors(prev => ({ ...prev, username: "" }));
+                    }}
                   />
                 </div>
+                {errors.username && (
+                  <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                    {errors.username}
+                  </p>
+                )}
               </div>
 
               {/* Phone */}
@@ -248,10 +317,10 @@ export default function RegisterPage() {
                   Số điện thoại
                 </label>
 
-                <div className="flex items-center border border-[#E5D3A1] bg-[#FFFDF8] rounded-xl px-4 h-12 focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2] transition-all">
+                <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.phone ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-[#E5D3A1] bg-[#FFFDF8] focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2]'}`}>
                   <Phone
                     size={18}
-                    className="text-[#B8922E] mr-3 shrink-0"
+                    className={`${errors.phone ? 'text-red-500' : 'text-[#B8922E]'} mr-3 shrink-0`}
                   />
 
                   <input
@@ -259,9 +328,17 @@ export default function RegisterPage() {
                     placeholder="Nhập số điện thoại"
                     className="flex-1 outline-none bg-transparent text-sm"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
+                    }}
                   />
                 </div>
+                {errors.phone && (
+                  <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                    {errors.phone}
+                  </p>
+                )}
               </div>
 
               {/* Email */}
@@ -270,10 +347,10 @@ export default function RegisterPage() {
                   Email
                 </label>
 
-                <div className="flex items-center border border-[#E5D3A1] bg-[#FFFDF8] rounded-xl px-4 h-12 focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2] transition-all">
+                <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.email ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-[#E5D3A1] bg-[#FFFDF8] focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2]'}`}>
                   <Mail
                     size={18}
-                    className="text-[#B8922E] mr-3 shrink-0"
+                    className={`${errors.email ? 'text-red-500' : 'text-[#B8922E]'} mr-3 shrink-0`}
                   />
 
                   <input
@@ -281,9 +358,17 @@ export default function RegisterPage() {
                     placeholder="Nhập email của bạn"
                     className="flex-1 outline-none bg-transparent text-sm"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors(prev => ({ ...prev, email: "" }));
+                    }}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -292,10 +377,10 @@ export default function RegisterPage() {
                   Mật khẩu
                 </label>
 
-                <div className="flex items-center border border-[#E5D3A1] bg-[#FFFDF8] rounded-xl px-4 h-12 focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2] transition-all">
+                <div className={`flex items-center border rounded-xl px-4 h-12 transition-all ${errors.password ? 'border-red-500 bg-red-50/10 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100' : 'border-[#E5D3A1] bg-[#FFFDF8] focus-within:border-[#C9A646] focus-within:ring-2 focus-within:ring-[#F4E3B2]'}`}>
                   <Lock
                     size={18}
-                    className="text-[#B8922E] mr-3 shrink-0"
+                    className={`${errors.password ? 'text-red-500' : 'text-[#B8922E]'} mr-3 shrink-0`}
                   />
 
                   <input
@@ -303,7 +388,10 @@ export default function RegisterPage() {
                     placeholder="Nhập mật khẩu"
                     className="flex-1 outline-none bg-transparent text-sm"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors(prev => ({ ...prev, password: "" }));
+                    }}
                   />
 
                   <button
@@ -318,23 +406,38 @@ export default function RegisterPage() {
                     )}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500 font-medium mt-1 pl-1">
+                    {errors.password}
+                  </p>
+                )}
               </div>
 
               {/* Terms */}
-              <div className="flex items-start gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="mt-1"
-                  checked={agree}
-                  onChange={(e) => setAgree(e.target.checked)}
-                />
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                    checked={agree}
+                    onChange={(e) => {
+                      setAgree(e.target.checked);
+                      if (errors.agree) setErrors(prev => ({ ...prev, agree: "" }));
+                    }}
+                  />
 
-                <p className="text-[#7A5C12]">
-                  Tôi đồng ý với{" "}
-                  <span className="text-[#B8922E] font-semibold cursor-pointer hover:underline">
-                    điều khoản sử dụng
-                  </span>
-                </p>
+                  <p className="text-[#7A5C12]">
+                    Tôi đồng ý với{" "}
+                    <span className="text-[#B8922E] font-semibold cursor-pointer hover:underline">
+                      điều khoản sử dụng
+                    </span>
+                  </p>
+                </div>
+                {errors.agree && (
+                  <p className="text-xs text-red-500 font-medium pl-1">
+                    {errors.agree}
+                  </p>
+                )}
               </div>
 
               {error && (

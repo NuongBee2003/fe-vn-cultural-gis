@@ -252,29 +252,17 @@ export const routeConfig = [
   },
   {
     path: PATHS.LANDING,
-    element: (
-      <MapLayout>
-        <LandingPage />
-      </MapLayout>
-    ),
+    element: <LandingPage />,
     title: "Giải pháp doanh nghiệp - Di Sản Việt",
   },
   {
     path: PATHS.BUSINESS_PRICING,
-    element: (
-      <MapLayout>
-        <SubscriptionPackagesPage />
-      </MapLayout>
-    ),
+    element: <SubscriptionPackagesPage />,
     title: "Gói dịch vụ",
   },
   {
     path: PATHS.BUSINESS_PAYMENT_RESULT,
-    element: (
-      <MapLayout>
-        <PaymentResultPage />
-      </MapLayout>
-    ),
+    element: <PaymentResultPage />,
     title: "Kết quả thanh toán",
   },
   {

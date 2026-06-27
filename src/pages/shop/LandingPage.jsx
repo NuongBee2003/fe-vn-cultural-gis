@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authApi } from "@/api/authApi";
 import { PATHS } from "@/constants/paths";
 import { Button } from "@/components/ui/button/button";
@@ -32,6 +32,61 @@ export default function LandingPage() {
   return (
     <div className="relative flex-1 min-w-0 h-full w-full overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
       <div className="h-full overflow-y-auto">
+      {/* Header / Navbar */}
+      <header className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 bg-slate-950/80 backdrop-blur-md border-b border-slate-900/60">
+        <div className="flex items-center gap-3">
+          <Store size={22} className="text-amber-500" />
+          <span className="text-lg font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+            Di Sản Việt - Business
+          </span>
+        </div>
+        
+        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-400">
+          <a href="#features" className="hover:text-amber-400 transition-colors">Tính năng</a>
+          <a href="#pricing" className="hover:text-amber-400 transition-colors">Gói dịch vụ</a>
+          <Link to="/" className="hover:text-amber-400 transition-colors">Bản đồ trang chủ</Link>
+        </nav>
+        
+        <div className="flex items-center gap-4">
+          {user ? (
+            <>
+              {user.role === "business" || user.role === "admin" ? (
+                <Button 
+                  onClick={() => navigate(PATHS.BUSINESS_OVERVIEW)}
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5"
+                >
+                  Vào Business Portal <ArrowRight size={14} />
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => navigate(PATHS.BUSINESS_PRICING)}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5"
+                >
+                  Nâng cấp Doanh nghiệp
+                </Button>
+              )}
+              <Button 
+                onClick={() => {
+                  authApi.logout();
+                  window.location.reload();
+                }}
+                variant="outline" 
+                className="border-slate-800 text-slate-400 hover:text-white px-3 py-2 rounded-xl text-xs bg-slate-950"
+              >
+                Đăng xuất
+              </Button>
+            </>
+          ) : (
+            <Button 
+              onClick={() => navigate(`/login?redirect=${PATHS.LANDING}`)}
+              className="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-200 font-bold px-5 py-2 rounded-xl text-xs"
+            >
+              Đăng nhập Doanh nghiệp
+            </Button>
+          )}
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28">
         {/* Background Gradients */}
@@ -122,7 +177,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Preview Section */}
-      <section className="py-20">
+      <section id="pricing" className="py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent">
@@ -141,11 +196,10 @@ export default function LandingPage() {
                 <div className="mt-4 flex items-baseline">
                   <span className="text-3xl font-extrabold text-white">0 VNĐ</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Kinh doanh thử nghiệm, trải nghiệm tính năng</p>
+                <p className="mt-2 text-xs text-slate-500">Gói miễn phí đăng tối đa 3 địa điểm</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Tối đa 0 địa điểm bản đồ</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Tối đa 3 sản phẩm Shop</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Chèn link Shopee/Lazada ngoài</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 0 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 3 sản phẩm trên Shop</li>
                 </ul>
               </div>
               <Button 
@@ -163,17 +217,15 @@ export default function LandingPage() {
                 Khuyên dùng
               </div>
               <div>
-                <h3 className="text-lg font-bold text-amber-500">Business Plus</h3>
+                <h3 className="text-lg font-bold text-amber-500">Plus</h3>
                 <div className="mt-4 flex items-baseline">
                   <span className="text-3xl font-extrabold text-white">99.000 VNĐ</span>
                   <span className="text-xs text-slate-500 ml-1">/ 30 ngày</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Phù hợp cho các hộ kinh doanh địa phương vừa & nhỏ</p>
+                <p className="mt-2 text-xs text-slate-500">Gói Plus hỗ trợ 1 địa điểm và tối đa 20 sản phẩm</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Ghim 1 địa điểm bản đồ</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Tối đa 20 sản phẩm Shop</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Ưu tiên tìm kiếm vị trí</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Dashboard quản lý doanh nghiệp</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 1 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 20 sản phẩm trên Shop</li>
                 </ul>
               </div>
               <Button 
@@ -187,17 +239,15 @@ export default function LandingPage() {
             {/* Premium Pkg */}
             <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 flex flex-col justify-between hover:border-slate-700 transition-all">
               <div>
-                <h3 className="text-lg font-bold text-slate-300">Business Premium</h3>
+                <h3 className="text-lg font-bold text-slate-300">Premium</h3>
                 <div className="mt-4 flex items-baseline">
                   <span className="text-3xl font-extrabold text-white">299.000 VNĐ</span>
                   <span className="text-xs text-slate-500 ml-1">/ 30 ngày</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Truyền thông thương hiệu bản địa quy mô chuyên nghiệp</p>
+                <p className="mt-2 text-xs text-slate-500">Gói Premium hỗ trợ tối đa 3 địa điểm và 50 sản phẩm</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Ghim 3 địa điểm bản đồ</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Tối đa 50 sản phẩm Shop</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Premium Marker nổi bật</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ VIP 24/7 & báo cáo sâu</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 3 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 50 sản phẩm trên Shop</li>
                 </ul>
               </div>
               <Button 

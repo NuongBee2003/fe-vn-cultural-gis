@@ -36,11 +36,8 @@ export default function BusinessOverviewPage() {
         setProductsCount(Array.isArray(prodData.data) ? prodData.data.length : 0);
 
         // 4. Fetch places count for this user
-        const placesData = await getAllPlaces(1, 1000);
-        const userPlaces = (placesData.data || []).filter(
-          (p) => Number(p.user_id) === Number(user.id)
-        );
-        setPlacesCount(userPlaces.length);
+        const placesData = await getAllPlaces(1, 1000, null, "", user.id);
+        setPlacesCount(placesData.data?.length || 0);
       }
     } catch (err) {
       console.error(err);

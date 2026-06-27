@@ -40,7 +40,7 @@ export default function NavItem({ item, collapsed }) {
 
   if (collapsed) {
     const href = item.href || "#";
-    const internal = isInternalHref(href) && !item.children;
+    const internal = isInternalHref(href) && !item.children && !item.newTab;
 
     return (
       <div title={translatedLabel} className="flex justify-center">
@@ -60,6 +60,8 @@ export default function NavItem({ item, collapsed }) {
         ) : (
           <a
             href={href}
+            target={item.newTab ? "_blank" : undefined}
+            rel={item.newTab ? "noopener noreferrer" : undefined}
             className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-150 text-[var(--muted-1)] hover:bg-white/5 hover:text-[var(--muted-2)]"
           >
             <Icon size={17} />
@@ -137,10 +139,12 @@ export default function NavItem({ item, collapsed }) {
   }
 
   const href = item.href || "#";
-  if (!isInternalHref(href)) {
+  if (!isInternalHref(href) || item.newTab) {
     return (
       <a
         href={href}
+        target={item.newTab ? "_blank" : undefined}
+        rel={item.newTab ? "noopener noreferrer" : undefined}
         className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[13px] no-underline transition-all duration-150 text-[var(--muted-1)] border-l-2 border-transparent hover:bg-white/5 hover:text-[var(--muted-2)]"
       >
         <Icon size={15} />

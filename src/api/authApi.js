@@ -21,13 +21,13 @@ export const authApi = {
   },
 
   // Register
-  register: async (username, email, password, avatar) => {
+  register: async (username, email, password, phone, avatar) => {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, email, password, avatar }),
+      body: JSON.stringify({ username, email, password, phone, avatar }),
     });
 
     const data = await response.json();
@@ -54,6 +54,29 @@ export const authApi = {
   getUser: () => {
     const user = localStorage.getItem('adminUser');
     return user ? JSON.parse(user) : null;
+  },
+
+  getProfile: async () => {
+    const token = authApi.getToken();
+    if (!token) return null;
+    const response = await fetch(`${API_URL}/user/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Không thể tải thông tin tài khoản");
+    }
+    const result = await response.json();
+    if (result && result.data) {
+      const userObj = result.data;
+      ["adminUser", "user"].forEach((key) => {
+        localStorage.setItem(key, JSON.stringify(userObj));
+      });
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("local-storage-update", { detail: { key: "user" } }));
+    }
+    return result.data;
   },
 
   // Check if user is admin

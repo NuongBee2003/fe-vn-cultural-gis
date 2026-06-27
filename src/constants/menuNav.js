@@ -5,6 +5,7 @@ import {
   Clock,
   Palette,
   Calendar,
+  Store,
 } from "lucide-react";
 
 import { PATHS } from "@/constants/paths";
@@ -24,8 +25,14 @@ export const MENU_NAV_ITEMS = [
     children: [
       { label: "Triển lãm ảo", labelKey: "nav.exhibition", href: PATHS.EXHIBITION },
       { label: "Mua sắm", labelKey: "nav.shop", href: PATHS.SHOP },
-      { label: "Giải pháp doanh nghiệp", labelKey: "nav.businessLanding", href: PATHS.LANDING },
     ],
+  },
+  {
+    label: "Giải pháp doanh nghiệp",
+    labelKey: "nav.businessLanding",
+    icon: Store,
+    href: PATHS.LANDING,
+    newTab: true,
   },
   { label: "Cộng đồng", labelKey: "nav.community", icon: Users, href: PATHS.COMMUNITY },
   { label: "Hành trình lịch sử Việt Nam", labelKey: "nav.history", icon: Clock, href: PATHS.HISTORY },
