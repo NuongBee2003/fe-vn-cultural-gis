@@ -181,8 +181,8 @@ export default function RegisterPage() {
     if (!password) {
       newErrors.password = "Vui lòng nhập mật khẩu.";
       hasError = true;
-    } else if (password.length < 6) {
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    } else if (password.length < 4) {
+      newErrors.password = "Mật khẩu phải có ít nhất 4 ký tự.";
       hasError = true;
     }
 
