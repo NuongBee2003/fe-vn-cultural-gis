@@ -9,6 +9,7 @@ export const SUPABASE_BUCKETS = {
   EXHIBITION_IMAGES: 'exhibitions',  // Ảnh triển lãm ảo
   PRODUCT_IMAGES: 'product',         // Ảnh sản phẩm của business
   AVATAR: 'avatar',                  // Ảnh đại diện của user
+  HOLIDAY_IMAGES: 'holidays',        // Ảnh ngày lễ tết
 };
 
 // Cấu hình tải ảnh

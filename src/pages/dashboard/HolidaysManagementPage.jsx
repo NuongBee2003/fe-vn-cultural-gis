@@ -244,7 +244,7 @@ export default function HolidaysManagementPage() {
 
     try {
       setUploadingImage(true);
-      const publicUrl = await uploadImageToSupabase(file, SUPABASE_BUCKETS.CUSTOM_IMAGES);
+      const publicUrl = await uploadImageToSupabase(file, SUPABASE_BUCKETS.HOLIDAY_IMAGES);
       setFormData((prev) => ({ ...prev, image_url: publicUrl }));
     } catch (error) {
       console.error("Lỗi khi upload ảnh:", error);
@@ -306,7 +306,7 @@ export default function HolidaysManagementPage() {
       // Xóa ảnh cũ trên Supabase nếu có
       if (item.image_url && item.image_url.includes("supabase")) {
         try {
-          await deleteImageFromSupabase(item.image_url, SUPABASE_BUCKETS.CUSTOM_IMAGES);
+          await deleteImageFromSupabase(item.image_url, SUPABASE_BUCKETS.HOLIDAY_IMAGES);
         } catch (err) {
           console.warn("Lỗi khi xóa ảnh trên Supabase:", err);
         }
