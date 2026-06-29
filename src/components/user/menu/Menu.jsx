@@ -15,9 +15,11 @@ import {
   X,
   Crown,
   Store,
+  Settings,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import logoVcm from "@/assets/logo-vcm.png";
+import UserProfileModal from "./UserProfileModal";
 import { MENU_NAV_ITEMS } from "@/constants/menuNav";
 import { PATHS } from "@/constants/paths";
 import { useSettings } from "@/context/SettingsContext";
@@ -59,6 +61,7 @@ export default function Menu() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const profileRef = useRef(null);
 
   const getStoredUserInfo = () => {
@@ -270,6 +273,21 @@ export default function Menu() {
                   </div>
                 )}
 
+                {/* Cập nhật thông tin */}
+                <button
+                  onClick={() => {
+                    setProfileOpen(false);
+                    setIsProfileModalOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between rounded-xl bg-white/5 border border-[var(--brand-primary-18)] hover:bg-white/10 px-3 py-2.5 text-xs font-semibold text-slate-200 cursor-pointer transition-all text-left"
+                >
+                  <div className="flex items-center gap-2">
+                    <Settings size={13} className="text-[var(--brand-primary-50)]" />
+                    <span>Cập nhật thông tin</span>
+                  </div>
+                  <span className="text-slate-400">→</span>
+                </button>
+
                 {/* Trang quản lý nếu là admin */}
                 {String(user?.role || "").toLowerCase() === "admin" && (
                   <NavLink
@@ -405,6 +423,12 @@ export default function Menu() {
           )}
         </div>
       </aside>
+
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={user}
+      />
     </>
   );
 }

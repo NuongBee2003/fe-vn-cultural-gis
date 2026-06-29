@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, MapPin, ListOrdered, Store, Loader2 } from "lucide-react";
+import { X, MapPin, ListOrdered, Store, Loader2, ChevronDown } from "lucide-react";
 
 export default function CultureDetailModal({
   item,
@@ -10,6 +10,7 @@ export default function CultureDetailModal({
 }) {
   const navigate = useNavigate();
   const [geocodingId, setGeocodingId] = useState(null);
+  const [showRestaurants, setShowRestaurants] = useState(false);
 
   const handleRestaurantClick = async (res, index) => {
     if (geocodingId !== null) return; // đang xử lý
@@ -184,6 +185,59 @@ export default function CultureDetailModal({
             ))}
           </div>
 
+          {detail.restaurants?.length > 0 && (
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={() => setShowRestaurants(!showRestaurants)}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 text-amber-800 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2 font-semibold text-sm">
+                  <Store size={16} className="text-amber-600" />
+                  Địa điểm gợi ý ({detail.restaurants.length})
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`text-amber-600 transition-transform duration-200 ${
+                    showRestaurants ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {showRestaurants && (
+                <div className="mt-3 space-y-2.5">
+                  {detail.restaurants.map((res, i) => (
+                    <div
+                      key={i}
+                      onClick={() => handleRestaurantClick(res, i)}
+                      className={`p-3.5 rounded-xl border border-stone-100 bg-stone-50/50 transition-colors flex justify-between items-start gap-3 cursor-pointer hover:bg-amber-50/30 hover:border-amber-200 ${
+                        geocodingId === i ? "opacity-60 pointer-events-none" : ""
+                      }`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-stone-800 leading-snug flex items-center gap-2">
+                          {res.name}
+                          {geocodingId === i && (
+                            <Loader2 size={13} className="animate-spin text-amber-500 shrink-0" />
+                          )}
+                        </h4>
+                        <p className="text-xs text-stone-500 mt-1 flex items-start gap-1">
+                          <MapPin size={11} className="shrink-0 mt-0.5 text-stone-400" />
+                          <span className="leading-relaxed">{res.address}</span>
+                        </p>
+                      </div>
+                      {res.price && (
+                        <span className="shrink-0 px-2 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-100 rounded-md">
+                          {res.price}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <p className="mt-5 text-sm leading-relaxed text-stone-600">
             {detail.description}
           </p>
@@ -247,43 +301,6 @@ export default function CultureDetailModal({
             </div>
           )}
 
-          {detail.restaurants?.length > 0 && (
-            <div className="mt-5">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-3 flex items-center gap-1.5">
-                <Store size={14} className="text-amber-600" />
-                Địa chỉ thưởng thức gợi ý
-              </h3>
-              <div className="space-y-2.5">
-                {detail.restaurants.map((res, i) => (
-                  <div
-                    key={i}
-                    onClick={() => handleRestaurantClick(res, i)}
-                    className={`p-3.5 rounded-xl border border-stone-100 bg-stone-50/50 transition-colors flex justify-between items-start gap-3 cursor-pointer hover:bg-amber-50/30 hover:border-amber-200 ${
-                      geocodingId === i ? "opacity-60 pointer-events-none" : ""
-                    }`}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-stone-800 leading-snug flex items-center gap-2">
-                        {res.name}
-                        {geocodingId === i && (
-                          <Loader2 size={13} className="animate-spin text-amber-500 shrink-0" />
-                        )}
-                      </h4>
-                      <p className="text-xs text-stone-500 mt-1 flex items-start gap-1">
-                        <MapPin size={11} className="shrink-0 mt-0.5 text-stone-400" />
-                        <span className="leading-relaxed">{res.address}</span>
-                      </p>
-                    </div>
-                    {res.price && (
-                      <span className="shrink-0 px-2 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-100 rounded-md">
-                        {res.price}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
         </div>
       </div>

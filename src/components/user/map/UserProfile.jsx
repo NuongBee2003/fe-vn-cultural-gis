@@ -1,16 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grip, X, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
+import UserProfileModal from "../menu/UserProfileModal";
 
 export default function UserProfile() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
-  const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
-  const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
-  const user = userRaw ? JSON.parse(userRaw) : null;
+  const getStoredUserInfo = () => {
+    const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+    const userRaw = localStorage.getItem("user") || localStorage.getItem("adminUser");
+    const isLogin = localStorage.getItem("isLogin") === "true" || !!token;
+    const user = userRaw ? JSON.parse(userRaw) : null;
+    return { token, isLogin, user };
+  };
+
+  const [userInfo, setUserInfo] = useState(getStoredUserInfo());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setUserInfo(getStoredUserInfo());
+    };
+
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("local-storage-update", handleUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("local-storage-update", handleUpdate);
+    };
+  }, []);
+
+  const { token, isLogin, user } = userInfo;
 
   const handleLogout = () => {
     localStorage.removeItem("isLogin");
@@ -73,7 +96,13 @@ export default function UserProfile() {
               Xin chào, {user?.username || "Người dùng"}!
             </h3>
             
-            <button className="mt-4 px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 bg-white transition-colors">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                setIsProfileModalOpen(true);
+              }}
+              className="mt-4 px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 bg-white cursor-pointer transition-colors"
+            >
               Quản lý tài khoản
             </button>
 
@@ -103,6 +132,12 @@ export default function UserProfile() {
           </div>
         </div>
       )}
+
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={user}
+      />
     </div>
   );
 }

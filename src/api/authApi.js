@@ -79,6 +79,32 @@ export const authApi = {
     return result.data;
   },
 
+  updateProfile: async (payload) => {
+    const token = localStorage.getItem("token") || localStorage.getItem("adminToken");
+    if (!token) return null;
+    const response = await fetch(`${API_URL}/user/me`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Cập nhật thông tin thất bại");
+    }
+    if (data) {
+      const userObj = data;
+      ["adminUser", "user"].forEach((key) => {
+        localStorage.setItem(key, JSON.stringify(userObj));
+      });
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new CustomEvent("local-storage-update", { detail: { key: "user" } }));
+    }
+    return data;
+  },
+
   // Check if user is admin
   isAdmin: () => {
     const user = authApi.getUser();

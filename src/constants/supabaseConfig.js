@@ -8,6 +8,7 @@ export const SUPABASE_BUCKETS = {
   FOLK_ART_IMAGES: 'folk-arts',      // Ảnh nghệ thuật dân gian
   EXHIBITION_IMAGES: 'exhibitions',  // Ảnh triển lãm ảo
   PRODUCT_IMAGES: 'product',         // Ảnh sản phẩm của business
+  AVATAR: 'avatar',                  // Ảnh đại diện của user
 };
 
 // Cấu hình tải ảnh
