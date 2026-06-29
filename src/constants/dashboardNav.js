@@ -66,6 +66,12 @@ export const DASHBOARD_NAV_ITEMS = [
     ],
   },
   {
+    label: "Quản lý lịch lễ",
+    labelKey: "dashboard.nav.holidays",
+    icon: CalendarDays,
+    to: "/dashboard/holidays",
+  },
+  {
     label: "Báo cáo",
     labelKey: "dashboard.nav.reports",
     icon: BarChart3,
@@ -74,6 +80,7 @@ export const DASHBOARD_NAV_ITEMS = [
       { label: "Địa điểm hot", labelKey: "dashboard.nav.hotPlaces", to: "/dashboard/reports/hot-places" }
     ],
   },
+  
   {
     label: "Cài đặt hệ thống",
     labelKey: "dashboard.nav.settings",

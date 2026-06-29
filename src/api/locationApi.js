@@ -73,6 +73,27 @@ export async function getLocationsByGeo(bbox, limit = 50) {
 }
 
 /**
+ * Lấy thông tin chi tiết một location theo ID.
+ * @param {number} id ID của vị trí
+ */
+export async function getLocationById(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/location/${id}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const result = await res.json();
+    if (result.success && result.data) {
+      return mapDbLocationToFe(result.data);
+    }
+    return null;
+  } catch (error) {
+    console.error(`❌ Lỗi khi fetch getLocationById (${id}):`, error);
+    throw error;
+  }
+}
+
+/**
  * 2. Lấy danh sách điểm (locations) lọc theo Category ID
  * @param {number} categoryId ID của danh mục cần lọc
  */

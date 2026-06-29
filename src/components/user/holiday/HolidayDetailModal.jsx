@@ -1,7 +1,21 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { X, Calendar, MapPin, Utensils, CheckSquare, Bookmark } from "lucide-react";
 
 export default function HolidayDetailModal({ item, onClose }) {
+  const navigate = useNavigate();
+
+  const handleDestinationClick = (locationObj) => {
+    if (!locationObj || !locationObj.lat || !locationObj.lng) return;
+    onClose();
+    
+    const placeName = locationObj.place?.name || "Địa điểm gợi ý";
+    const categoryName = locationObj.place?.category?.name || "";
+    const markerColor = locationObj.place?.category?.color || "";
+    const iconMarker = locationObj.place?.category?.icon_marker || "";
+
+    navigate(`/?lat=${locationObj.lat}&lng=${locationObj.lng}&location_id=${locationObj.id}&place_id=${locationObj.place_id || ""}&name=${encodeURIComponent(placeName)}&category_name=${encodeURIComponent(categoryName)}&marker_color=${encodeURIComponent(markerColor)}&icon_marker=${encodeURIComponent(iconMarker)}`);
+  };
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
@@ -114,28 +128,36 @@ export default function HolidayDetailModal({ item, onClose }) {
             </div>
           )}
 
-          {/* Travel Destinations Suggestions */}
-          {details.destinations?.length > 0 && (
+          {/* Suggested Location Links */}
+          {item.locations?.length > 0 && (
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                 <MapPin size={14} className="text-amber-500" />
-                Gợi ý địa điểm du lịch
+                Địa điểm gợi ý
               </h3>
-              <div className="space-y-3">
-                {details.destinations.map((dest, index) => (
+              <div className="grid gap-3">
+                {item.locations.map((loc) => (
                   <div
-                    key={index}
-                    className="flex flex-col sm:flex-row gap-3 p-3.5 rounded-xl border border-slate-100 bg-white hover:border-amber-200 hover:shadow-sm transition-all duration-200"
+                    key={loc.id}
+                    onClick={() => handleDestinationClick(loc)}
+                    className="flex flex-col sm:flex-row gap-3 p-3.5 rounded-xl border border-slate-100 bg-white cursor-pointer hover:border-amber-400 hover:bg-amber-50/10 hover:shadow-sm transition-all duration-200"
                   >
-                    <div className="sm:w-1/4 shrink-0 flex items-center gap-2">
-                      <span className="w-7 h-7 rounded-full bg-amber-50 border border-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">
-                        {index + 1}
+                    <div className="sm:w-1/2 shrink-0 flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-full bg-amber-100 border border-amber-200 text-amber-800 flex items-center justify-center text-xs font-bold shrink-0">
+                        📍
                       </span>
-                      <h4 className="font-semibold text-slate-800 text-sm">{dest.name}</h4>
+                      <div className="flex flex-col min-w-0">
+                        <h4 className="font-semibold text-sm text-amber-900 hover:underline truncate">
+                          {loc.place?.name || "Địa điểm liên kết"}
+                        </h4>
+                        <span className="text-[10px] text-amber-600 font-medium flex items-center gap-0.5 mt-0.5">
+                          <MapPin size={10} /> Xem trên bản đồ
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                        {dest.reason}
+                    <div className="flex-1 min-w-0 flex items-center">
+                      <p className="text-xs sm:text-sm text-slate-500 leading-relaxed truncate" title={loc.address}>
+                        {loc.address || "Nhấp để định vị địa điểm này trực tiếp trên bản đồ."}
                       </p>
                     </div>
                   </div>
