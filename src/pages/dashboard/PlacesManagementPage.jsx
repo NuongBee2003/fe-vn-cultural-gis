@@ -18,6 +18,7 @@ import {
 import LocationFormModal from "@/components/dashboard/LocationFormModal";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 import ReviewsManagementModal from "@/components/dashboard/ReviewsManagementModal";
+import ExcelImportModal from "@/components/dashboard/ExcelImportModal";
 import { ImageOff, Filter, X } from "lucide-react";
 
 import { deleteImageFromSupabase } from "@/lib/supabaseClient";
@@ -37,6 +38,7 @@ export default function PlacesManagementPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -315,6 +317,15 @@ export default function PlacesManagementPage() {
           </div>
 
           <Button
+            onClick={() => setIsImportModalOpen(true)}
+            variant="outline"
+            className="border-[#B8922E] text-[#B8922E] hover:bg-[#B8922E]/10 h-9 whitespace-nowrap"
+            disabled={isMutating}
+          >
+            Import Excel
+          </Button>
+
+          <Button
             onClick={handleCreate}
             className="bg-[#B8922E] hover:bg-[#a67d22] h-9 whitespace-nowrap"
             disabled={isMutating}
@@ -530,6 +541,15 @@ export default function PlacesManagementPage() {
         onSubmit={handleModalSubmit}
         initialData={selectedPlace}
         isLoading={createMutation.isPending || updateMutation.isPending}
+      />
+
+      {/* ── Excel Import Modal ────────────────────────────── */}
+      <ExcelImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        categories={categories}
+        onSubmit={handleModalSubmit}
+        isMutating={isMutating}
       />
 
       {/* ── Image Gallery Modal ───────────────────────────── */}

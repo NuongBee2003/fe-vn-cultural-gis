@@ -47,31 +47,42 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   // - Nếu có category → gọi getLocationsByCategory
   const {
     data: geoLocations = [],
+    isLoading: isLoadingGeo,
     isFetching: isFetchingGeo,
   } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 50);
 
   const {
     data: categoryLocations = [],
+    isLoading: isLoadingCategory,
     isFetching: isFetchingCategory,
   } = useLocationsByCategory(selectedCategoryId);
 
   // Chọn data tùy theo filter
   const apiLocations = activeFilter === "all" ? geoLocations : categoryLocations;
 
-  // isFetching: true mỗi lần gọi API kể cả background refetch → dùng để lock map + show skeleton
+  // isLoading: true ở lần tải đầu tiên (chưa có cache)
+  const isLoadingLocations = activeFilter === "all" ? isLoadingGeo : isLoadingCategory;
+  // isFetching: true mỗi lần gọi API kể cả background refetch
   const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
 
   // Location được pin từ search (có thể nằm ngoài bbox hiện tại)
   const [pinnedLocation, setPinnedLocation] = useState(null);
+  // Danh sách các địa điểm từ kết quả search khi nhấn Enter
+  const [searchResults, setSearchResults] = useState([]);
 
-  // Merge: nếu có pinnedLocation và chưa có trong apiLocations thì thêm vào để marker luôn hiển thị
+  // Merge: nếu có pinnedLocation hoặc searchResults thì thêm vào để các marker luôn hiển thị
   const filtered = useMemo(() => {
-    if (!pinnedLocation) return apiLocations;
-    const alreadyLoaded = apiLocations.some((loc) => loc.id === pinnedLocation.id);
-    if (alreadyLoaded) return apiLocations; // đã có trong viewport, bỏ pin
+    if (searchResults && searchResults.length > 0) {
+      // Chỉ hiển thị các kết quả tìm kiếm khi có searchResults
+      return searchResults;
+    }
+    let list = [...apiLocations];
+    if (!pinnedLocation) return list;
+    const alreadyLoaded = list.some((loc) => loc.id === pinnedLocation.id);
+    if (alreadyLoaded) return list; // đã có trong viewport, bỏ pin
     // Chưa load được → gửi thêm vào đầu list để render marker
-    return [pinnedLocation, ...apiLocations];
-  }, [apiLocations, pinnedLocation]);
+    return [pinnedLocation, ...list];
+  }, [apiLocations, pinnedLocation, searchResults]);
 
   // Báo cáo số lượng địa điểm hiện tại trên bản đồ lên component cha
   useEffect(() => {
@@ -163,47 +174,103 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   }, []);
 
   // Expose selectLocation cho SearchBar (qua HomePage ref pattern)
-  // Khi search chọn 1 kết quả: pin marker + fly + cập nhật bbox vùng đó
-  const selectFromSearch = useCallback((location) => {
-    if (!location?.lat || !location?.lng) return;
+  // Khi search chọn 1 kết quả hoặc toàn bộ danh sách kết quả (khi nhấn Enter)
+  const selectFromSearch = useCallback((locationOrList) => {
+    if (!locationOrList) return;
 
     // Hủy các cập nhật bbox do bản đồ di chuyển trước đó (debounce 500ms) để không ghi đè bbox hẹp
     if (bboxTimerRef.current) {
       clearTimeout(bboxTimerRef.current);
     }
 
-    // Tự động tìm thêm markerColor và iconMarker từ Category nếu địa điểm ghim chưa có
-    let markerColor = location.markerColor;
-    let iconMarker = location.iconMarker;
-    
-    if (!markerColor || !iconMarker) {
-      const catName = location.category || "Quán ăn";
-      const cat = categories.find((c) => c.name === catName);
-      if (cat) {
-        markerColor = markerColor || cat.color;
-        iconMarker = iconMarker || cat.icon_marker;
+    if (Array.isArray(locationOrList)) {
+      if (locationOrList.length === 0) {
+        setSearchResults([]);
+        setPinnedLocation(null);
+        setSelected(null);
+        return;
+      }
+
+      const mappedList = locationOrList.map((location) => {
+        let markerColor = location.markerColor;
+        let iconMarker = location.iconMarker;
+        if (!markerColor || !iconMarker) {
+          const catName = location.category || "Quán ăn";
+          const cat = categories.find((c) => c.name === catName);
+          if (cat) {
+            markerColor = markerColor || cat.color;
+            iconMarker = iconMarker || cat.icon_marker;
+          }
+        }
+        return {
+          ...location,
+          markerColor: markerColor || "#3b82f6",
+          iconMarker: iconMarker || "",
+          _fromSearch: true
+        };
+      });
+
+      setSearchResults(mappedList);
+      setPinnedLocation(null);
+      setSelected(null);
+
+      // Tự động căn chỉnh bản đồ ôm trọn toàn bộ kết quả tìm kiếm
+      if (mapInstance && mappedList.length > 0) {
+        const bounds = mappedList.map((loc) => [loc.lat, loc.lng]);
+        if (bounds.length === 1) {
+          mapInstance.flyTo(bounds[0], 15, { duration: 0.75 });
+        } else {
+          mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+      }
+    } else {
+      const location = locationOrList;
+      if (!location?.lat || !location?.lng) return;
+
+      setSearchResults([]);
+
+      // Tự động tìm thêm markerColor và iconMarker từ Category nếu địa điểm ghim chưa có
+      let markerColor = location.markerColor;
+      let iconMarker = location.iconMarker;
+      
+      if (!markerColor || !iconMarker) {
+        const catName = location.category || "Quán ăn";
+        const cat = categories.find((c) => c.name === catName);
+        if (cat) {
+          markerColor = markerColor || cat.color;
+          iconMarker = iconMarker || cat.icon_marker;
+        }
+      }
+
+      // Đánh dấu để không bị effect filter ép close
+      const pinned = { 
+        ...location, 
+        markerColor: markerColor || "#3b82f6",
+        iconMarker: iconMarker || "",
+        _fromSearch: true 
+      };
+      setPinnedLocation(pinned);
+      setSelected({ location: pinned });
+
+      // Cập nhật bbox xung quanh vị trí được chọn → trigger load markers mới
+      const delta = 0.01; // ~1km
+      const newBbox = `${location.lng - delta},${location.lat - delta},${location.lng + delta},${location.lat + delta}`;
+      setBbox(newBbox);
+      if (mapInstance) {
+        mapInstance.flyTo([location.lat, location.lng], 15, { duration: 0.75 });
       }
     }
-
-    // Đánh dấu để không bị effect filter ép close
-    const pinned = { 
-      ...location, 
-      markerColor: markerColor || "#3b82f6",
-      iconMarker: iconMarker || "",
-      _fromSearch: true 
-    };
-    setPinnedLocation(pinned);
-    setSelected({ location: pinned });
-
-    // Cập nhật bbox xung quanh vị trí được chọn → trigger load markers mới
-    const delta = 0.01; // ~1km
-    const newBbox = `${location.lng - delta},${location.lat - delta},${location.lng + delta},${location.lat + delta}`;
-    setBbox(newBbox);
-  }, [categories]);
+  }, [categories, mapInstance]);
 
   useEffect(() => {
     onSelectFromSearch?.(selectFromSearch);
   }, [onSelectFromSearch, selectFromSearch]);
+
+  // Dọn dẹp kết quả tìm kiếm khi thay đổi filter bộ lọc category
+  useEffect(() => {
+    setSearchResults([]);
+    setPinnedLocation(null);
+  }, [activeFilter]);
 
   // Dọn pin khi location đã có trong apiLocations (bbox đã load xong vùng mới)
   useEffect(() => {
@@ -320,9 +387,9 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   }, [mapInstance, isFetchingLocations]);
 
   return (
-    <div className="relative h-full w-full" style={{ cursor: isFetchingLocations ? "wait" : "unset" }}>
-      {/* ── Pointer blocker & overlay: ngăn mọi touch/click xuống Leaflet khi đang fetch và hiển thị nền xám ── */}
-      {isFetchingLocations && (
+    <div className="relative h-full w-full" style={{ cursor: isLoadingLocations ? "wait" : "unset" }}>
+      {/* ── Pointer blocker & overlay: ngăn mọi touch/click xuống Leaflet khi đang tải lần đầu và hiển thị nền xám ── */}
+      {isLoadingLocations && (
         <div
           style={{
             position: "absolute",

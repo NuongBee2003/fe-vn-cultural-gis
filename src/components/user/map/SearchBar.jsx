@@ -41,6 +41,7 @@ export default function SearchBar({ onSelectLocation }) {
     setInputValue("");
     setDebouncedQuery("");
     setIsOpen(false);
+    onSelectLocation?.([]); // Reset map markers to default when cleared
     inputRef.current?.focus();
   };
 
@@ -81,10 +82,17 @@ export default function SearchBar({ onSelectLocation }) {
               setIsOpen(true);
             } else {
               setIsOpen(false);
+              onSelectLocation?.([]); // Reset map markers when query is empty
             }
           }}
           onFocus={() => {
             if (debouncedQuery.trim().length >= 1) setIsOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && results && results.length > 0) {
+              setIsOpen(false);
+              onSelectLocation?.(results);
+            }
           }}
           placeholder={t('map.searchPlaceholder')}
           className="flex-1 border-none outline-none text-[13.5px] text-gray-800 bg-transparent min-w-0"
