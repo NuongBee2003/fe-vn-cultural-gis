@@ -49,7 +49,7 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     data: geoLocations = [],
     isLoading: isLoadingGeo,
     isFetching: isFetchingGeo,
-  } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 50);
+  } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 100);
 
   const {
     data: categoryLocations = [],

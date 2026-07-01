@@ -31,7 +31,7 @@ export function useLocationsByCategory(categoryId) {
 /**
  * 2. Hook lấy danh sách locations theo khung nhìn bản đồ (bbox)
  */
-export function useLocationsByGeo(bbox, limit = 50) {
+export function useLocationsByGeo(bbox, limit = 100) {
   return useQuery({
     queryKey: ["locations", "geo", bbox, limit],
     queryFn: () => getLocationsByGeo(bbox, limit),

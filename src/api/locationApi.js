@@ -44,7 +44,7 @@ export function mapDbLocationToFe(dbLoc) {
  * @param {string} bbox Bounding box dạng "minLng,minLat,maxLng,maxLat"
  * @param {number} limit Giới hạn số lượng trả về (mặc định 50)
  */
-export async function getLocationsByGeo(bbox, limit = 50) {
+export async function getLocationsByGeo(bbox, limit = 100) {
   try {
     const payload = { bbox, limit };
     console.log("📡 Fetching locations with payload:", payload);
