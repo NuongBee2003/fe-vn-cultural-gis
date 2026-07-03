@@ -88,7 +88,7 @@ export default function Menu() {
     };
   }, []);
 
-  const { token, isLogin, user } = userInfo;
+  const { isLogin, user } = userInfo;
 
   // Đóng popup khi click ngoài
   useEffect(() => {

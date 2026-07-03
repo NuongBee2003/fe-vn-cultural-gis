@@ -276,3 +276,74 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   BUSINESS THEME — scoped to [data-theme="business"]
+   Clean dark slate/gold palette. Zero leak to map/dashboard pages.
+   ───────────────────────────────────────────────────────────────── */
+
+[data-theme="business"] {
+  color-scheme: dark;
+
+  /* ── Base surfaces ── */
+  --background: oklch(0.148 0.013 264); /* slate-950 */
+  --foreground: oklch(0.97 0.004 264); /* slate-100 */
+
+  --card: oklch(0.208 0.012 264); /* slate-900 */
+  --card-foreground: oklch(0.97 0.004 264);
+
+  --popover: oklch(0.208 0.012 264); /* slate-900 */
+  --popover-foreground: oklch(0.97 0.004 264);
+
+  /* ── Brand accent — gold/amber ── */
+  --primary: oklch(0.68 0.15 80); /* gold #B8922E */
+  --primary-foreground: oklch(0.15 0.02 80);
+
+  /* ── Secondary / muted ── */
+  --secondary: oklch(0.25 0.015 264); /* slate-800 */
+  --secondary-foreground: oklch(0.97 0.004 264);
+
+  --muted: oklch(0.25 0.015 264); /* slate-800 */
+  --muted-foreground: oklch(0.65 0.01 264); /* slate-400 */
+
+  --accent: oklch(0.25 0.015 264); /* slate-800 */
+  --accent-foreground: oklch(0.97 0.004 264);
+
+  /* ── Status ── */
+  --destructive: oklch(0.58 0.24 27); /* red-600 */
+
+  /* ── Borders & inputs ── */
+  --border: oklch(0.28 0.015 264); /* slate-700 */
+  --input: oklch(0.28 0.015 264); /* slate-700 */
+  --ring: oklch(0.68 0.15 80); /* gold */
+}
+
+/* Active/Hover states for business */
+[data-theme="business"] .bg-muted {
+  background-color: oklch(0.25 0.015 264) !important;
+  color: oklch(0.97 0.004 264) !important;
+}
+
+[data-theme="business"] .hover\:bg-muted:hover {
+  background-color: oklch(0.28 0.015 264) !important;
+}
+
+[data-theme="business"] .bg-muted\/40 {
+  background-color: oklch(0.25 0.015 264 / 70%) !important;
+}
+
+/* Scrollbar styling for business */
+[data-theme="business"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+[data-theme="business"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="business"] ::-webkit-scrollbar-thumb {
+  background: oklch(0.3 0.015 264);
+  border-radius: 3px;
+}
+[data-theme="business"] ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.4 0.015 264);
+}

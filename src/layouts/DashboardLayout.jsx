@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
@@ -11,18 +11,33 @@ export default function DashboardLayout() {
   const { appLogo } = useSettings();
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  const [username] = useState(() => {
+  const getStoredUserInfo = () => {
     const adminUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
     if (adminUser) {
       try {
-        const parsed = JSON.parse(adminUser);
-        return parsed.username || "User";
+        return JSON.parse(adminUser);
       } catch {
-        return "";
+        return null;
       }
     }
-    return "";
-  });
+    return null;
+  };
+
+  const [userInfo, setUserInfo] = useState(getStoredUserInfo);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setUserInfo(getStoredUserInfo());
+    };
+
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("local-storage-update", handleUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("local-storage-update", handleUpdate);
+    };
+  }, []);
 
   return (
     <div
@@ -37,7 +52,8 @@ export default function DashboardLayout() {
             className="h-10 w-auto max-w-[180px] object-contain"
           />
         }
-        name={username}
+        name={userInfo?.username || "User"}
+        avatar={userInfo?.avatar}
       />
 
       <DashboardTopbar onToggleSidebar={() => setSidebarVisible((v) => !v)} />

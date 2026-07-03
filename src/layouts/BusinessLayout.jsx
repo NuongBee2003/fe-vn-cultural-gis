@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, NavLink, useLocation, useNavigate, Link } from "react-router-dom";
+import { Outlet, NavLink, useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { BUSINESS_NAV_ITEMS } from "@/constants/businessNav";
-import { authApi } from "@/api/authApi";
 import { subscriptionApi } from "@/api/subscriptionApi";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
-import { useTranslation } from "react-i18next";
 import { useSettings } from "@/context/SettingsContext";
 import logoVcm from "@/assets/logo-vcm.png";
 import { ArrowLeft, RefreshCw, Sparkles, Menu, X, ChevronRight, Store } from "lucide-react";
 
 export default function BusinessLayout() {
   const { appLogo, appName } = useSettings();
-  const { t } = useTranslation();
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const user = authApi.getUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const [activeSub, setActiveSub] = useState(null);
@@ -71,18 +66,33 @@ export default function BusinessLayout() {
     );
   };
 
-  const username = (() => {
+  const getStoredUserInfo = () => {
     const adminUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
     if (adminUser) {
       try {
-        const parsed = JSON.parse(adminUser);
-        return parsed.username || "Business User";
+        return JSON.parse(adminUser);
       } catch {
-        return "Business User";
+        return null;
       }
     }
-    return "Business User";
-  })();
+    return null;
+  };
+
+  const [userInfo, setUserInfo] = useState(getStoredUserInfo);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setUserInfo(getStoredUserInfo());
+    };
+
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("local-storage-update", handleUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("local-storage-update", handleUpdate);
+    };
+  }, []);
 
   return (
     <div
@@ -112,7 +122,7 @@ export default function BusinessLayout() {
             {getPackageBadge()}
             <LanguageSwitcher />
             <div className="border-l border-slate-800 pl-3">
-              <ProfileMenu name={username} />
+              <ProfileMenu name={userInfo?.username || "Business User"} avatar={userInfo?.avatar} />
             </div>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}

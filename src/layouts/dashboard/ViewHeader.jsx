@@ -9,6 +9,7 @@ export default function ViewHeader({
   logo,
   className,
   name,
+  avatar,
 }) {
   const { t } = useTranslation();
   const { appName } = useSettings();
@@ -38,7 +39,7 @@ export default function ViewHeader({
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
-          <ProfileMenu name={name} />
+          <ProfileMenu name={name} avatar={avatar} />
         </div>
       </div>
     </header>

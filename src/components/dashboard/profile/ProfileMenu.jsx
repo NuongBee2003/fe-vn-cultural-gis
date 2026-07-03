@@ -27,6 +27,7 @@ function MenuItem({ icon: Icon, children, className, onSelect }) {
 
 export default function ProfileMenu({
   name,
+  avatar,
   className,
   onChangePassword,
   onLogout,
@@ -43,7 +44,7 @@ export default function ProfileMenu({
             className,
           )}
         >
-          <ProfileAvatar name={name} />
+          <ProfileAvatar name={name} avatar={avatar} />
         </button>
       </PopoverTrigger>
 

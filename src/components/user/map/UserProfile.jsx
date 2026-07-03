@@ -33,7 +33,7 @@ export default function UserProfile() {
     };
   }, []);
 
-  const { token, isLogin, user } = userInfo;
+  const { isLogin, user } = userInfo;
 
   const handleLogout = () => {
     localStorage.removeItem("isLogin");
