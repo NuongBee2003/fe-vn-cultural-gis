@@ -73,6 +73,8 @@
   },
 
   "map": {
+    "all": "全部",
+    "featured": "推荐",
     "searchPlaceholder": "搜索地点...",
     "searching": "搜索中...",
     "noResults": "未找到任何地点",

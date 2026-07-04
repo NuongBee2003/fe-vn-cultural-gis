@@ -74,6 +74,8 @@
   },
 
   "map": {
+    "all": "Tất cả",
+    "featured": "Nổi bật",
     "searchPlaceholder": "Tìm địa điểm...",
     "searching": "Đang tìm kiếm...",
     "noResults": "Không tìm thấy địa điểm nào",

@@ -411,3 +411,51 @@ export async function searchPlaceLocationsByDB(query, limit = 10) {
     throw error;
   }
 }
+
+/**
+ * 10. Lấy danh sách locations của các địa điểm nổi bật (isFeatured = true)
+ */
+export async function getFeaturedLocations() {
+  try {
+    const res = await fetch(`${BASE_URL}/place?isFeatured=true&limit=100`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const result = await res.json();
+    const items = result.data || [];
+    
+    const locations = [];
+    items.forEach((place) => {
+      const locs = place.locations || [];
+      locs.forEach((loc) => {
+        const dbLoc = {
+          id: loc.id,
+          place_id: place.id,
+          lat: loc.lat,
+          lng: loc.lng,
+          address: loc.address,
+          assets: loc.assets,
+          place: {
+            name: place.name,
+            description: place.description,
+            category: place.category,
+            category_id: place.category_id,
+          }
+        };
+        const mapped = mapDbLocationToFe(dbLoc);
+        if (mapped) {
+          mapped.isFeatured = true;
+          locations.push(mapped);
+        }
+      });
+    });
+
+    return locations;
+  } catch (error) {
+    console.error("❌ Lỗi khi fetch getFeaturedLocations:", error);
+    throw error;
+  }
+}
+

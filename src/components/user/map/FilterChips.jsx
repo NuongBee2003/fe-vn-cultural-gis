@@ -1,15 +1,18 @@
 import { useCategories } from "@/api/useLocationQuery";
 import { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function FilterChips({ activeFilter, setActiveFilter }) {
+  const { t } = useTranslation();
   const { data: categories = [], isLoading } = useCategories();
   const scrollContainerRef = useRef(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(true);
 
   const filters = [
-    { key: "all", label: "Tất cả", icon: null },
+    { key: "all", label: t("map.all", "Tất cả"), icon: null },
+    { key: "featured", label: t("map.featured", "Nổi bật"), icon: Star, color: "#eab308" },
     ...categories.map((c) => ({
       key: c.name,
       label: c.name,
@@ -105,7 +108,7 @@ export default function FilterChips({ activeFilter, setActiveFilter }) {
                   }}
                 />
               ) : FIcon ? (
-                <FIcon size={13} />
+                <FIcon size={13} className={isActive ? "fill-current" : ""} />
               ) : null}
               {f.label}
             </button>

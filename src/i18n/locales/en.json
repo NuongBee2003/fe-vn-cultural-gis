@@ -74,6 +74,8 @@
   },
 
   "map": {
+    "all": "All",
+    "featured": "Featured",
     "searchPlaceholder": "Search places...",
     "searching": "Searching...",
     "noResults": "No places found",

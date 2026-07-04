@@ -13,6 +13,7 @@ import {
   getAllLocationsByCategory,
   searchPlaceLocationsByDB,
   getAllPlaces,
+  getFeaturedLocations,
 } from "./locationApi";
 
 /**
@@ -45,6 +46,19 @@ export function useLocationsByGeo(bbox, limit = 100) {
     retry: 1,
   });
 }
+
+/**
+ * 2.1 Hook lấy danh sách locations của các địa điểm nổi bật (isFeatured = true)
+ */
+export function useFeaturedLocations(options = {}) {
+  return useQuery({
+    queryKey: ["locations", "featured"],
+    queryFn: getFeaturedLocations,
+    staleTime: 5 * 60 * 1000, // Cache 5 phút
+    ...options,
+  });
+}
+
 
 /**
  * 3. Hook lấy chi tiết một Địa điểm (Place) kèm review, rating, ảnh...

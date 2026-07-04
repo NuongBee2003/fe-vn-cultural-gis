@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 import { createCustomIcon } from "@/utils/icons";
-import { useCategories, useLocationsByGeo, useLocationsByCategory } from "@/api/useLocationQuery";
+import { useCategories, useLocationsByGeo, useLocationsByCategory, useFeaturedLocations } from "@/api/useLocationQuery";
 import {
   fetchDrivingRoute,
   formatDistance,
@@ -38,13 +38,14 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   
   // Tìm category ID từ activeFilter
   const selectedCategoryId = useMemo(() => {
-    if (activeFilter === "all") return null;
+    if (activeFilter === "all" || activeFilter === "featured") return null;
     const cat = categories.find((c) => c.name === activeFilter);
     return cat?.id || null;
   }, [activeFilter, categories]);
 
   // Gọi API theo filter: 
   // - Nếu "all" → gọi getLocationsByGeo (theo bbox)
+  // - Nếu "featured" → gọi getFeaturedLocations
   // - Nếu có category → gọi getLocationsByCategory
   const {
     data: geoLocations = [],
@@ -58,13 +59,32 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     isFetching: isFetchingCategory,
   } = useLocationsByCategory(selectedCategoryId);
 
+  const {
+    data: featuredLocations = [],
+    isLoading: isLoadingFeatured,
+    isFetching: isFetchingFeatured,
+  } = useFeaturedLocations({ enabled: activeFilter === "featured" });
+
   // Chọn data tùy theo filter
-  const apiLocations = activeFilter === "all" ? geoLocations : categoryLocations;
+  const apiLocations = useMemo(() => {
+    if (activeFilter === "all") return geoLocations;
+    if (activeFilter === "featured") return featuredLocations;
+    return categoryLocations;
+  }, [activeFilter, geoLocations, featuredLocations, categoryLocations]);
 
   // isLoading: true ở lần tải đầu tiên (chưa có cache)
-  const isLoadingLocations = activeFilter === "all" ? isLoadingGeo : isLoadingCategory;
+  const isLoadingLocations = useMemo(() => {
+    if (activeFilter === "all") return isLoadingGeo;
+    if (activeFilter === "featured") return isLoadingFeatured;
+    return isLoadingCategory;
+  }, [activeFilter, isLoadingGeo, isLoadingFeatured, isLoadingCategory]);
+
   // isFetching: true mỗi lần gọi API kể cả background refetch
-  const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
+  const isFetchingLocations = useMemo(() => {
+    if (activeFilter === "all") return isFetchingGeo;
+    if (activeFilter === "featured") return isFetchingFeatured;
+    return isFetchingCategory;
+  }, [activeFilter, isFetchingGeo, isFetchingFeatured, isFetchingCategory]);
 
   // Location được pin từ search (có thể nằm ngoài bbox hiện tại)
   const [pinnedLocation, setPinnedLocation] = useState(null);
@@ -261,7 +281,12 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     const { location } = selected;
     if (location._fromSearch) return; // đang pin, không đóng
 
-    if (activeFilter !== "all" && location.category !== activeFilter) {
+    if (activeFilter === "featured") {
+      if (!location.isFeatured) {
+        setSelected(null);
+        clearRoute();
+      }
+    } else if (activeFilter !== "all" && location.category !== activeFilter) {
       setSelected(null);
       clearRoute();
     }
