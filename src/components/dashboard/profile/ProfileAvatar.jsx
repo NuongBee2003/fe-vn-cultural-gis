@@ -16,6 +16,7 @@ function getInitials(name) {
 
 export default function ProfileAvatar({
   name,
+  avatar,
   size = "md",
   className,
   showName = true,
@@ -33,13 +34,17 @@ export default function ProfileAvatar({
     <div className={cn("flex items-center gap-2", className)}>
       <div
         className={cn(
-          "grid shrink-0 place-items-center rounded-full border border-border bg-muted text-foreground font-medium",
+          "grid shrink-0 place-items-center rounded-full border border-border bg-muted text-foreground font-medium overflow-hidden",
           sizeClass,
         )}
         aria-label={name ? `User ${name}` : "User"}
         title={name}
       >
-        {initials}
+        {avatar ? (
+          <img src={avatar} alt={name} className="h-full w-full object-cover" />
+        ) : (
+          initials
+        )}
       </div>
 
       {showName ? (

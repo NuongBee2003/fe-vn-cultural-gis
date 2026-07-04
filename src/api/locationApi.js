@@ -44,7 +44,7 @@ export function mapDbLocationToFe(dbLoc) {
  * @param {string} bbox Bounding box dạng "minLng,minLat,maxLng,maxLat"
  * @param {number} limit Giới hạn số lượng trả về (mặc định 50)
  */
-export async function getLocationsByGeo(bbox, limit = 50) {
+export async function getLocationsByGeo(bbox, limit = 100) {
   try {
     const payload = { bbox, limit };
     console.log("📡 Fetching locations with payload:", payload);
@@ -68,6 +68,27 @@ export async function getLocationsByGeo(bbox, limit = 50) {
     return list.map(mapDbLocationToFe);
   } catch (error) {
     console.error("❌ Lỗi khi fetch getLocationsByGeo:", error);
+    throw error;
+  }
+}
+
+/**
+ * Lấy thông tin chi tiết một location theo ID.
+ * @param {number} id ID của vị trí
+ */
+export async function getLocationById(id) {
+  try {
+    const res = await fetch(`${BASE_URL}/location/${id}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const result = await res.json();
+    if (result.success && result.data) {
+      return mapDbLocationToFe(result.data);
+    }
+    return null;
+  } catch (error) {
+    console.error(`❌ Lỗi khi fetch getLocationById (${id}):`, error);
     throw error;
   }
 }

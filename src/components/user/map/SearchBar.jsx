@@ -181,7 +181,12 @@ export default function SearchBar({ onSelectLocation, onSearchSubmit, onSearchCl
             const val = e.target.value;
             setInputValue(val);
             setIsSearched(false); // Reset trạng thái tìm kiếm chính thức khi gõ chữ
-            setIsOpen(true);
+            if (val.trim().length >= 1) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+              onSearchClear?.(); // Reset map markers when query is empty
+            }
           }}
           onFocus={() => {
             setIsOpen(true);

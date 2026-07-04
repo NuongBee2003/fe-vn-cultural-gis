@@ -27,6 +27,7 @@ import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SettingsManagementPage from "@/pages/dashboard/SettingsManagementPage";
 import ReviewsManagementPage from "@/pages/dashboard/ReviewsManagementPage";
+import HolidaysManagementPage from "@/pages/dashboard/HolidaysManagementPage";
 
 import BusinessOverviewPage from "@/pages/dashboard/BusinessOverviewPage";
 import BusinessProductsPage from "@/pages/dashboard/BusinessProductsPage";
@@ -239,6 +240,11 @@ export const routeConfig = [
         title: "Quản lý nghệ thuật dân gian",
       },
       {
+        path: PATHS.DASHBOARD_HOLIDAYS,
+        element: <HolidaysManagementPage />,
+        title: "Quản lý lịch lễ",
+      },
+      {
         path: PATHS.DASHBOARD_REPORTS_HOT_PLACES,
         element: dashPage("Địa điểm hot", "Báo cáo địa điểm phổ biến"),
         title: "Báo cáo — Địa điểm hot",
@@ -247,7 +253,7 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_SETTINGS,
         element: <SettingsManagementPage />,
         title: "Cài đặt hệ thống",
-      },
+      }
     ],
   },
   {

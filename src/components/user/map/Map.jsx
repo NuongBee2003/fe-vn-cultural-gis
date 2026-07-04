@@ -48,18 +48,22 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   // - Nếu có category → gọi getLocationsByCategory
   const {
     data: geoLocations = [],
+    isLoading: isLoadingGeo,
     isFetching: isFetchingGeo,
-  } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 50);
+  } = useLocationsByGeo(activeFilter === "all" ? bbox : null, 100);
 
   const {
     data: categoryLocations = [],
+    isLoading: isLoadingCategory,
     isFetching: isFetchingCategory,
   } = useLocationsByCategory(selectedCategoryId);
 
   // Chọn data tùy theo filter
   const apiLocations = activeFilter === "all" ? geoLocations : categoryLocations;
 
-  // isFetching: true mỗi lần gọi API kể cả background refetch → dùng để lock map + show skeleton
+  // isLoading: true ở lần tải đầu tiên (chưa có cache)
+  const isLoadingLocations = activeFilter === "all" ? isLoadingGeo : isLoadingCategory;
+  // isFetching: true mỗi lần gọi API kể cả background refetch
   const isFetchingLocations = activeFilter === "all" ? isFetchingGeo : isFetchingCategory;
 
   // Location được pin từ search (có thể nằm ngoài bbox hiện tại)
@@ -234,6 +238,11 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
     }
   }, [mapInstance, searchResults]);
 
+  // Dọn dẹp pinnedLocation khi thay đổi bộ lọc category
+  useEffect(() => {
+    setPinnedLocation(null);
+  }, [activeFilter]);
+
   // Dọn pin khi location đã có trong apiLocations (bbox đã load xong vùng mới)
   useEffect(() => {
     if (!pinnedLocation) return;
@@ -349,9 +358,9 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   }, [mapInstance, isFetchingLocations]);
 
   return (
-    <div className="relative h-full w-full" style={{ cursor: isFetchingLocations ? "wait" : "unset" }}>
-      {/* ── Pointer blocker & overlay: ngăn mọi touch/click xuống Leaflet khi đang fetch và hiển thị nền xám ── */}
-      {isFetchingLocations && (
+    <div className="relative h-full w-full" style={{ cursor: isLoadingLocations ? "wait" : "unset" }}>
+      {/* ── Pointer blocker & overlay: ngăn mọi touch/click xuống Leaflet khi đang tải lần đầu và hiển thị nền xám ── */}
+      {isLoadingLocations && (
         <div
           style={{
             position: "absolute",
