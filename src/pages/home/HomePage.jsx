@@ -82,6 +82,11 @@ export default function HomePage() {
     }
   }, [location.search]);
 
+  // Dọn dẹp kết quả tìm kiếm khi thay đổi filter bộ lọc category
+  useEffect(() => {
+    setSearchResults(null);
+  }, [activeFilter]);
+
   // Khi user click vào kết quả search → gọi selectLocation của Map
   const handleSelectFromSearch = useCallback((locationItem) => {
     selectLocationRef.current?.(locationItem);

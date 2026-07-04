@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import * as XLSX from "xlsx";
+import { read, utils, writeFile } from "xlsx";
 import { X, Upload, Download, CheckCircle, AlertTriangle, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table-data/table";
@@ -23,8 +23,8 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
       ["Mẹ Quê", "Hội tụ đầy đủ các đặc sản 3 miền", "Khác", "493a/2 Cách Mạng Tháng Tám, Quận 10, TP.HCM", 10.78867, 106.67303, ""]
     ];
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = utils.book_new();
+    const ws = utils.aoa_to_sheet(data);
     
     // Đặt độ rộng cho các cột
     const wscols = [
@@ -38,8 +38,8 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
     ];
     ws["!cols"] = wscols;
 
-    XLSX.utils.book_append_sheet(wb, ws, "Template");
-    XLSX.writeFile(wb, "Template_Import_Dia_Diem.xlsx");
+    utils.book_append_sheet(wb, ws, "Template");
+    writeFile(wb, "Template_Import_Dia_Diem.xlsx");
   };
 
   // Đọc file Excel tải lên
@@ -56,10 +56,10 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
     reader.onload = (evt) => {
       try {
         const data = evt.target.result;
-        const workbook = XLSX.read(data, { type: "binary" });
+        const workbook = read(data, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const rows = utils.sheet_to_json(sheet, { header: 1 });
 
         if (rows.length < 2) {
           setErrorMsg("File Excel trống hoặc không đúng định dạng mẫu.");
