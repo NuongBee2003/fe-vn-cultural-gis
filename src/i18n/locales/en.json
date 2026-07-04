@@ -103,7 +103,12 @@
     "reviewPlaceholder": "Share your experience...",
     "submitReview": "Submit Review",
     "noReviews": "No reviews yet",
-    "closeDetail": "Close details"
+    "closeDetail": "Close details",
+    "searchHistory": "Search History",
+    "clearHistory": "Clear all",
+    "pressEnterToSearch": "Press Enter or click search icon to search",
+    "searchPrompt": "Search \"{{query}}\"",
+    "noHistory": "No search history yet"
   },
 
   "dashboard": {

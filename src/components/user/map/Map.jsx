@@ -10,6 +10,7 @@ import {
 } from "react-leaflet";
 import { LocateFixed } from "lucide-react";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 import { createCustomIcon } from "@/utils/icons";
 import { useCategories, useLocationsByGeo, useLocationsByCategory } from "@/api/useLocationQuery";
@@ -30,7 +31,7 @@ function getBboxFromBounds(bounds) {
   return `${_southWest.lng},${_southWest.lat},${_northEast.lng},${_northEast.lat}`;
 }
 
-export default function Map({ activeFilter = "all", onSelectFromSearch, onLocationsCountChange }) {
+export default function Map({ activeFilter = "all", onSelectFromSearch, onLocationsCountChange, searchResults = null, hoveredLocation = null }) {
   const notify = useNotify();
   const { data: categories = [] } = useCategories();
   const [bbox, setBbox] = useState(null);
@@ -64,18 +65,24 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   // Location được pin từ search (có thể nằm ngoài bbox hiện tại)
   const [pinnedLocation, setPinnedLocation] = useState(null);
 
-  // Merge: nếu có pinnedLocation và chưa có trong apiLocations thì thêm vào để marker luôn hiển thị
+  // Merge: nếu có kết quả tìm kiếm thì hiển thị kết quả tìm kiếm. Ngược lại hiển thị theo viewport/category.
   const filtered = useMemo(() => {
+    if (searchResults !== null) {
+      return searchResults;
+    }
     if (!pinnedLocation) return apiLocations;
     const alreadyLoaded = apiLocations.some((loc) => loc.id === pinnedLocation.id);
     if (alreadyLoaded) return apiLocations; // đã có trong viewport, bỏ pin
     // Chưa load được → gửi thêm vào đầu list để render marker
     return [pinnedLocation, ...apiLocations];
-  }, [apiLocations, pinnedLocation]);
+  }, [apiLocations, pinnedLocation, searchResults]);
 
   // Báo cáo số lượng địa điểm hiện tại trên bản đồ lên component cha
   useEffect(() => {
-    onLocationsCountChange?.(filtered.length);
+    const timer = setTimeout(() => {
+      onLocationsCountChange?.(filtered.length);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [filtered.length, onLocationsCountChange]);
 
   const [mapInstance, setMapInstance] = useState(null);
@@ -204,6 +211,28 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
   useEffect(() => {
     onSelectFromSearch?.(selectFromSearch);
   }, [onSelectFromSearch, selectFromSearch]);
+
+  // Tự động fit bounds hoặc flyTo khi có kết quả tìm kiếm mới
+  useEffect(() => {
+    if (!mapInstance || !searchResults) return;
+
+    if (searchResults.length > 1) {
+      const coordinates = searchResults
+        .filter((loc) => loc.lat && loc.lng)
+        .map((loc) => [loc.lat, loc.lng]);
+
+      if (coordinates.length > 0) {
+        const bounds = L.latLngBounds(coordinates);
+        mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+      }
+    } else if (searchResults.length === 1) {
+      const singleLoc = searchResults[0];
+      if (singleLoc.lat && singleLoc.lng) {
+        mapInstance.flyTo([singleLoc.lat, singleLoc.lng], 15, { duration: 0.75 });
+        setSelected({ location: singleLoc });
+      }
+    }
+  }, [mapInstance, searchResults]);
 
   // Dọn pin khi location đã có trong apiLocations (bbox đã load xong vùng mới)
   useEffect(() => {
@@ -386,12 +415,18 @@ export default function Map({ activeFilter = "all", onSelectFromSearch, onLocati
               ? selected.location.id === location.id
               : selected.location.lat === location.lat && selected.location.lng === location.lng);
 
+          const isHovered =
+            hoveredLocation &&
+            (hoveredLocation.id && location.id
+              ? hoveredLocation.id === location.id
+              : hoveredLocation.lat === location.lat && hoveredLocation.lng === location.lng);
+
           return (
             <Marker
               key={key}
               position={[location.lat, location.lng]}
-              icon={createCustomIcon(location.markerColor || "#3b82f6", location.iconMarker || "", { active: isActive })}
-              zIndexOffset={isActive ? 1000 : 0}
+              icon={createCustomIcon(location.markerColor || "#3b82f6", location.iconMarker || "", { active: isActive || isHovered })}
+              zIndexOffset={isActive || isHovered ? 1000 : 0}
               eventHandlers={{
                 click: () => selectLocation(location),
               }}

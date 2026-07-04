@@ -276,3 +276,13 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
+
+/* Custom marker hover zoom effect */
+.custom-marker-inner {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.leaflet-marker-icon:hover .custom-marker-inner {
+  transform: scale(1.25) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}

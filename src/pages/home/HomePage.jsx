@@ -6,7 +6,6 @@ import SearchBar from "@/components/user/map/SearchBar";
 import FilterChips from "@/components/user/map/FilterChips";
 import { SlidersHorizontal, X, MapPin } from "lucide-react";
 import { useAllLocations } from "@/api/useLocationQuery";
-import { searchPlaceLocationsByDB } from "@/api/locationApi";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -25,21 +24,28 @@ export default function HomePage() {
 
   // Ref để gọi selectLocation bên trong Map từ SearchBar
   const selectLocationRef = useRef(null);
-  // Track khi Map đã đăng ký xong callback
-  const [isMapReady, setIsMapReady] = useState(false);
+  // Ref để lưu tọa độ chờ bay tới nếu bản đồ chưa sẵn sàng
+  const pendingLocationRef = useRef(null);
 
   const location = useLocation();
 
-  // Lưu pending navigation từ URL params để flyTo khi Map sẵn sàng
-  const [pendingNavLocation, setPendingNavLocation] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
+  const [hoveredLocation, setHoveredLocation] = useState(null);
+
+  // Tính toán urlQuery trực tiếp từ query params của location.search trong thân component
+  const searchParams = new URLSearchParams(location.search);
+  const urlQuery = searchParams.get("q") || "";
 
   // Map expose hàm selectLocation ra ngoài qua callback này
   const handleRegisterSelectLocation = useCallback((fn) => {
     selectLocationRef.current = fn;
-    setIsMapReady(true);
+    if (pendingLocationRef.current) {
+      fn(pendingLocationRef.current);
+      pendingLocationRef.current = null;
+    }
   }, []);
 
-  // Đọc URL params khi location.search thay đổi → lưu vào pendingNavLocation
+  // Đọc URL params khi location.search thay đổi → flyTo trực tiếp nếu có tọa độ lat/lng
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const lat = searchParams.get("lat");
@@ -51,11 +57,9 @@ export default function HomePage() {
     const categoryName = searchParams.get("category_name");
     const markerColor = searchParams.get("marker_color");
     const iconMarker = searchParams.get("icon_marker");
-    const q = searchParams.get("q"); // tên địa điểm để search (khi không có lat/lng)
 
     if (lat && lng) {
-      // Có tọa độ → flyTo trực tiếp
-      setPendingNavLocation({
+      const target = {
         id: locationId ? Number(locationId) : null,
         placeId: placeId ? Number(placeId) : null,
         lat: Number(lat),
@@ -66,39 +70,17 @@ export default function HomePage() {
         markerColor: markerColor || null,
         iconMarker: iconMarker || null,
         _fromSearch: true,
-      });
-    } else if (q) {
-      // Không có tọa độ → search theo tên
-      setPendingNavLocation({ _searchQuery: q });
-    } else {
-      setPendingNavLocation(null);
+      };
+
+      if (selectLocationRef.current) {
+        // Bản đồ đã sẵn sàng -> Gọi flyTo trực tiếp
+        selectLocationRef.current(target);
+      } else {
+        // Bản đồ chưa sẵn sàng -> Lưu vào ref để chờ
+        pendingLocationRef.current = target;
+      }
     }
   }, [location.search]);
-
-  // Khi Map đã sẵn sàng VÀ có pendingNavLocation → gọi flyTo hoặc search
-  useEffect(() => {
-    if (!isMapReady || !pendingNavLocation || !selectLocationRef.current) return;
-
-    const run = async () => {
-      if (pendingNavLocation._searchQuery) {
-        // Search theo tên trong DB, lấy kết quả đầu tiên có tọa độ
-        try {
-          const results = await searchPlaceLocationsByDB(pendingNavLocation._searchQuery, 1);
-          if (results && results.length > 0 && results[0].lat && results[0].lng) {
-            selectLocationRef.current(results[0]);
-          }
-        } catch {
-          // bỏ qua lỗi tìm kiếm
-        }
-      } else {
-        // flyTo trực tiếp bằng tọa độ
-        selectLocationRef.current(pendingNavLocation);
-      }
-      setPendingNavLocation(null);
-    };
-
-    run();
-  }, [isMapReady, pendingNavLocation]);
 
   // Khi user click vào kết quả search → gọi selectLocation của Map
   const handleSelectFromSearch = useCallback((locationItem) => {
@@ -111,6 +93,8 @@ export default function HomePage() {
         activeFilter={activeFilter}
         onSelectFromSearch={handleRegisterSelectLocation}
         onLocationsCountChange={setLocationsCount}
+        searchResults={searchResults}
+        hoveredLocation={hoveredLocation}
       />
 
       {/* Mobile Top Controls */}
@@ -133,7 +117,13 @@ export default function HomePage() {
         `}
       >
         <div className={`shrink-0 pointer-events-auto ${showFiltersMobile ? "w-full" : ""}`}>
-          <SearchBar onSelectLocation={handleSelectFromSearch} />
+          <SearchBar
+            onSelectLocation={handleSelectFromSearch}
+            onSearchSubmit={(results) => setSearchResults(results)}
+            onSearchClear={() => setSearchResults(null)}
+            initialValue={urlQuery}
+            onHoverLocation={setHoveredLocation}
+          />
         </div>
         <div
           className={`flex-1 overflow-hidden pointer-events-auto ${showFiltersMobile ? "w-full overflow-x-auto pb-1" : "pr-3"

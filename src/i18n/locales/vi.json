@@ -103,7 +103,12 @@
     "reviewPlaceholder": "Chia sẻ trải nghiệm của bạn...",
     "submitReview": "Gửi đánh giá",
     "noReviews": "Chưa có đánh giá nào",
-    "closeDetail": "Đóng chi tiết"
+    "closeDetail": "Đóng chi tiết",
+    "searchHistory": "Lịch sử tìm kiếm",
+    "clearHistory": "Xóa tất cả",
+    "pressEnterToSearch": "Nhấn Enter hoặc click icon để tìm kiếm",
+    "searchPrompt": "Tìm kiếm \"{{query}}\"",
+    "noHistory": "Chưa có lịch sử tìm kiếm"
   },
 
   "dashboard": {

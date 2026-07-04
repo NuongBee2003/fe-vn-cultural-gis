@@ -32,7 +32,7 @@ export function createCustomIcon(markerColor, innerSvg, { active = false } = {})
   }
 
   const html = `
-    <div style="
+    <div class="custom-marker-inner" style="
       width: ${size}px; height: ${size}px;
       background: ${markerColor};
       border-radius: 50%;
