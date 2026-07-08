@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table-data/table";
 
 export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit, isMutating }) {
+  const isBusinessPage = window.location.pathname.startsWith("/business");
   const [fileData, setFileData] = useState([]);
   const [fileName, setFileName] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -178,18 +179,20 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-4xl max-h-[85vh] rounded-xl bg-background shadow-2xl flex flex-col overflow-hidden">
+      <div className={`relative w-full max-w-4xl max-h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden ${
+        isBusinessPage ? "bg-slate-900 border border-slate-800 text-slate-100" : "bg-background text-foreground"
+      }`}>
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div className={`flex items-center justify-between px-6 py-4 border-b ${isBusinessPage ? "border-slate-800" : ""}`}>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Import địa điểm từ Excel</h2>
+            <h2 className={`text-lg font-semibold ${isBusinessPage ? "text-slate-100" : "text-foreground"}`}>Import địa điểm từ Excel</h2>
             <p className="text-xs text-muted-foreground mt-0.5">Hỗ trợ file định dạng .xlsx, .xls</p>
           </div>
           <button
             onClick={onClose}
             disabled={importing}
-            className="rounded-full p-1.5 hover:bg-secondary transition-colors disabled:opacity-40"
+            className={`rounded-full p-1.5 transition-colors disabled:opacity-40 ${isBusinessPage ? "hover:bg-slate-800 text-slate-400 hover:text-white" : "hover:bg-secondary"}`}
           >
             <X size={18} className="text-muted-foreground" />
           </button>
@@ -201,7 +204,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
           {!importing && !importResults && (
             <div className="grid gap-4 md:grid-cols-2">
               {/* Tải Template */}
-              <div className="flex flex-col items-center justify-center p-6 border rounded-xl bg-secondary/30 border-dashed text-center">
+              <div className={`flex flex-col items-center justify-center p-6 border rounded-xl border-dashed text-center ${isBusinessPage ? "bg-slate-850/30 border-slate-800" : "bg-secondary/30"}`}>
                 <Download size={32} className="text-[#B8922E] mb-3" />
                 <h3 className="font-medium text-sm">Chưa có file mẫu?</h3>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[240px]">
@@ -211,7 +214,11 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
                   onClick={handleDownloadTemplate}
                   variant="outline"
                   size="sm"
-                  className="mt-4 border-[#B8922E] text-[#B8922E] hover:bg-[#B8922E]/10"
+                  className={`mt-4 border-current ${
+                    isBusinessPage
+                      ? "border-amber-500/40 text-amber-500 hover:bg-amber-500/10 hover:text-amber-400"
+                      : "border-[#B8922E] text-[#B8922E] hover:bg-[#B8922E]/10"
+                  }`}
                 >
                   Tải File Mẫu
                 </Button>
@@ -220,7 +227,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
               {/* Upload File */}
               <div 
                 onClick={() => fileInputRef.current?.click()}
-                className="flex flex-col items-center justify-center p-6 border rounded-xl hover:bg-secondary/20 cursor-pointer border-dashed text-center transition-colors"
+                className={`flex flex-col items-center justify-center p-6 border rounded-xl cursor-pointer border-dashed text-center transition-colors ${isBusinessPage ? "hover:bg-slate-800 border-slate-800" : "hover:bg-secondary/20"}`}
               >
                 <Upload size={32} className="text-muted-foreground mb-3" />
                 <h3 className="font-medium text-sm">Chọn file từ máy tính</h3>
@@ -249,7 +256,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
           {/* Tiến trình Upload */}
           {importing && (
             <div className="flex flex-col items-center justify-center py-10 space-y-4">
-              <Loader2 size={40} className="animate-spin text-[#B8922E]" />
+              <Loader2 size={40} className={`animate-spin ${isBusinessPage ? "text-amber-500" : "text-[#B8922E]"}`} />
               <div className="text-center">
                 <p className="font-medium text-sm">Đang nhập dữ liệu vào hệ thống...</p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -258,7 +265,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
               </div>
               <div className="w-64 h-2 bg-secondary rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-[#B8922E] transition-all duration-300"
+                  className={`h-full transition-all duration-300 ${isBusinessPage ? "bg-amber-500" : "bg-[#B8922E]"}`}
                   style={{ width: `${(progress.current / progress.total) * 100}%` }}
                 />
               </div>
@@ -372,11 +379,12 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t bg-secondary/10 flex items-center justify-between">
+        <div className={`px-6 py-4 border-t flex items-center justify-between ${isBusinessPage ? "border-slate-800 bg-slate-900/50" : "bg-secondary/10"}`}>
           <Button
             variant="ghost"
             onClick={onClose}
             disabled={importing}
+            className={isBusinessPage ? "text-slate-400 hover:text-white hover:bg-slate-800" : ""}
           >
             Đóng
           </Button>
@@ -385,7 +393,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
             <Button
               onClick={handleConfirmImport}
               disabled={fileData.filter(d => d.isValid).length === 0}
-              className="bg-[#B8922E] hover:bg-[#a67d22] flex items-center gap-1.5"
+              className={`flex items-center gap-1.5 ${isBusinessPage ? "bg-amber-500 hover:bg-amber-600 text-white" : "bg-[#B8922E] hover:bg-[#a67d22]"}`}
             >
               <Play size={15} />
               Bắt đầu Import ({fileData.filter(d => d.isValid).length} hợp lệ)
@@ -394,11 +402,13 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
 
           {importResults && (
             <Button
-              onClick={() => {
-                setImportResults(null);
-                onClose();
-              }}
-              className="bg-[#B8922E] hover:bg-[#a67d22]"
+              onClick={
+                () => {
+                  setImportResults(null);
+                  onClose();
+                }
+              }
+              className={isBusinessPage ? "bg-amber-500 hover:bg-amber-600 text-white" : "bg-[#B8922E] hover:bg-[#a67d22]"}
             >
               Hoàn tất
             </Button>

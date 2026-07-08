@@ -15,9 +15,9 @@ const DEFAULT_PACKAGES = [
     duration_days: 3650,
     max_places: 0,
     max_products: 3,
-    description: "Gói miễn phí đăng tối đa 3 địa điểm",
+    description: "Gói miễn phí không hỗ trợ địa điểm nổi bật",
     features: [
-      "Hỗ trợ tối đa 0 địa điểm trên bản đồ",
+      "Không hỗ trợ địa điểm nổi bật",
       "Hỗ trợ tối đa 3 sản phẩm trên Shop"
     ],
     bgGradient: "bg-slate-800/40 border-slate-700/80 text-white",
@@ -31,9 +31,9 @@ const DEFAULT_PACKAGES = [
     duration_days: 30,
     max_places: 1,
     max_products: 20,
-    description: "Gói Plus hỗ trợ 1 địa điểm và tối đa 20 sản phẩm",
+    description: "Gói Plus hỗ trợ tối đa 1 địa điểm nổi bật đến hết gói và 20 sản phẩm",
     features: [
-      "Hỗ trợ tối đa 1 địa điểm trên bản đồ",
+      "Hỗ trợ tối đa 1 địa điểm nổi bật đến hết gói",
       "Hỗ trợ tối đa 20 sản phẩm trên Shop"
     ],
     bgGradient: "bg-indigo-950/25 border-indigo-500/30 text-white shadow-md shadow-indigo-500/5",
@@ -47,9 +47,9 @@ const DEFAULT_PACKAGES = [
     duration_days: 30,
     max_places: 3,
     max_products: 50,
-    description: "Gói Premium hỗ trợ tối đa 3 địa điểm và 50 sản phẩm",
+    description: "Gói Premium hỗ trợ tối đa 3 địa điểm nổi bật đến hết gói và 50 sản phẩm",
     features: [
-      "Hỗ trợ tối đa 3 địa điểm trên bản đồ",
+      "Hỗ trợ tối đa 3 địa điểm nổi bật đến hết gói",
       "Hỗ trợ tối đa 50 sản phẩm trên Shop"
     ],
     bgGradient: "bg-amber-950/20 border-amber-500/40 text-white shadow-lg shadow-amber-500/10 scale-105 relative z-10",

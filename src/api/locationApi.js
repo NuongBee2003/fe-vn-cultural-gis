@@ -417,7 +417,7 @@ export async function searchPlaceLocationsByDB(query, limit = 10) {
  */
 export async function getFeaturedLocations() {
   try {
-    const res = await fetch(`${BASE_URL}/place?isFeatured=true&limit=100`);
+    const res = await fetch(`${BASE_URL}/place?isFeatured=true&limit=200`);
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

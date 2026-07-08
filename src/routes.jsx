@@ -292,7 +292,11 @@ export const routeConfig = [
       },
       {
         path: "products",
-        element: <BusinessProductsPage />,
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <BusinessProductsPage />
+          </ProtectedRoute>
+        ),
         title: "Quản lý sản phẩm",
       },
       {

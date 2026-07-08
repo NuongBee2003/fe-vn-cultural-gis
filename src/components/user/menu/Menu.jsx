@@ -191,9 +191,19 @@ export default function Menu() {
               {t("nav.navigation", "Điều hướng")}
             </div>
           )}
-          {MENU_NAV_ITEMS.map((item) => (
-            <NavItem key={item.labelKey || item.label} item={item} collapsed={collapsed} />
-          ))}
+          {MENU_NAV_ITEMS
+            .filter((item) => {
+              if (item.labelKey === "nav.businessLanding") {
+                const role = String(user?.role || "").toLowerCase();
+                if (role === "admin" || role === "business") {
+                  return false;
+                }
+              }
+              return true;
+            })
+            .map((item) => (
+              <NavItem key={item.labelKey || item.label} item={item} collapsed={collapsed} />
+            ))}
         </nav>
 
         {/* Language Switcher */}

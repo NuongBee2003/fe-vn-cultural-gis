@@ -196,9 +196,9 @@ export default function LandingPage() {
                 <div className="mt-4 flex items-baseline">
                   <span className="text-3xl font-extrabold text-white">0 VNĐ</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Gói miễn phí đăng tối đa 3 địa điểm</p>
+                <p className="mt-2 text-xs text-slate-500">Gói miễn phí không hỗ trợ địa điểm nổi bật</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 0 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Không hỗ trợ địa điểm nổi bật</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 3 sản phẩm trên Shop</li>
                 </ul>
               </div>
@@ -222,9 +222,9 @@ export default function LandingPage() {
                   <span className="text-3xl font-extrabold text-white">99.000 VNĐ</span>
                   <span className="text-xs text-slate-500 ml-1">/ 30 ngày</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Gói Plus hỗ trợ 1 địa điểm và tối đa 20 sản phẩm</p>
+                <p className="mt-2 text-xs text-slate-500">Gói Plus hỗ trợ tối đa 1 địa điểm nổi bật đến hết gói và 20 sản phẩm</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 1 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 1 địa điểm nổi bật đến hết gói</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 20 sản phẩm trên Shop</li>
                 </ul>
               </div>
@@ -244,9 +244,9 @@ export default function LandingPage() {
                   <span className="text-3xl font-extrabold text-white">299.000 VNĐ</span>
                   <span className="text-xs text-slate-500 ml-1">/ 30 ngày</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Gói Premium hỗ trợ tối đa 3 địa điểm và 50 sản phẩm</p>
+                <p className="mt-2 text-xs text-slate-500">Gói Premium hỗ trợ tối đa 3 địa điểm nổi bật đến hết gói và 50 sản phẩm</p>
                 <ul className="mt-6 space-y-3 text-xs text-slate-400">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 3 địa điểm trên bản đồ</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 3 địa điểm nổi bật đến hết gói</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" /> Hỗ trợ tối đa 50 sản phẩm trên Shop</li>
                 </ul>
               </div>

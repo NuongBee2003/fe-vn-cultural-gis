@@ -54,6 +54,7 @@ export default function LocationFormModal({
   initialData = null,
   isLoading = false,
 }) {
+  const isBusinessPage = window.location.pathname.startsWith("/business");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -435,10 +436,12 @@ export default function LocationFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto py-6">
-      <div className="relative w-full max-w-2xl rounded-xl bg-background shadow-2xl mx-4 my-auto">
+      <div className={`relative w-full max-w-2xl rounded-xl shadow-2xl mx-4 my-auto transition-all ${
+        isBusinessPage ? "bg-slate-900 border border-slate-800 text-slate-100" : "bg-background text-foreground"
+      }`}>
 
         {/* ── Header ──────────────────────────────────── */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div className={`flex items-center justify-between px-6 py-4 border-b ${isBusinessPage ? "border-slate-800" : ""}`}>
           <h2 className="text-lg font-semibold">
             {initialData ? "Cập nhật địa điểm" : "Tạo địa điểm mới"}
           </h2>
@@ -446,7 +449,7 @@ export default function LocationFormModal({
             type="button"
             onClick={onClose}
             disabled={isBusy}
-            className="rounded-full p-1.5 hover:bg-secondary transition-colors disabled:opacity-40"
+            className={`rounded-full p-1.5 transition-colors disabled:opacity-40 ${isBusinessPage ? "hover:bg-slate-800 text-slate-400 hover:text-white" : "hover:bg-secondary text-foreground"}`}
           >
             <X size={18} />
           </button>
@@ -456,13 +459,13 @@ export default function LocationFormModal({
 
           {/* ══ NHÓM 1: Thông tin địa điểm (Place) ══════ */}
           <section className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5">
+            <h3 className={`text-xs font-semibold uppercase tracking-widest border-b pb-1.5 ${isBusinessPage ? "text-slate-400 border-slate-800" : "text-muted-foreground"}`}>
               📍 Thông tin địa điểm
             </h3>
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>
                 Tên địa điểm <span className="text-red-500">*</span>
               </label>
               <Input
@@ -472,6 +475,7 @@ export default function LocationFormModal({
                 onChange={handlePlaceFieldChange}
                 placeholder="Ví dụ: Chùa Bà Thiên Hậu"
                 disabled={isBusy}
+                className={isBusinessPage ? "bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-amber-500/50" : ""}
               />
               {errors.name && (
                 <p className="text-xs text-red-500 mt-1">{errors.name}</p>
@@ -480,7 +484,7 @@ export default function LocationFormModal({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium mb-1">Mô tả</label>
+              <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>Mô tả</label>
               <textarea
                 name="description"
                 value={description}
@@ -488,23 +492,37 @@ export default function LocationFormModal({
                 placeholder="Nhập mô tả về địa điểm..."
                 disabled={isBusy}
                 rows={3}
-                className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 resize-none"
+                className={`flex w-full rounded-lg border px-3 py-2 text-sm disabled:opacity-50 resize-none focus-visible:outline-none ${
+                  isBusinessPage
+                    ? "border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-3 focus-visible:ring-amber-500/50"
+                    : "border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                }`}
               />
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium mb-1">Danh mục</label>
+              <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>Danh mục</label>
               <select
                 name="category_id"
                 value={categoryId}
                 onChange={handlePlaceFieldChange}
                 disabled={isBusy}
-                className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm focus-visible:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+                className={`flex h-9 w-full rounded-lg border px-3 py-1 text-sm focus-visible:outline-none ${
+                  isBusinessPage
+                    ? "border-slate-700 bg-slate-800 text-slate-100 focus-visible:border-amber-500 focus-visible:ring-3 focus-visible:ring-amber-500/50"
+                    : "border-input bg-transparent text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                }`}
               >
-                <option value="">-- Chọn danh mục --</option>
+                <option value="" className={isBusinessPage ? "bg-slate-800 text-slate-100" : "bg-white text-black"}>
+                  -- Chọn danh mục --
+                </option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option 
+                    key={cat.id} 
+                    value={cat.id}
+                    className={isBusinessPage ? "bg-slate-800 text-slate-100" : "bg-white text-black"}
+                  >
                     {cat.name}
                   </option>
                 ))}
@@ -514,7 +532,7 @@ export default function LocationFormModal({
 
           {/* ══ NHÓM 2: Danh sách chi nhánh (Locations) ════════ */}
           <section className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5 flex items-center justify-between">
+            <h3 className={`text-xs font-semibold uppercase tracking-widest border-b pb-1.5 flex items-center justify-between ${isBusinessPage ? "text-slate-400 border-slate-800" : "text-muted-foreground"}`}>
               <span>🗺️ Chi nhánh (Vị trí)</span>
               <span className="text-[11px] normal-case text-muted-foreground font-normal">
                 Bắt buộc có ít nhất 1 chi nhánh
@@ -522,7 +540,7 @@ export default function LocationFormModal({
             </h3>
 
             {/* Tabs chọn chi nhánh */}
-            <div className="flex flex-wrap gap-2 mb-2 border-b pb-3">
+            <div className={`flex flex-wrap gap-2 mb-2 border-b pb-3 ${isBusinessPage ? "border-slate-800" : ""}`}>
               {locations.map((loc, idx) => (
                 <div key={idx} className="flex items-center">
                   <button
@@ -533,7 +551,11 @@ export default function LocationFormModal({
                     }}
                     className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors flex items-center gap-1.5
                       ${activeLocationIndex === idx
-                        ? "bg-[#B8922E] text-white border-[#B8922E]"
+                        ? isBusinessPage
+                          ? "bg-amber-500 text-white border-amber-500"
+                          : "bg-[#B8922E] text-white border-[#B8922E]"
+                        : isBusinessPage
+                        ? "bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700"
                         : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border-input"
                       }`}
                   >
@@ -545,7 +567,9 @@ export default function LocationFormModal({
                           e.stopPropagation();
                           handleRemoveLocation(idx);
                         }}
-                        className="hover:bg-black/20 rounded-full p-0.5 ml-1 inline-flex items-center justify-center transition-colors"
+                        className={`rounded-full p-0.5 ml-1 inline-flex items-center justify-center transition-colors ${
+                          isBusinessPage ? "hover:bg-white/20 text-slate-300 hover:text-white" : "hover:bg-black/20"
+                        }`}
                         title="Xóa chi nhánh này"
                       >
                         <X size={10} />
@@ -557,7 +581,11 @@ export default function LocationFormModal({
               <button
                 type="button"
                 onClick={handleAddLocation}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-dashed border-[#B8922E]/40 text-[#B8922E] hover:bg-[#B8922E]/5 transition-colors"
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg border border-dashed transition-colors
+                  ${isBusinessPage
+                    ? "border-amber-500/40 text-amber-500 hover:bg-amber-500/10 border-dashed"
+                    : "border-dashed border-[#B8922E]/40 text-[#B8922E] hover:bg-[#B8922E]/5"
+                  }`}
               >
                 + Thêm chi nhánh
               </button>
@@ -567,7 +595,7 @@ export default function LocationFormModal({
             <div className="space-y-4 pt-1">
               {/* Address with Nominatim Search */}
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>
                   Địa chỉ chi nhánh {activeLocationIndex + 1} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-2">
@@ -578,13 +606,19 @@ export default function LocationFormModal({
                     onChange={handleLocationFieldChange}
                     placeholder="Nhập địa chỉ chi nhánh..."
                     disabled={isBusy}
-                    className="flex-1"
+                    className={`flex-1 ${
+                      isBusinessPage ? "bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-amber-500/50" : ""
+                    }`}
                   />
                   <Button
                     type="button"
                     onClick={() => handleSearchAddress(activeLoc.address)}
                     disabled={isBusy || isSearchingAddress}
-                    className="bg-secondary text-secondary-foreground hover:bg-secondary/80 shrink-0 border h-9"
+                    className={`shrink-0 border h-9 ${
+                      isBusinessPage
+                        ? "bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border-input"
+                    }`}
                   >
                     {isSearchingAddress ? "Đang tìm..." : "Tìm kiếm"}
                   </Button>
@@ -595,7 +629,7 @@ export default function LocationFormModal({
 
                 {/* Suggestions Dropdown */}
                 {searchSuggestions.length > 0 && (
-                  <div className="mt-2 rounded-lg border bg-background shadow-lg max-h-48 overflow-y-auto z-20 relative">
+                  <div className={`mt-2 rounded-lg border bg-background shadow-lg max-h-48 overflow-y-auto z-20 relative ${isBusinessPage ? "bg-slate-800 border-slate-700" : ""}`}>
                     {searchSuggestions.map((item, idx) => (
                       <button
                         key={idx}
@@ -613,7 +647,9 @@ export default function LocationFormModal({
                             setErrors((prev) => ({ ...prev, [latErrKey]: "", [lngErrKey]: "" }));
                           }
                         }}
-                        className="w-full text-left px-3 py-2 text-xs hover:bg-secondary transition-colors border-b last:border-b-0 line-clamp-2"
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-secondary transition-colors border-b last:border-b-0 line-clamp-2 ${
+                          isBusinessPage ? "hover:bg-slate-700 text-slate-200 border-slate-700/50" : ""
+                        }`}
                       >
                         {item.display_name}
                       </button>
@@ -625,7 +661,7 @@ export default function LocationFormModal({
               {/* Lat / Lng */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Vĩ độ (Latitude)</label>
+                  <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>Vĩ độ (Latitude)</label>
                   <Input
                     type="number"
                     name="lat"
@@ -634,13 +670,14 @@ export default function LocationFormModal({
                     placeholder="Ví dụ: 10.779960"
                     step="any"
                     disabled={isBusy}
+                    className={isBusinessPage ? "bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-amber-500/50" : ""}
                   />
                   {errors[`loc_${activeLocationIndex}_lat`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`loc_${activeLocationIndex}_lat`]}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Kinh độ (Longitude)</label>
+                  <label className={`block text-sm font-medium mb-1 ${isBusinessPage ? "text-slate-300" : ""}`}>Kinh độ (Longitude)</label>
                   <Input
                     type="number"
                     name="lng"
@@ -649,6 +686,7 @@ export default function LocationFormModal({
                     placeholder="Ví dụ: 106.699190"
                     step="any"
                     disabled={isBusy}
+                    className={isBusinessPage ? "bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-amber-500/50" : ""}
                   />
                   {errors[`loc_${activeLocationIndex}_lng`] && (
                     <p className="text-xs text-red-500 mt-1">{errors[`loc_${activeLocationIndex}_lng`]}</p>
@@ -658,7 +696,7 @@ export default function LocationFormModal({
 
               {/* Leaflet Map for click-to-pin location */}
               <div className="relative">
-                <div className="h-60 w-full rounded-lg border mt-2 overflow-hidden relative z-0">
+                <div className={`h-60 w-full rounded-lg border mt-2 overflow-hidden relative z-0 ${isBusinessPage ? "border-slate-700" : ""}`}>
                   <MapContainer
                     center={(() => {
                       const latVal = Number(activeLoc.lat);
@@ -696,7 +734,7 @@ export default function LocationFormModal({
                       return hasValidLatLng ? (
                         <Marker
                           position={[latVal, lngVal]}
-                          icon={createCustomIcon("#B8922E", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`)}
+                          icon={createCustomIcon(isBusinessPage ? "#f59e0b" : "#B8922E", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`)}
                         />
                       ) : null;
                     })()}
@@ -711,7 +749,7 @@ export default function LocationFormModal({
 
           {/* ══ NHÓM 3: Ảnh chi nhánh (Assets) ═══════════ */}
           <section className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b pb-1.5">
+            <h3 className={`text-xs font-semibold uppercase tracking-widest border-b pb-1.5 ${isBusinessPage ? "text-slate-400 border-slate-800" : "text-muted-foreground"}`}>
               🖼️ Ảnh chi nhánh {activeLocationIndex + 1}
               <span className="normal-case font-normal ml-2 text-muted-foreground/70 text-[11px]">
                 — Ảnh đầu sẽ là ảnh chính (primary)
@@ -735,6 +773,8 @@ export default function LocationFormModal({
                 className={`inline-flex items-center gap-2 rounded-lg border-2 border-dashed px-4 py-2 text-sm font-medium cursor-pointer transition-colors
                   ${isBusy
                     ? "opacity-50 cursor-not-allowed border-input text-muted-foreground"
+                    : isBusinessPage
+                    ? "border-amber-500/40 text-amber-500 hover:border-amber-500 hover:bg-amber-500/10"
                     : "border-[#B8922E]/40 text-[#B8922E] hover:border-[#B8922E] hover:bg-[#B8922E]/5"
                   }`}
               >
@@ -761,7 +801,7 @@ export default function LocationFormModal({
                     <div
                       key={item.url + index}
                       className={`relative group aspect-square rounded-lg overflow-hidden border-2 bg-secondary
-                        ${index === 0 ? "border-[#B8922E] ring-2 ring-[#B8922E]/30" : "border-transparent"}`}
+                        ${index === 0 ? (isBusinessPage ? "border-amber-500 ring-2 ring-amber-500/30" : "border-[#B8922E] ring-2 ring-[#B8922E]/30") : "border-transparent"}`}
                     >
                       <img
                         src={item.url}
@@ -773,7 +813,7 @@ export default function LocationFormModal({
 
                       {/* Primary badge */}
                       {index === 0 && (
-                        <div className="absolute top-1 left-1 bg-[#B8922E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                        <div className={`absolute top-1 left-1 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm ${isBusinessPage ? "bg-amber-500" : "bg-[#B8922E]"}`}>
                           ẢNH CHÍNH
                         </div>
                       )}
@@ -792,7 +832,7 @@ export default function LocationFormModal({
                             type="button"
                             onClick={() => handleSetPrimary(index)}
                             title="Đặt làm ảnh chính"
-                            className="rounded-full bg-[#B8922E] p-1.5 text-white hover:bg-[#a67d22] transition-colors"
+                            className={`rounded-full p-1.5 text-white transition-colors ${isBusinessPage ? "bg-amber-500 hover:bg-amber-600" : "bg-[#B8922E] hover:bg-[#a67d22]"}`}
                           >
                             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7 7 7" />
@@ -815,26 +855,27 @@ export default function LocationFormModal({
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-secondary/30">
+              <div className={`flex flex-col items-center justify-center py-6 border-2 border-dashed rounded-lg ${isBusinessPage ? "border-slate-800 bg-slate-900/40" : "border-muted-foreground/20 bg-secondary/30"}`}>
                 <p className="text-xs text-muted-foreground font-medium">Chi nhánh này chưa có ảnh nào</p>
               </div>
             )}
           </section>
 
           {/* ── Actions ──────────────────────────────────── */}
-          <div className="flex gap-3 justify-end pt-2 border-t">
+          <div className={`flex gap-3 justify-end pt-2 border-t ${isBusinessPage ? "border-slate-800" : ""}`}>
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isBusy}
+              className={isBusinessPage ? "border-slate-700 hover:bg-slate-800 text-slate-200 hover:text-white" : ""}
             >
               Hủy
             </Button>
             <Button
               type="submit"
               disabled={isBusy}
-              className="bg-[#B8922E] hover:bg-[#a67d22] min-w-[100px]"
+              className={`min-w-[100px] ${isBusinessPage ? "bg-amber-500 hover:bg-amber-600 text-white" : "bg-[#B8922E] hover:bg-[#a67d22]"}`}
             >
               {isUploading
                 ? "Đang tải ảnh..."
@@ -848,8 +889,8 @@ export default function LocationFormModal({
         {/* ── Upload overlay ───────────────────────────── */}
         {isUploading && (
           <div className="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center z-10">
-            <div className="bg-background rounded-xl px-8 py-6 shadow-lg flex flex-col items-center gap-3">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#B8922E]" />
+            <div className={`rounded-xl px-8 py-6 shadow-lg flex flex-col items-center gap-3 ${isBusinessPage ? "bg-slate-800 text-slate-100 border border-slate-700" : "bg-background"}`}>
+              <div className={`animate-spin rounded-full h-10 w-10 border-b-2 ${isBusinessPage ? "border-amber-500" : "border-[#B8922E]"}`} />
               <p className="text-sm font-medium">Đang xử lý hình ảnh và dữ liệu...</p>
               <p className="text-xs text-muted-foreground">Vui lòng chờ giây lát</p>
             </div>

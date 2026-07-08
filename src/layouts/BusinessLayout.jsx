@@ -147,33 +147,40 @@ export default function BusinessLayout() {
             <div className="px-3 mb-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Menu quản trị doanh nghiệp
             </div>
-            {BUSINESS_NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all group",
-                    isActive
-                      ? "bg-amber-500/10 text-amber-500 border-l-4 border-amber-500"
-                      : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                  )
+            {BUSINESS_NAV_ITEMS
+              .filter((item) => {
+                if (item.to === "/business/products") {
+                  return String(userInfo?.role || "").toLowerCase() === "admin";
                 }
-              >
-                <div className="flex items-center gap-3">
-                  {item.icon ? (
-                    <item.icon
-                      className={cn(
-                        "size-5 transition-transform duration-300 group-hover:scale-110",
-                        pathname === item.to ? "text-amber-500" : "text-slate-400 group-hover:text-white"
-                      )}
-                    />
-                  ) : null}
-                  <span>{item.label}</span>
-                </div>
-                <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-              </NavLink>
-            ))}
+                return true;
+              })
+              .map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all group",
+                      isActive
+                        ? "bg-amber-500/10 text-amber-500 border-l-4 border-amber-500"
+                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    )
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    {item.icon ? (
+                      <item.icon
+                        className={cn(
+                          "size-5 transition-transform duration-300 group-hover:scale-110",
+                          pathname === item.to ? "text-amber-500" : "text-slate-400 group-hover:text-white"
+                        )}
+                      />
+                    ) : null}
+                    <span>{item.label}</span>
+                  </div>
+                  <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                </NavLink>
+              ))}
           </nav>
 
           {/* Quick Action Bottom */}
