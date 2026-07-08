@@ -47,17 +47,11 @@ function getInitials(name) {
 
 export default function CommunityPage() {
   const [search, setSearch] = useState("");
-  const defaultRange = useMemo(() => {
-    const to = new Date();
-    const from = addDays(to, -6);
-    return { from, to };
-  }, []);
-
-  const [dateFrom, setDateFrom] = useState(format(defaultRange.from, "yyyy-MM-dd"));
-  const [dateTo, setDateTo] = useState(format(defaultRange.to, "yyyy-MM-dd"));
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [tempRange, setTempRange] = useState({
-    from: defaultRange.from,
-    to: defaultRange.to,
+    from: undefined,
+    to: undefined,
   });
 
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -447,12 +441,9 @@ export default function CommunityPage() {
   };
 
   const handleResetFilters = () => {
-    const to = new Date();
-    const from = addDays(to, -6);
-    const range = { from, to };
-    setTempRange(range);
-    setDateFrom(format(from, "yyyy-MM-dd"));
-    setDateTo(format(to, "yyyy-MM-dd"));
+    setTempRange({ from: undefined, to: undefined });
+    setDateFrom("");
+    setDateTo("");
     setFiltersOpen(false);
   };
 
@@ -588,11 +579,18 @@ export default function CommunityPage() {
                       <button
                         type="button"
                         onClick={() => setFiltersOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
+                        className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 cursor-pointer relative ${
+                          (dateFrom && dateTo)
+                            ? "border-amber-400 bg-amber-50 text-amber-600 ring-2 ring-amber-200/50"
+                            : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-amber-300"
+                        }`}
                         aria-label="Lọc theo ngày"
                         title="Lọc theo ngày"
                       >
-                        <CalendarIcon size={18} className="text-slate-600" />
+                        <CalendarIcon size={18} className={(dateFrom && dateTo) ? "text-amber-600" : "text-slate-600"} />
+                        {(dateFrom && dateTo) && (
+                          <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 rounded-full bg-amber-500 ring-2 ring-white animate-pulse" />
+                        )}
                       </button>
 
                       {isLogin && (
