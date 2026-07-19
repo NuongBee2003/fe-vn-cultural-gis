@@ -23,7 +23,8 @@ export default function BusinessProductsPage() {
     description: "",
     price: "",
     image_url: "",
-    affiliate_url: ""
+    affiliate_url: "",
+    category: "custom"
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -62,7 +63,8 @@ export default function BusinessProductsPage() {
       description: "",
       price: "",
       image_url: "",
-      affiliate_url: ""
+      affiliate_url: "",
+      category: "custom"
     });
     setIsModalOpen(true);
   };
@@ -75,7 +77,8 @@ export default function BusinessProductsPage() {
       description: product.description || "",
       price: product.price ? Math.round(Number(product.price)).toString() : "",
       image_url: product.image_url || "",
-      affiliate_url: product.affiliate_url || ""
+      affiliate_url: product.affiliate_url || "",
+      category: product.category || "custom"
     });
     setIsModalOpen(true);
   };
@@ -263,6 +266,13 @@ export default function BusinessProductsPage() {
                   <p className="mt-2 text-sm font-semibold text-amber-500">
                     {Number(p.price).toLocaleString("vi-VN")} VNĐ
                   </p>
+                  <span className="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400">
+                    {p.category === 'combo' ? 'Combo nghệ thuật' :
+                     p.category === 'hat' ? 'Nón nghệ thuật' :
+                     p.category === 'bag' ? 'Túi cỏ bàng' :
+                     p.category === 'artwork' ? 'Tranh nghệ thuật' :
+                     p.category === 'accessory' ? 'Phụ kiện' : 'Doanh nghiệp'}
+                  </span>
                 </div>
               </div>
 
@@ -358,6 +368,24 @@ export default function BusinessProductsPage() {
                   disabled={submitting || uploadingImage}
                   className="bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-amber-500/20"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-1">Phân loại sản phẩm *</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  disabled={submitting || uploadingImage}
+                  className="w-full h-9 rounded-lg border border-slate-800 bg-slate-950 text-slate-100 px-3 text-sm outline-none placeholder:text-slate-500 focus-visible:border-amber-500 focus-visible:ring-3 focus-visible:ring-amber-500/20"
+                >
+                  <option value="custom" className="bg-slate-950">Sản phẩm doanh nghiệp (Doanh nghiệp)</option>
+                  <option value="combo" className="bg-slate-950">Combo nghệ thuật</option>
+                  <option value="hat" className="bg-slate-950">Nón nghệ thuật</option>
+                  <option value="bag" className="bg-slate-950">Túi cỏ bàng</option>
+                  <option value="artwork" className="bg-slate-950">Tranh nghệ thuật</option>
+                  <option value="accessory" className="bg-slate-950">Phụ kiện</option>
+                </select>
               </div>
 
               <div>

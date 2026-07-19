@@ -7,7 +7,8 @@ import {
   Palette,
   Tags,
   Users,
-  Settings
+  Settings,
+  ShoppingBag
 } from "lucide-react";
 
 /**
@@ -70,6 +71,12 @@ export const DASHBOARD_NAV_ITEMS = [
     labelKey: "dashboard.nav.holidays",
     icon: CalendarDays,
     to: "/dashboard/holidays",
+  },
+  {
+    label: "Quản lý sản phẩm",
+    labelKey: "dashboard.nav.products",
+    icon: ShoppingBag,
+    to: "/dashboard/products",
   },
   {
     label: "Báo cáo",

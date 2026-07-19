@@ -49,6 +49,7 @@ export const PATHS = {
 
   DASHBOARD_SETTINGS: "/dashboard/settings",
   DASHBOARD_HOLIDAYS: "/dashboard/holidays",
+  DASHBOARD_PRODUCTS: "/dashboard/products",
 
   LANDING: "/landing",
   BUSINESS_DASHBOARD: "/business",
