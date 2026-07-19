@@ -14,6 +14,7 @@ import {
   searchPlaceLocationsByDB,
   getAllPlaces,
   getFeaturedLocations,
+  toggleReviewLike,
 } from "./locationApi";
 
 /**
@@ -233,6 +234,23 @@ export function usePlaceReviews(placeId, locationId = null) {
         total: filteredReviews.length,
         locations: data?.locations || [],
       };
+    },
+  });
+}
+
+/**
+ * 10. Hook để toggle like đánh giá (Review)
+ */
+export function useToggleReviewLike() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, token }) => toggleReviewLike(reviewId, token),
+    onSuccess: (data, variables) => {
+      if (variables.placeId) {
+        queryClient.invalidateQueries({ queryKey: ["place", variables.placeId] });
+        queryClient.invalidateQueries({ queryKey: ["place-reviews", variables.placeId] });
+      }
     },
   });
 }

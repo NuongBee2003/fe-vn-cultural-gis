@@ -459,3 +459,29 @@ export async function getFeaturedLocations() {
   }
 }
 
+/**
+ * 11. Like / unlike review của địa điểm
+ * @param {number} reviewId ID review
+ * @param {string} token JWT token
+ */
+export async function toggleReviewLike(reviewId, token) {
+  try {
+    const res = await fetch(`${BASE_URL}/review/${reviewId}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error(`Lỗi khi toggle like cho review ${reviewId}:`, error);
+    throw error;
+  }
+}
+

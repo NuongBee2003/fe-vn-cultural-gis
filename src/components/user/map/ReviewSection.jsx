@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send } from "lucide-react";
-import { usePlaceReviews, useCreateReview } from "@/api/useLocationQuery";
+import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send, Heart } from "lucide-react";
+import { usePlaceReviews, useCreateReview, useToggleReviewLike } from "@/api/useLocationQuery";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
@@ -63,11 +63,37 @@ function timeAgo(dateStr) {
 
 // ── ReviewCard ────────────────────────────────────────────────────────────────
 
-function ReviewCard({ review }) {
+function ReviewCard({ review, placeId, onRequireLogin }) {
   const [expanded, setExpanded] = useState(false);
   const LIMIT = 120;
   const text = review.comment || "";
   const isLong = text.length > LIMIT;
+  const { mutate: toggleLike, isPending: isLiking } = useToggleReviewLike();
+
+  const token =
+    localStorage.getItem("token") ||
+    localStorage.getItem("adminToken") ||
+    "";
+
+  let currentUserId = null;
+  try {
+    const userObj = JSON.parse(localStorage.getItem("user") || localStorage.getItem("adminUser") || "null");
+    currentUserId = userObj?.id;
+  } catch (e) {
+    console.error(e);
+  }
+
+  const likes = review.review_likes || [];
+  const liked = currentUserId ? likes.some((l) => l.user_id === currentUserId) : false;
+  const likeCount = likes.length;
+
+  const handleLikeClick = () => {
+    if (!token) {
+      onRequireLogin?.();
+      return;
+    }
+    toggleLike({ reviewId: review.id, token, placeId });
+  };
 
   return (
     <div className="flex gap-2.5">
@@ -115,6 +141,30 @@ function ReviewCard({ review }) {
             )}
           </div>
         )}
+
+        {/* Like action */}
+        <div className="mt-1.5 flex items-center gap-1">
+          <button
+            type="button"
+            disabled={isLiking}
+            onClick={handleLikeClick}
+            className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold transition-colors focus:outline-none cursor-pointer ${
+              liked
+                ? "bg-red-50 text-red-500 hover:bg-red-100"
+                : "bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            }`}
+          >
+            {isLiking ? (
+              <Loader2 size={10} className="animate-spin text-gray-400" />
+            ) : (
+              <Heart
+                size={10}
+                className={liked ? "fill-red-500 text-red-500" : "text-gray-400"}
+              />
+            )}
+            <span>{likeCount > 0 ? `${likeCount} thích` : "Thích"}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -344,7 +394,12 @@ export default function ReviewSection({ placeId, locationId }) {
       ) : (
         <div className="mt-3 space-y-4">
           {displayed.map((r) => (
-            <ReviewCard key={r.id} review={r} />
+            <ReviewCard
+              key={r.id}
+              review={r}
+              placeId={placeId}
+              onRequireLogin={() => setShowLoginPrompt(true)}
+            />
           ))}
 
           {total > PAGE_SIZE && (
