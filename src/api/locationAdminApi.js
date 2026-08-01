@@ -7,7 +7,7 @@
  *   PUT    /api/v1/location/:id   → update  (Place + Location + Assets)
  *   DELETE /api/v1/location/:id   → delete
  */
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3002/api/v1";
 
@@ -33,15 +33,6 @@ async function handleResponse(res) {
 
 /**
  * Tạo mới địa điểm (Place + Location + Assets trong 1 transaction)
- * @param {Object} data
- * @param {string}   data.name          Tên địa điểm (bắt buộc nếu không có place_id)
- * @param {string}   [data.description]
- * @param {number}   [data.category_id]
- * @param {number}   [data.place_id]    Gắn vào Place đã có
- * @param {number}   [data.lat]
- * @param {number}   [data.lng]
- * @param {string}   [data.address]
- * @param {string[]} [data.images]      Mảng URL ảnh từ Supabase (ảnh đầu = primary)
  */
 export async function createLocation(data) {
   const res = await fetch(`${API_URL}/location`, {
@@ -54,12 +45,6 @@ export async function createLocation(data) {
 
 /**
  * Cập nhật địa điểm (Place + Location + Assets trong 1 transaction)
- * Chỉ truyền các field muốn thay đổi.
- * LƯU Ý: Nếu truyền images (kể cả []) → xóa ảnh cũ và thay bằng ảnh mới.
- *        Nếu KHÔNG truyền images → ảnh giữ nguyên.
- *
- * @param {number} id   Location ID
- * @param {Object} data Các field cần cập nhật
  */
 export async function updateLocation(id, data) {
   const res = await fetch(`${API_URL}/location/${id}`, {
@@ -72,7 +57,6 @@ export async function updateLocation(id, data) {
 
 /**
  * Xóa một location
- * @param {number} id Location ID
  */
 export async function deleteLocation(id) {
   const res = await fetch(`${API_URL}/location/${id}`, {
@@ -84,7 +68,6 @@ export async function deleteLocation(id) {
 
 /**
  * Xóa một địa điểm (Place)
- * @param {number} id Place ID
  */
 export async function deletePlace(id) {
   const res = await fetch(`${API_URL}/place/${id}`, {
@@ -118,67 +101,58 @@ export async function updatePlace(id, data) {
   return handleResponse(res);
 }
 
-// ─── React Query Hooks ────────────────────────────────────
+function useAsyncMutation(action) {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
 
-function invalidateLocations(queryClient) {
-  // Invalidate tất cả queries bắt đầu bằng "locations" hoặc "places"
-  queryClient.invalidateQueries({ queryKey: ["locations"] });
-  queryClient.invalidateQueries({ queryKey: ["places"] });
-  queryClient.invalidateQueries({ queryKey: ["assets"] });
+  const mutate = useCallback(
+    async (variables, options = {}) => {
+      setIsPending(true);
+      setError(null);
+      try {
+        const result = await action(variables);
+        options.onSuccess?.(result, variables);
+        return result;
+      } catch (err) {
+        setError(err);
+        options.onError?.(err);
+        throw err;
+      } finally {
+        setIsPending(false);
+      }
+    },
+    [action]
+  );
+
+  return { mutate, mutateAsync: mutate, isPending, error };
 }
 
 export function useCreateLocation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createLocation,
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(createLocation);
 }
 
 export function useUpdateLocation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }) => updateLocation(id, data),
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(({ id, data }) => updateLocation(id, data));
 }
 
 export function useDeleteLocation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deleteLocation,
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(deleteLocation);
 }
 
 export function useDeletePlace() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deletePlace,
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(deletePlace);
 }
 
 export function useCreatePlace() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createPlace,
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(createPlace);
 }
 
 export function useUpdatePlace() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }) => updatePlace(id, data),
-    onSuccess: () => invalidateLocations(queryClient),
-  });
+  return useAsyncMutation(({ id, data }) => updatePlace(id, data));
 }
 
 /**
  * Xóa một review (admin hoặc chủ review)
- * @param {number} placeId   Place ID
- * @param {number} reviewId  Review ID
  */
 export async function deleteReview(placeId, reviewId) {
   const token = localStorage.getItem("adminToken") || localStorage.getItem("token") || "";
@@ -190,12 +164,5 @@ export async function deleteReview(placeId, reviewId) {
 }
 
 export function useDeleteReview() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ placeId, reviewId }) => deleteReview(placeId, reviewId),
-    onSuccess: (_data, { placeId }) => {
-      queryClient.invalidateQueries({ queryKey: ["place-reviews", placeId] });
-      queryClient.invalidateQueries({ queryKey: ["place", placeId] });
-    },
-  });
+  return useAsyncMutation(({ placeId, reviewId }) => deleteReview(placeId, reviewId));
 }

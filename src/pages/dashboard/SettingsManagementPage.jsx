@@ -7,14 +7,10 @@ import { useNotify } from "@/context/NotifyContext";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 import { Save, Upload, Loader2, Image as ImageIcon, X, Edit } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function SettingsManagementPage() {
-  const { data: settingsData, isLoading } = useQuery({
-    queryKey: ["appSettings"],
-    queryFn: settingApi.getAllSettings,
-  });
-
+  const [settingsData, setSettingsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [localValues, setLocalValues] = useState({});
   const [editingKey, setEditingKey] = useState(null);
   const [editValue, setEditValue] = useState("");
@@ -23,7 +19,6 @@ export default function SettingsManagementPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   const notify = useNotify();
-  const queryClient = useQueryClient();
 
   const actualData = Array.isArray(settingsData) 
     ? settingsData 
@@ -42,6 +37,30 @@ export default function SettingsManagementPage() {
       setLocalValues((prev) => Object.keys(prev).length === 0 ? initialValues : prev);
     }
   }, [actualData]);
+
+  useEffect(() => {
+    let active = true;
+    const loadSettings = async () => {
+      setIsLoading(true);
+      try {
+        const result = await settingApi.getAllSettings();
+        if (!active) return;
+        setSettingsData(Array.isArray(result) ? result : (result.data || []));
+      } catch (error) {
+        console.error("Lỗi khi lấy cấu hình hệ thống:", error);
+        if (!active) return;
+        setSettingsData([]);
+      } finally {
+        if (!active) return;
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const openEditModal = (key, currentValue) => {
     setEditingKey(key);
@@ -88,9 +107,13 @@ export default function SettingsManagementPage() {
       
       // Cập nhật local state ngay lập tức để UI không bị giật
       setLocalValues(prev => ({ ...prev, [editingKey]: valueToSave }));
-      
-      // Invalidate query
-      queryClient.invalidateQueries({ queryKey: ["appSettings"] });
+      setSettingsData((prev) =>
+        prev.map((setting) =>
+          setting.setting_key === editingKey
+            ? { ...setting, setting_value: valueToSave }
+            : setting
+        )
+      );
       notify.success("Cập nhật thành công!");
       closeEditModal();
       

@@ -1,5 +1,4 @@
-import React, { createContext, useContext } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { settingApi } from '@/api/settingApi';
 
 const SettingsContext = createContext({
@@ -9,12 +8,33 @@ const SettingsContext = createContext({
 });
 
 export const SettingsProvider = ({ children }) => {
-  const { data: settingsData, isLoading } = useQuery({
-    queryKey: ['appSettings'],
-    queryFn: settingApi.getAllSettings,
-    staleTime: 5 * 60 * 1000, // Cache trong 5 phút
-    retry: 1,
-  });
+  const [settingsData, setSettingsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadSettings = async () => {
+      setIsLoading(true);
+      try {
+        const result = await settingApi.getAllSettings();
+        if (!active) return;
+        setSettingsData(Array.isArray(result) ? result : (result.data || []));
+      } catch (error) {
+        console.error('Lỗi khi lấy cấu hình hệ thống:', error);
+        if (!active) return;
+        setSettingsData([]);
+      } finally {
+        if (!active) return;
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   let appName = 'Di Sản Việt';
   let appLogo = null;

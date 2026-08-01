@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send } from "lucide-react";
-import { usePlaceReviews, useCreateReview } from "@/api/useLocationQuery";
-import { useQueryClient } from "@tanstack/react-query";
+import { usePlaceReviews, useCreateReview } from "@/api/locationApi";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 
@@ -126,7 +125,6 @@ function WriteReviewForm({ placeId, locationId, onSuccess }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
-  const queryClient = useQueryClient();
   const { mutate, isPending } = useCreateReview();
 
   const token =
@@ -146,7 +144,6 @@ function WriteReviewForm({ placeId, locationId, onSuccess }) {
         onSuccess: () => {
           setRating(0);
           setComment("");
-          queryClient.invalidateQueries({ queryKey: ["place-reviews", placeId, locationId] });
           onSuccess?.();
         },
         onError: (err) => setError(err?.message || "Có lỗi xảy ra, thử lại nhé."),
@@ -205,7 +202,7 @@ export default function ReviewSection({ placeId, locationId }) {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const navigate = useNavigate();
 
-  const { data, isLoading } = usePlaceReviews(placeId, locationId);
+  const { data, isLoading, refetch } = usePlaceReviews(placeId, locationId);
 
   const handleWriteReviewClick = () => {
     const token =
@@ -293,11 +290,13 @@ export default function ReviewSection({ placeId, locationId }) {
         <WriteReviewForm
           placeId={placeId}
           locationId={locationId}
-          onSuccess={() => setShowForm(false)}
+          onSuccess={() => {
+            setShowForm(false);
+            refetch?.();
+          }}
         />
       )}
 
-      {/* ── Login Prompt Modal ── */}
       {showLoginPrompt && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 flex flex-col items-center text-center transition-all duration-200 transform scale-100">

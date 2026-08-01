@@ -3,7 +3,7 @@ import { MapPin, Navigation, Route, X, ImageOff } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 import ReviewSection from "@/components/user/map/ReviewSection";
-import { useAssetsByLocationId } from "@/api/useLocationQuery";
+import { useAssetsByLocationId } from "@/api/locationApi";
 
 export default function LocationDetailPanel({
   location,

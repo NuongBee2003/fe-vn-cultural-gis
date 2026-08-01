@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -58,34 +58,40 @@ export const deleteCategory = async (id) => {
   return response.json();
 };
 
-// ===== React Query Hooks =====
+function useAsyncMutation(action) {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
+
+  const mutate = useCallback(
+    async (variables, options = {}) => {
+      setIsPending(true);
+      setError(null);
+      try {
+        const result = await action(variables);
+        options.onSuccess?.(result, variables);
+        return result;
+      } catch (err) {
+        setError(err);
+        options.onError?.(err);
+        throw err;
+      } finally {
+        setIsPending(false);
+      }
+    },
+    [action]
+  );
+
+  return { mutate, mutateAsync: mutate, isPending, error };
+}
 
 export function useCreateCategory() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
-  });
+  return useAsyncMutation(createCategory);
 }
 
 export function useUpdateCategory() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }) => updateCategory(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
-  });
+  return useAsyncMutation(({ id, data }) => updateCategory(id, data));
 }
 
 export function useDeleteCategory() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
-  });
+  return useAsyncMutation(deleteCategory);
 }

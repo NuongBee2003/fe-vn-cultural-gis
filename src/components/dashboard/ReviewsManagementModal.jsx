@@ -1,7 +1,7 @@
 import { useState} from "react";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare, MapPin } from "lucide-react";
-import { usePlaceReviews } from "@/api/useLocationQuery";
+import { usePlaceReviews } from "@/api/locationApi";
 import { useDeleteReview } from "@/api/locationAdminApi";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
