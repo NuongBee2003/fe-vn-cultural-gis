@@ -3,8 +3,6 @@
  * Kết nối trực tiếp với backend Express (port 3002).
  */
 
-import { useCallback, useEffect, useState } from "react";
-
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3002/api/v1";
 
 /**
@@ -461,220 +459,29 @@ export async function getFeaturedLocations() {
   }
 }
 
-// ── React-style hooks cho API thuần ──────────────────────────────────────────
+/**
+ * 11. Like / unlike review của địa điểm
+ * @param {number} reviewId ID review
+ * @param {string} token JWT token
+ */
+export async function toggleReviewLike(reviewId, token) {
+  try {
+    const res = await fetch(`${BASE_URL}/review/${reviewId}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
-function useApiQuery(fetcher, deps = [], options = {}) {
-  const { enabled = true, initialData = null, placeholderData } = options;
-  const [data, setData] = useState(initialData);
-  const [isLoading, setIsLoading] = useState(enabled && initialData == null);
-  const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState(null);
-  const [refreshIndex, setRefreshIndex] = useState(0);
-
-  const refetch = useCallback(() => setRefreshIndex((prev) => prev + 1), []);
-
-  useEffect(() => {
-    let active = true;
-    if (!enabled) {
-      if (placeholderData !== undefined) {
-        setData(placeholderData);
-      }
-      setIsLoading(false);
-      setIsFetching(false);
-      return;
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
 
-    const load = async () => {
-      setError(null);
-      setIsFetching(true);
-      if (data == null) {
-        setIsLoading(true);
-      }
-      try {
-        const result = await fetcher();
-        if (!active) return;
-        setData(result);
-      } catch (err) {
-        if (!active) return;
-        setError(err);
-      } finally {
-        if (!active) return;
-        setIsLoading(false);
-        setIsFetching(false);
-      }
-    };
-
-    load();
-    return () => {
-      active = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, refreshIndex, ...deps]);
-
-  return { data, isLoading, isFetching, error, refetch };
-}
-
-function useAsyncMutation(action) {
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-
-  const mutate = useCallback(
-    async (variables, options = {}) => {
-      setIsPending(true);
-      setError(null);
-      try {
-        const result = await action(variables);
-        options.onSuccess?.(result, variables);
-        return result;
-      } catch (err) {
-        setError(err);
-        options.onError?.(err);
-        throw err;
-      } finally {
-        setIsPending(false);
-      }
-    },
-    [action]
-  );
-
-  return { mutate, mutateAsync: mutate, isPending, error };
-}
-
-export function useLocationsByCategory(categoryId) {
-  return useApiQuery(
-    () => getLocationsByCategory(categoryId),
-    [categoryId],
-    { enabled: !!categoryId, initialData: [] }
-  );
-}
-
-export function useLocationsByGeo(bbox, limit = 100) {
-  return useApiQuery(
-    () => getLocationsByGeo(bbox, limit),
-    [bbox, limit],
-    { enabled: !!bbox, initialData: [] }
-  );
-}
-
-export function useFeaturedLocations() {
-  return useApiQuery(getFeaturedLocations, [], { initialData: [] });
-}
-
-export function usePlaceDetail(placeId) {
-  return useApiQuery(
-    () => getPlaceDetail(placeId),
-    [placeId],
-    { enabled: !!placeId, initialData: null }
-  );
-}
-
-export function useAllLocations(page = 1, limit = 20) {
-  return useApiQuery(
-    () => getAllLocations(page, limit),
-    [page, limit],
-    { initialData: { data: [], meta: { total: 0, page, limit, totalPages: 0 } } }
-  );
-}
-
-export function useAllPlaces(page = 1, limit = 20, categoryId = null, query = "", userId = null) {
-  return useApiQuery(
-    () => getAllPlaces(page, limit, categoryId, query, userId),
-    [page, limit, categoryId, query, userId],
-    { initialData: { data: [], meta: { total: 0, page, limit, totalPages: 0 } } }
-  );
-}
-
-export function useAllLocationsByCategory(page = 1, limit = 20, categoryId, options = {}) {
-  return useApiQuery(
-    () => getAllLocationsByCategory(page, limit, categoryId),
-    [page, limit, categoryId],
-    {
-      enabled: options.enabled !== false && !!categoryId,
-      initialData: { data: [], meta: { total: 0, page, limit, totalPages: 0 } },
-    }
-  );
-}
-
-export function useCreateReview() {
-  return useAsyncMutation(({ placeId, rating, comment, token, locationId }) =>
-    createPlaceReview(placeId, rating, comment, token, locationId)
-  );
-}
-
-export function useCreatePlace() {
-  return useAsyncMutation((placeData) => createPlace(placeData));
-}
-
-export function useCategories() {
-  return useApiQuery(getCategories, [], { initialData: [] });
-}
-
-export function useAssetsByLocationId(locationId) {
-  return useApiQuery(
-    () => getAssetsByLocationId(locationId),
-    [locationId],
-    { enabled: !!locationId, initialData: [] }
-  );
-}
-
-export function useSearchLocations(query, limit = 10) {
-  const trimmed = (query || "").trim();
-  return useApiQuery(
-    () => searchPlaceLocationsByDB(trimmed, limit),
-    [trimmed, limit],
-    { enabled: trimmed.length >= 1, initialData: [] }
-  );
-}
-
-export function usePlaceReviews(placeId, locationId = null) {
-  return useApiQuery(
-    async () => {
-      const data = await getPlaceDetail(placeId);
-      let filteredReviews = [];
-
-      if (locationId) {
-        const loc = (data?.locations || []).find((l) => l.id === locationId);
-        if (loc && Array.isArray(loc.reviews)) {
-          filteredReviews = loc.reviews.map((r) => ({
-            ...r,
-            locationAddress: loc.address,
-          }));
-        }
-      } else {
-        for (const loc of data?.locations || []) {
-          if (Array.isArray(loc.reviews)) {
-            filteredReviews.push(
-              ...loc.reviews.map((r) => ({
-                ...r,
-                locationAddress: loc.address,
-              }))
-            );
-          }
-        }
-      }
-
-      filteredReviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      let totalRating = 0;
-      let count = 0;
-      for (const r of filteredReviews) {
-        const rating = Number(r.rating);
-        if (!Number.isNaN(rating)) {
-          totalRating += rating;
-          count += 1;
-        }
-      }
-      const ratingAvg = count > 0 ? Number((totalRating / count).toFixed(2)) : null;
-
-      return {
-        reviews: filteredReviews,
-        rating_avg: ratingAvg,
-        total: filteredReviews.length,
-        locations: data?.locations || [],
-      };
-    },
-    [placeId, locationId],
-    { enabled: !!placeId, initialData: { reviews: [], rating_avg: null, total: 0, locations: [] } }
-  );
+    return await res.json();
+  } catch (error) {
+    console.error(`Lỗi khi toggle like cho review ${reviewId}:`, error);
+    throw error;
+  }
 }
 

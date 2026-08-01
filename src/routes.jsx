@@ -28,6 +28,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import SettingsManagementPage from "@/pages/dashboard/SettingsManagementPage";
 import ReviewsManagementPage from "@/pages/dashboard/ReviewsManagementPage";
 import HolidaysManagementPage from "@/pages/dashboard/HolidaysManagementPage";
+import ProductsManagementPage from "@/pages/dashboard/ProductsManagementPage";
 
 import BusinessOverviewPage from "@/pages/dashboard/BusinessOverviewPage";
 import BusinessProductsPage from "@/pages/dashboard/BusinessProductsPage";
@@ -243,6 +244,11 @@ export const routeConfig = [
         path: PATHS.DASHBOARD_HOLIDAYS,
         element: <HolidaysManagementPage />,
         title: "Quản lý lịch lễ",
+      },
+      {
+        path: PATHS.DASHBOARD_PRODUCTS,
+        element: <ProductsManagementPage />,
+        title: "Quản lý sản phẩm",
       },
       {
         path: PATHS.DASHBOARD_REPORTS_HOT_PLACES,
