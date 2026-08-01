@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Calendar, MapPin, Utensils, CheckSquare, Bookmark } from "lucide-react";
+import { HOLIDAY_IMAGES } from "@/pages/user/holiday/HolidaysPage";
 
 export default function HolidayDetailModal({ item, onClose }) {
   const navigate = useNavigate();
@@ -30,14 +31,16 @@ export default function HolidayDetailModal({ item, onClose }) {
 
   if (!item) return null;
 
-  const { details = {} } = item;
+  const imageSrc = HOLIDAY_IMAGES[item.image_url] || item.image_url;
+  const activities = Array.isArray(item.activities) ? item.activities : JSON.parse(item.activities || "[]");
+  const foods = Array.isArray(item.foods) ? item.foods : JSON.parse(item.foods || "[]");
 
   return (
     <div
       className="fixed inset-0 z-[3000] flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
-      aria-label={item.label}
+      aria-label={item.name}
     >
       {/* Backdrop */}
       <button
@@ -63,8 +66,8 @@ export default function HolidayDetailModal({ item, onClose }) {
         {/* Banner Image */}
         <div className="relative h-44 sm:h-52 shrink-0 bg-slate-200">
           <img
-            src={item.image}
-            alt={item.label}
+            src={imageSrc}
+            alt={item.name}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -72,7 +75,7 @@ export default function HolidayDetailModal({ item, onClose }) {
           {/* Date Badge */}
           <div className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold shadow-md">
             <Calendar size={13} />
-            <span>{item.date}</span>
+            <span>{item.date_label}</span>
           </div>
         </div>
 
@@ -85,19 +88,19 @@ export default function HolidayDetailModal({ item, onClose }) {
               className="text-2xl font-bold text-slate-800 leading-tight"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              {item.label}
+              {item.name}
             </h2>
             <p className="mt-1 text-xs text-amber-600 font-semibold tracking-wider uppercase">
               Ngày lễ & kỷ niệm Việt Nam
             </p>
-            {details.history ? (
+            {item.history ? (
               <div className="mt-4 p-4 rounded-xl bg-amber-50/50 border border-amber-100/80">
                 <h3 className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5 mb-2">
                   <Bookmark size={13} className="text-amber-600" />
                   Ý nghĩa & Lịch sử
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-600">
-                  {details.history}
+                  {item.history}
                 </p>
               </div>
             ) : (
@@ -106,14 +109,14 @@ export default function HolidayDetailModal({ item, onClose }) {
           </div>
 
           {/* Core Activities */}
-          {details.activities?.length > 0 && (
+          {activities?.length > 0 && (
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                 <CheckSquare size={14} className="text-slate-500" />
                 Hoạt động tiêu biểu
               </h3>
               <ul className="grid gap-2 sm:grid-cols-2">
-                {details.activities.map((act, index) => (
+                {activities.map((act, index) => (
                   <li
                     key={index}
                     className="flex items-start gap-2.5 p-2.5 rounded-lg border border-slate-100 bg-slate-50/50 text-sm text-slate-600"
@@ -167,14 +170,14 @@ export default function HolidayDetailModal({ item, onClose }) {
           )}
 
           {/* Food Suggestions */}
-          {details.foods?.length > 0 && (
+          {foods?.length > 0 && (
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                 <Utensils size={14} className="text-rose-500" />
                 Ẩm thực đặc trưng & gợi ý
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
-                {details.foods.map((food, index) => (
+                {foods.map((food, index) => (
                   <div
                     key={index}
                     className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-rose-50/20 hover:border-rose-100 transition-all duration-200 flex flex-col justify-between"

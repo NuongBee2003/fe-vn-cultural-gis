@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, MapPin, Image as ImageIcon, Trash2, Loader2, Search } from "lucide-react";
-import { createPost } from "@/api/postApi";
-import { searchPlaceLocationsByDB } from "@/api/locationApi";
+import { createPost } from "@/api/user/postApi";
+import { searchPlaceLocationsByDB } from "@/api/user/locationApi";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 

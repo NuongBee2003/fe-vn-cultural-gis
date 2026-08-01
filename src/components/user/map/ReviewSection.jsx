@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send, Heart } from "lucide-react";
-import { usePlaceReviews, useCreateReview, useToggleReviewLike } from "@/api/useLocationQuery";
+import { usePlaceReviews, useCreateReview, useToggleReviewLike } from "@/api/user/useLocationQuery";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
 

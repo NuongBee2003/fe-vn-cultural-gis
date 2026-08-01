@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
-import { authApi } from "@/api/authApi";
+import { authApi } from "@/api/user/authApi";
 import VNCulture from "@/assets/img/holiday/vnculture.jpg";
 import { useNotify } from "@/context/NotifyContext";
 import { useSettings } from "@/context/SettingsContext";

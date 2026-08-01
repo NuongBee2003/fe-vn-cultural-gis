@@ -1,5 +1,5 @@
 import Menu from "@/components/user/menu/Menu";
-import HomePage from "@/pages/home/HomePage";
+import HomePage from "@/pages/user/home/HomePage";
 
 export default function MapLayout({ children }) {
   return (

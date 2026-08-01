@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { BUSINESS_NAV_ITEMS } from "@/constants/businessNav";
-import { subscriptionApi } from "@/api/subscriptionApi";
+import { subscriptionApi } from "@/api/business/subscriptionApi";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { useSettings } from "@/context/SettingsContext";

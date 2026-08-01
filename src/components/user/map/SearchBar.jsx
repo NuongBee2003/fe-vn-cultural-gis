@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, X, MapPin, Loader2, History, Trash2 } from "lucide-react";
-import { searchPlaceLocationsByDB } from "@/api/locationApi";
+import { searchPlaceLocationsByDB } from "@/api/user/locationApi";
 import { useTranslation } from "react-i18next";
 
 /**

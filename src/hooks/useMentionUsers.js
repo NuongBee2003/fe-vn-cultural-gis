@@ -7,7 +7,7 @@
  * display = u.username để react-mentions hiển thị @username trong text.
  */
 import { useEffect, useState } from "react";
-import { userApi } from "@/api/userApi";
+import { userApi } from "@/api/user/userApi";
 
 let cache = null;
 let pendingFetch = null;

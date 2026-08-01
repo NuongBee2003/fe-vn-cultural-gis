@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Loader2, Heart } from "lucide-react";
-import { getPostLikes } from "@/api/postApi";
+import { getPostLikes } from "@/api/user/postApi";
 
 function getInitials(name) {
   const cleaned = String(name || "").trim();

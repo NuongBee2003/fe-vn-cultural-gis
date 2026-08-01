@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
-import { authApi } from "@/api/authApi";
+import { authApi } from "@/api/user/authApi";
 
 export default function ProtectedRoute({ children, allowedRoles = ["admin"] }) {
   const token = authApi.getToken();

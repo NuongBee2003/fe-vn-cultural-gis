@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { DASHBOARD_NAV_ITEMS } from "@/constants/dashboardNav";
-import { authApi } from "@/api/authApi";
+import { authApi } from "@/api/user/authApi";
 
 function NavItemLink({ to, icon: Icon, label, labelKey }) {
   const { t } = useTranslation();

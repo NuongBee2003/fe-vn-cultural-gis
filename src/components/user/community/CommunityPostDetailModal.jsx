@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { X, Loader2, Send } from "lucide-react";
-import { getPostDetail } from "@/api/postApi";
-import { createComment, updateComment, deleteComment } from "@/api/commentApi";
+import { getPostDetail } from "@/api/user/postApi";
+import { createComment, updateComment, deleteComment } from "@/api/user/commentApi";
 import CommunityPostCard from "./CommunityPostCard";
 import CommentItem from "./CommentItem";
 import { useNotify } from "@/context/NotifyContext";

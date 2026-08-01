@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { settingApi } from '@/api/settingApi';
+import { settingApi } from '@/api/admin/settingApi';
 
 const SettingsContext = createContext({
   appName: 'Di Sản Việt',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, Share2, Loader2, MapPin } from "lucide-react";
-import { toggleLikePost, sharePost } from "@/api/postApi";
+import { toggleLikePost, sharePost } from "@/api/user/postApi";
 import PostLikesModal from "./PostLikesModal";
 import { useNotify } from "@/context/NotifyContext";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";

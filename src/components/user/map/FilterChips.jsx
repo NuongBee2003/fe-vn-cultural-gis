@@ -1,4 +1,4 @@
-import { useCategories } from "@/api/useLocationQuery";
+import { useCategories } from "@/api/user/useLocationQuery";
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Image as ImageIcon, Trash2, Loader2, MapPin, Tag } from "lucide-react";
-import { createExhibition } from "@/api/exhibitionApi";
+import { createExhibition } from "@/api/user/exhibitionApi";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
 import { ALL_PROVINCES } from "@/constants/provinces";

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { X, Camera, Loader2, User, Mail } from "lucide-react";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
-import { authApi } from "@/api/authApi";
+import { authApi } from "@/api/user/authApi";
 
 export default function UserProfileModal({ isOpen, onClose, currentUser }) {
   const [username, setUsername] = useState("");

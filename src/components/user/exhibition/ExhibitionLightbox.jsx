@@ -8,7 +8,7 @@ import {
   Calendar,
   Volume2
 } from "lucide-react";
-import { toggleLikeExhibition } from "@/api/exhibitionApi";
+import { toggleLikeExhibition } from "@/api/user/exhibitionApi";
 
 export default function ExhibitionLightbox({ item, onClose, onLikeUpdate }) {
   const { i18n } = useTranslation();

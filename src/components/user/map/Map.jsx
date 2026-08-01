@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 import { createCustomIcon } from "@/utils/icons";
-import { useCategories, useLocationsByGeo, useLocationsByCategory, useFeaturedLocations } from "@/api/useLocationQuery";
+import { useCategories, useLocationsByGeo, useLocationsByCategory, useFeaturedLocations } from "@/api/user/useLocationQuery";
 import {
   fetchDrivingRoute,
   formatDistance,
