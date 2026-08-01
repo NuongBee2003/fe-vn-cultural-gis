@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAllLocations, useAssetsByLocationId } from "@/api/locationApi";
+import { useAllLocations, useAssetsByLocationId } from "@/api/useLocationQuery";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { X } from "lucide-react";

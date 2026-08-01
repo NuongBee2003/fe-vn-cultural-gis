@@ -5,7 +5,7 @@ import Map from "@/components/user/map/Map";
 import SearchBar from "@/components/user/map/SearchBar";
 import FilterChips from "@/components/user/map/FilterChips";
 import { SlidersHorizontal, X, MapPin } from "lucide-react";
-import { useAllLocations } from "@/api/locationApi";
+import { useAllLocations } from "@/api/useLocationQuery";
 
 export default function HomePage() {
   const { t } = useTranslation();

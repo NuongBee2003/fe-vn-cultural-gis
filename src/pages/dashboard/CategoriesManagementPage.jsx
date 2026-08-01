@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table-data/table";
-import { useCategories } from "@/api/locationApi";
+import { useCategories } from "@/api/useLocationQuery";
 import { useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/api/categoryApi";
 import CategoryFormModal from "@/components/dashboard/CategoryFormModal";
 import { deleteImageFromSupabase } from "@/lib/supabaseClient";

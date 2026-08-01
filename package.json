@@ -15,7 +15,6 @@
     "@huggingface/inference": "4.13.18",
     "@supabase/supabase-js": "^2.106.2",
     "@tailwindcss/vite": "^4.2.2",
-    "@tanstack/react-query": "^5.100.14",
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

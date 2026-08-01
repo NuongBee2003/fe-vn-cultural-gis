@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useAllPlaces, useCategories } from "@/api/locationApi";
+import { useAllPlaces, useCategories } from "@/api/useLocationQuery";
 import { useCreatePlace, useUpdatePlace, useDeletePlace } from "@/api/locationAdminApi";
 import { useTranslation } from "react-i18next";
 import { authApi } from "@/api/authApi";
