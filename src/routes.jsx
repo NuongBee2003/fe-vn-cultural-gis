@@ -29,6 +29,7 @@ import SettingsManagementPage from "@/pages/admin/SettingsManagementPage";
 import ReviewsManagementPage from "@/pages/admin/ReviewsManagementPage";
 import HolidaysManagementPage from "@/pages/admin/HolidaysManagementPage";
 import ProductsManagementPage from "@/pages/admin/ProductsManagementPage";
+import ReportsManagementPage from "@/pages/admin/ReportsManagementPage";
 
 import BusinessOverviewPage from "@/pages/business/BusinessOverviewPage";
 import BusinessProductsPage from "@/pages/business/BusinessProductsPage";
@@ -174,8 +175,13 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_REPORTS,
-        element: <Navigate to={PATHS.DASHBOARD_REPORTS_HOT_PLACES} replace />,
+        element: <Navigate to={PATHS.DASHBOARD_REPORTS_USER} replace />,
         title: "Báo cáo",
+      },
+      {
+        path: PATHS.DASHBOARD_REPORTS_USER,
+        element: <ReportsManagementPage />,
+        title: "Quản lý báo cáo vi phạm",
       },
       {
         path: PATHS.DASHBOARD_PLACES,

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { MapPin, Navigation, Route, X, ImageOff } from "lucide-react";
+import { MapPin, Navigation, Route, X, ImageOff, Flag } from "lucide-react";
 import { CATEGORY_STYLES } from "@/constants/mapLocations";
 import ImageMasonryGallery from "@/components/user/map/ImageMasonryGallery";
 import ReviewSection from "@/components/user/map/ReviewSection";
+import ReportModal from "@/components/common/ReportModal";
 import { useAssetsByLocationId } from "@/api/user/useLocationQuery";
 
 export default function LocationDetailPanel({
@@ -17,6 +18,7 @@ export default function LocationDetailPanel({
   const style = CATEGORY_STYLES[location.category] ?? { bg: "rgba(100,100,100,0.75)", color: "#fff" };
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   // Lấy danh sách hình ảnh từ API theo location_id
   const { data: assets = [], isLoading: isLoadingAssets } = useAssetsByLocationId(location.id);
@@ -85,9 +87,27 @@ export default function LocationDetailPanel({
         </div>
 
         <div className="p-4 pt-3">
-          <h3 className="m-0 pr-8 text-[17px] font-bold leading-tight text-gray-900">
-            {location.name}
-          </h3>
+          <div className="flex items-start justify-between gap-2 pr-8">
+            <h3 className="m-0 text-[17px] font-bold leading-tight text-gray-900">
+              {location.name}
+            </h3>
+            <button
+              type="button"
+              onClick={() => setReportModalOpen(true)}
+              className="flex shrink-0 items-center gap-1 rounded-lg bg-rose-50 px-2 py-1 text-[11px] font-medium text-rose-600 transition-colors hover:bg-rose-100 cursor-pointer border-none"
+              title="Báo cáo địa điểm này"
+            >
+              <Flag size={12} />
+              Báo cáo
+            </button>
+          </div>
+
+          {location.status === "closed" && (
+            <div className="mt-2.5 flex items-center gap-1.5 rounded-xl bg-rose-50 border border-rose-200 px-3 py-1.5 text-xs font-bold text-rose-700">
+              <span className="h-2 w-2 rounded-full bg-rose-600 animate-pulse" />
+              Địa điểm này đã tạm ngừng hoạt động / Đóng cửa
+            </div>
+          )}
 
 
           {location.address && (
@@ -191,6 +211,13 @@ export default function LocationDetailPanel({
           initialIndex={galleryIndex}
         />
       )}
+
+      <ReportModal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        targetType="location"
+        targetData={location}
+      />
     </div>
   );
 }

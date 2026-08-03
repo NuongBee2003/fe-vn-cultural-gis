@@ -84,6 +84,7 @@ export const DASHBOARD_NAV_ITEMS = [
     icon: BarChart3,
     base: "/dashboard/reports",
     children: [
+      { label: "Quản lý báo cáo vi phạm", labelKey: "dashboard.nav.userReports", to: "/dashboard/reports/user-reports" },
       { label: "Địa điểm hot", labelKey: "dashboard.nav.hotPlaces", to: "/dashboard/reports/hot-places" }
     ],
   },

@@ -5,8 +5,10 @@
  *   - Form chỉnh sửa inline (khi editingCommentId === comment.id)
  *   - Form trả lời inline   (khi replyToId      === comment.id)
  */
-import { Loader2, Pencil, Trash2, Check, X as XIcon, Send } from "lucide-react";
+import { useState } from "react";
+import { Loader2, Pencil, Trash2, Check, X as XIcon, Send, Flag } from "lucide-react";
 import MentionInput from "@/components/ui/input/MentionInput";
+import ReportModal from "@/components/common/ReportModal";
 
 export default function CommentActions({
   comment,
@@ -32,6 +34,7 @@ export default function CommentActions({
   handlePostReplyComment,
 }) {
   const isOwnComment = comment.editYN === "Y";
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   /** Khi bấm "Trả lời" — điền sẵn @tên tác giả vào ô */
   const handleReplyClick = () => {
@@ -87,6 +90,17 @@ export default function CommentActions({
                 <Trash2 size={11} />
               )}{" "}
               Xóa
+            </button>
+          )}
+
+          {!isOwnComment && (
+            <button
+              type="button"
+              onClick={() => setReportModalOpen(true)}
+              className="text-xs font-medium text-slate-400 hover:text-rose-600 flex items-center gap-1 cursor-pointer border-none bg-transparent transition-colors"
+              title="Báo cáo bình luận này"
+            >
+              <Flag size={11} /> Báo cáo
             </button>
           )}
         </div>
@@ -156,6 +170,13 @@ export default function CommentActions({
           </button>
         </div>
       )}
+
+      <ReportModal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        targetType="comment"
+        targetData={comment}
+      />
     </>
   );
 }

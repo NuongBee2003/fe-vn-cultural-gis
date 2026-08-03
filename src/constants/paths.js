@@ -46,6 +46,7 @@ export const PATHS = {
   DASHBOARD_CULTURE_FOLK_ARTS: "/dashboard/culture/folk-arts",
 
   DASHBOARD_REPORTS_HOT_PLACES: "/dashboard/reports/hot-places",
+  DASHBOARD_REPORTS_USER: "/dashboard/reports/user-reports",
 
   DASHBOARD_SETTINGS: "/dashboard/settings",
   DASHBOARD_HOLIDAYS: "/dashboard/holidays",
