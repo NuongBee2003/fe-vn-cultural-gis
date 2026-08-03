@@ -2,9 +2,10 @@ import { useState, useRef } from "react";
 import { read, utils, writeFile } from "xlsx";
 import { X, Upload, Download, CheckCircle, AlertTriangle, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table-data/table";
+import { useNotify } from "@/context/NotifyContext";
 
 export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit, isMutating }) {
+  const notify = useNotify();
   const isBusinessPage = window.location.pathname.startsWith("/business");
   const [fileData, setFileData] = useState([]);
   const [fileName, setFileName] = useState("");
@@ -68,7 +69,6 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
         }
 
         // Bỏ qua hàng tiêu đề
-        const headers = rows[0].map(h => String(h || "").trim());
         const mappedData = [];
 
         for (let i = 1; i < rows.length; i++) {
@@ -132,7 +132,7 @@ export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit
   const handleConfirmImport = async () => {
     const validItems = fileData.filter(item => item.isValid);
     if (validItems.length === 0) {
-      alert("Không có dữ liệu hợp lệ để import.");
+      notify.warning("Không có dữ liệu hợp lệ để import.");
       return;
     }
 

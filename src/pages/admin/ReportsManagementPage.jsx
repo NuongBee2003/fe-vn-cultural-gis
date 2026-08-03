@@ -54,6 +54,8 @@ export default function ReportsManagementPage() {
         filteredRows = rawRows.filter((r) => r.location_id !== null);
       } else if (typeFilter === "comment") {
         filteredRows = rawRows.filter((r) => r.comment_id !== null);
+      } else if (typeFilter === "review") {
+        filteredRows = rawRows.filter((r) => r.review_id !== null);
       }
 
       setReports(filteredRows);
@@ -81,6 +83,8 @@ export default function ReportsManagementPage() {
   const handleAccept = async (report) => {
     const targetText = report.location_id
       ? "đóng cửa chi nhánh địa điểm bị báo cáo"
+      : report.review_id
+      ? "xóa đánh giá địa điểm bị báo cáo"
       : "xóa bình luận bị báo cáo";
     const ok = await notify.confirm(
       `Duyệt báo cáo #${report.id}? Hệ thống sẽ tự động ${targetText}.`,
@@ -260,7 +264,8 @@ export default function ReportsManagementPage() {
             >
               <option value="">Tất cả loại báo cáo</option>
               <option value="location">Báo cáo Địa điểm</option>
-              <option value="comment">Báo cáo Bình luận</option>
+              <option value="comment">Báo cáo Bình luận bài viết</option>
+              <option value="review">Báo cáo Đánh giá địa điểm</option>
             </select>
           </label>
         </div>
@@ -345,14 +350,30 @@ export default function ReportsManagementPage() {
                               <p className="font-semibold text-rose-900 line-clamp-1">
                                 {report.location.place?.name || `Chi nhánh #${report.location.id}`}
                               </p>
-                              {report.location.status === "closed" && (
+                              {report.location.status === "closed" ? (
                                 <span className="rounded-md bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">
-                                  Đã đóng cửa
+                                  🔴 Đã đóng cửa
+                                </span>
+                              ) : (
+                                <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                  🟢 Hoạt động
                                 </span>
                               )}
                             </div>
                             <p className="text-[11px] text-muted-foreground line-clamp-1">
                               ID Chi nhánh: {report.location.id}
+                            </p>
+                          </div>
+                        </div>
+                      ) : report.review ? (
+                        <div className="flex items-start gap-1.5 text-xs text-slate-800">
+                          <MessageSquare size={14} className="mt-0.5 shrink-0 text-amber-500" />
+                          <div>
+                            <p className="font-semibold text-amber-900">
+                              Đánh giá #{report.review.id} ({report.review.rating} ⭐)
+                            </p>
+                            <p className="text-[11px] text-slate-600 line-clamp-2 italic">
+                              "{report.review.comment || 'Không có nhận xét'}"
                             </p>
                           </div>
                         </div>

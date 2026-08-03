@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Flag, X, Loader2, CheckCircle2, AlertCircle, MapPin, MessageSquare } from "lucide-react";
 import { createReport } from "@/api/user/reportApi";
 
@@ -21,7 +22,7 @@ const COMMENT_OPTIONS = [
 export default function ReportModal({
   isOpen,
   onClose,
-  targetType = "location", // "location" | "comment"
+  targetType = "location", // "location" | "comment" | "review"
   targetData = null,
 }) {
   const options = targetType === "location" ? LOCATION_OPTIONS : COMMENT_OPTIONS;
@@ -69,6 +70,7 @@ export default function ReportModal({
       const payload = {
         location_id: targetType === "location" ? targetData?.id : undefined,
         comment_id: targetType === "comment" ? targetData?.id : undefined,
+        review_id: targetType === "review" ? targetData?.id : undefined,
         report_type: reportTypeLabel,
         description: isOther ? customReason.trim() : reportTypeLabel,
       };
@@ -85,8 +87,8 @@ export default function ReportModal({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs transition-opacity duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs transition-opacity duration-200">
       <div
         className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
@@ -99,7 +101,7 @@ export default function ReportModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {targetType === "location" ? "Báo cáo địa điểm" : "Báo cáo bình luận"}
+                {targetType === "location" ? "Báo cáo địa điểm" : targetType === "review" ? "Báo cáo đánh giá" : "Báo cáo bình luận"}
               </h3>
               <p className="text-xs text-slate-500">Giúp chúng tôi giữ môi trường thông tin tin cậy</p>
             </div>
@@ -141,12 +143,24 @@ export default function ReportModal({
                       )}
                     </div>
                   </>
+                ) : targetType === "review" ? (
+                  <>
+                    <MessageSquare size={18} className="mt-0.5 shrink-0 text-amber-500" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-slate-800">
+                        Đánh giá của {targetData.user?.username || targetData.author?.name || "(Ẩn danh)"} ({targetData.rating} ⭐)
+                      </p>
+                      <p className="text-[11px] text-slate-600 line-clamp-2 mt-0.5">
+                        "{targetData.comment || "Không có nhận xét"}"
+                      </p>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <MessageSquare size={18} className="mt-0.5 shrink-0 text-slate-400" />
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold text-slate-800">
-                        Bình luận của {targetData.author?.name || "(Ẩn danh)"}
+                        Bình luận của {targetData.author?.name || targetData.user?.username || "(Ẩn danh)"}
                       </p>
                       <p className="text-[11px] text-slate-600 line-clamp-2 mt-0.5">
                         "{targetData.content}"
@@ -258,6 +272,7 @@ export default function ReportModal({
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

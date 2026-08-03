@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send, Heart } from "lucide-react";
+import { Star, ChevronDown, ChevronUp, Loader2, UserCircle2, Send, Heart, Flag, Trash2 } from "lucide-react";
 import { usePlaceReviews, useCreateReview, useToggleReviewLike } from "@/api/user/useLocationQuery";
+import { useQueryClient } from "@tanstack/react-query";
+import { reviewApi } from "@/api/user/reviewApi";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
+import { useNotify } from "@/context/NotifyContext";
+import ReportModal from "@/components/common/ReportModal";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -62,8 +66,12 @@ function timeAgo(dateStr) {
 
 // ── ReviewCard ────────────────────────────────────────────────────────────────
 
-function ReviewCard({ review, placeId, onRequireLogin }) {
+function ReviewCard({ review, placeId, onRequireLogin, onReviewDeleted }) {
   const [expanded, setExpanded] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const queryClient = useQueryClient();
+  const notify = useNotify();
   const LIMIT = 120;
   const text = review.comment || "";
   const isLong = text.length > LIMIT;
@@ -82,6 +90,8 @@ function ReviewCard({ review, placeId, onRequireLogin }) {
     console.error(e);
   }
 
+  const isOwnReview = currentUserId && (Number(currentUserId) === Number(review.user_id) || Number(currentUserId) === Number(review.user?.id));
+
   const likes = review.review_likes || [];
   const liked = currentUserId ? likes.some((l) => l.user_id === currentUserId) : false;
   const likeCount = likes.length;
@@ -92,6 +102,27 @@ function ReviewCard({ review, placeId, onRequireLogin }) {
       return;
     }
     toggleLike({ reviewId: review.id, token, placeId });
+  };
+
+  const handleDeleteClick = async () => {
+    const ok = await notify.confirm("Bạn có chắc chắn muốn xóa đánh giá của mình?", {
+      title: "Xóa đánh giá",
+      confirmLabel: "Xóa",
+    });
+    if (!ok) return;
+
+    try {
+      setIsDeleting(true);
+      await reviewApi.deleteReview(review.id);
+      notify.success("Đã xóa đánh giá thành công.");
+      queryClient.invalidateQueries({ queryKey: ["place-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["place", placeId] });
+      onReviewDeleted?.();
+    } catch (err) {
+      notify.error(err?.message || "Không thể xóa đánh giá. Vui lòng thử lại.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -141,8 +172,8 @@ function ReviewCard({ review, placeId, onRequireLogin }) {
           </div>
         )}
 
-        {/* Like action */}
-        <div className="mt-1.5 flex items-center gap-1">
+        {/* Actions: Like, Report, Delete */}
+        <div className="mt-1.5 flex items-center gap-2">
           <button
             type="button"
             disabled={isLiking}
@@ -163,7 +194,41 @@ function ReviewCard({ review, placeId, onRequireLogin }) {
             )}
             <span>{likeCount > 0 ? `${likeCount} thích` : "Thích"}</span>
           </button>
+
+          {isOwnReview ? (
+            <button
+              type="button"
+              disabled={isDeleting}
+              onClick={handleDeleteClick}
+              className="flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-600 hover:bg-rose-100 transition-colors focus:outline-none cursor-pointer border-none disabled:opacity-50"
+              title="Xóa đánh giá của bạn"
+            >
+              {isDeleting ? (
+                <Loader2 size={10} className="animate-spin" />
+              ) : (
+                <Trash2 size={10} />
+              )}
+              <span>Xóa</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setReportModalOpen(true)}
+              className="flex items-center gap-1 rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-400 hover:bg-rose-50 hover:text-rose-600 transition-colors focus:outline-none cursor-pointer border-none"
+              title="Báo cáo đánh giá này"
+            >
+              <Flag size={10} />
+              <span>Báo cáo</span>
+            </button>
+          )}
         </div>
+
+        <ReportModal
+          isOpen={reportModalOpen}
+          onClose={() => setReportModalOpen(false)}
+          targetType="review"
+          targetData={review}
+        />
       </div>
     </div>
   );

@@ -16,8 +16,10 @@ import { holidayApi } from "@/api/user/holidayApi";
 import { searchPlaceLocationsByDB } from "@/api/user/locationApi";
 import { uploadImageToSupabase, deleteImageFromSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfig";
+import { useNotify } from "@/context/NotifyContext";
 
 export default function HolidaysManagementPage() {
+  const notify = useNotify();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -47,7 +49,6 @@ export default function HolidaysManagementPage() {
     foods: [],
     place_ids: [],
   });
-  const [selectedFile, setSelectedFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -238,7 +239,7 @@ export default function HolidaysManagementPage() {
     if (!file) return;
 
     if (file.size > IMAGE_UPLOAD_CONFIG.MAX_SIZE_BYTES) {
-      alert(`Kích thước file vượt quá giới hạn ${IMAGE_UPLOAD_CONFIG.MAX_SIZE_MB}MB.`);
+      notify.warning(`Kích thước file vượt quá giới hạn ${IMAGE_UPLOAD_CONFIG.MAX_SIZE_MB}MB.`);
       return;
     }
 
@@ -248,7 +249,7 @@ export default function HolidaysManagementPage() {
       setFormData((prev) => ({ ...prev, image_url: publicUrl }));
     } catch (error) {
       console.error("Lỗi khi upload ảnh:", error);
-      alert("Không thể upload ảnh lên hệ thống.");
+      notify.error("Không thể upload ảnh lên hệ thống.");
     } finally {
       setUploadingImage(false);
     }
@@ -283,22 +284,28 @@ export default function HolidaysManagementPage() {
 
       if (selectedItem) {
         await holidayApi.updateHoliday(selectedItem.id, payload);
+        notify.success("Cập nhật ngày lễ thành công.");
       } else {
         await holidayApi.createHoliday(payload);
+        notify.success("Tạo ngày lễ mới thành công.");
       }
 
       setIsOpen(false);
       loadData();
     } catch (error) {
       console.error("Lỗi khi lưu ngày lễ:", error);
-      alert(error.message || "Có lỗi xảy ra khi lưu ngày lễ.");
+      notify.error(error.message || "Có lỗi xảy ra khi lưu ngày lễ.");
     } finally {
       setIsMutating(false);
     }
   };
 
   const handleDelete = async (item) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa ngày lễ "${item.name}"?`)) return;
+    const ok = await notify.confirm(`Bạn có chắc chắn muốn xóa ngày lễ "${item.name}"?`, {
+      title: "Xóa ngày lễ",
+      confirmLabel: "Xóa",
+    });
+    if (!ok) return;
 
     try {
       setIsMutating(true);
@@ -313,10 +320,11 @@ export default function HolidaysManagementPage() {
       }
 
       await holidayApi.deleteHoliday(item.id);
+      notify.success("Đã xóa ngày lễ thành công.");
       loadData();
     } catch (error) {
       console.error("Lỗi khi xóa ngày lễ:", error);
-      alert(error.message || "Có lỗi xảy ra khi xóa ngày lễ.");
+      notify.error(error.message || "Có lỗi xảy ra khi xóa ngày lễ.");
     } finally {
       setIsMutating(false);
     }

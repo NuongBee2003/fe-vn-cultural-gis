@@ -33,6 +33,7 @@ export function mapDbLocationToFe(dbLoc) {
     lat: Number(dbLoc.lat),
     lng: Number(dbLoc.lng),
     address: dbLoc.address || "",
+    status: dbLoc.status || "active",
     iconMarker: dbLoc.place?.category?.icon_marker || "",
     markerColor: dbLoc.place?.category?.color || "#3b82f6",
     images: images, // Thêm images array
@@ -436,6 +437,7 @@ export async function getFeaturedLocations() {
           lat: loc.lat,
           lng: loc.lng,
           address: loc.address,
+          status: loc.status,
           assets: loc.assets,
           place: {
             name: place.name,
