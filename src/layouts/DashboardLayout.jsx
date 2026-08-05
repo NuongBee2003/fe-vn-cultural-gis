@@ -1,15 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import DashboardSidebar from "@/layouts/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/layouts/dashboard/DashboardTopbar";
 import ViewHeader from "@/layouts/dashboard/ViewHeader";
+import UserProfileModal from "@/components/user/menu/UserProfileModal";
 import logoVcm from "@/assets/logo-vcm.png";
 import { useSettings } from "@/context/SettingsContext";
 
 export default function DashboardLayout() {
   const { appLogo } = useSettings();
+  const navigate = useNavigate();
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const getStoredUserInfo = () => {
     const adminUser = localStorage.getItem("adminUser") || localStorage.getItem("user");
@@ -39,6 +42,16 @@ export default function DashboardLayout() {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("adminUser");
+    window.dispatchEvent(new Event("local-storage-update"));
+    navigate("/");
+  };
+
   return (
     <div
       data-theme="dashboard"
@@ -54,6 +67,8 @@ export default function DashboardLayout() {
         }
         name={userInfo?.username || "User"}
         avatar={userInfo?.avatar}
+        onLogout={handleLogout}
+        onChangePassword={() => setIsProfileModalOpen(true)}
       />
 
       <DashboardTopbar onToggleSidebar={() => setSidebarVisible((v) => !v)} />
@@ -68,6 +83,12 @@ export default function DashboardLayout() {
           </div>
         </div>
       </div>
+
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={userInfo}
+      />
     </div>
   );
 }

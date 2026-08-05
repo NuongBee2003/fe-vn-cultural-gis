@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, NavLink, useLocation, Link } from "react-router-dom";
+import { Outlet, NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { BUSINESS_NAV_ITEMS } from "@/constants/businessNav";
 import { subscriptionApi } from "@/api/business/subscriptionApi";
 import ProfileMenu from "@/components/dashboard/profile/ProfileMenu";
+import UserProfileModal from "@/components/user/menu/UserProfileModal";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { useSettings } from "@/context/SettingsContext";
 import logoVcm from "@/assets/logo-vcm.png";
@@ -12,7 +13,9 @@ import { ArrowLeft, RefreshCw, Sparkles, Menu, X, ChevronRight, Store } from "lu
 export default function BusinessLayout() {
   const { appLogo, appName } = useSettings();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const [activeSub, setActiveSub] = useState(null);
   const [loadingSub, setLoadingSub] = useState(true);
@@ -94,6 +97,16 @@ export default function BusinessLayout() {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("adminUser");
+    window.dispatchEvent(new Event("local-storage-update"));
+    navigate("/");
+  };
+
   return (
     <div
       data-theme="business"
@@ -122,7 +135,12 @@ export default function BusinessLayout() {
             {getPackageBadge()}
             <LanguageSwitcher />
             <div className="border-l border-slate-800 pl-3">
-              <ProfileMenu name={userInfo?.username || "Business User"} avatar={userInfo?.avatar} />
+              <ProfileMenu
+                name={userInfo?.username || "Business User"}
+                avatar={userInfo?.avatar}
+                onLogout={handleLogout}
+                onChangePassword={() => setIsProfileModalOpen(true)}
+              />
             </div>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -205,6 +223,12 @@ export default function BusinessLayout() {
           </div>
         </div>
       </div>
+
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={userInfo}
+      />
     </div>
   );
 }
