@@ -232,7 +232,18 @@ export default function CommunityPostDetailModal({ postId, onClose, highlightCom
     setDeletingCommentId(commentId);
     try {
       await deleteComment(commentId);
-      setLocalComments((prev) => prev.filter((c) => c.id !== commentId && c.parent_id !== commentId));
+      setLocalComments((prev) => {
+        const getDescendantIds = (comments, pId) => {
+          const children = comments.filter(c => c.parent_id === pId);
+          let ids = children.map(c => c.id);
+          for (const child of children) {
+            ids = ids.concat(getDescendantIds(comments, child.id));
+          }
+          return ids;
+        };
+        const idsToRemove = [commentId, ...getDescendantIds(prev, commentId)];
+        return prev.filter(c => !idsToRemove.includes(c.id));
+      });
     } catch (err) {
       console.error("Lỗi khi xóa bình luận:", err);
       notify.error(err.message || "Không thể xóa bình luận lúc này");

@@ -7,8 +7,10 @@ import { useNotify } from "@/context/NotifyContext";
 import { uploadImageToSupabase } from "@/lib/supabaseClient";
 import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 import { Save, Upload, Loader2, Image as ImageIcon, X, Edit } from "lucide-react";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function SettingsManagementPage() {
+  const { refreshSettings } = useSettings();
   const [settingsData, setSettingsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [localValues, setLocalValues] = useState({});
@@ -51,8 +53,7 @@ export default function SettingsManagementPage() {
         if (!active) return;
         setSettingsData([]);
       } finally {
-        if (!active) return;
-        setIsLoading(false);
+        if (active) setIsLoading(false);
       }
     };
 
@@ -116,6 +117,9 @@ export default function SettingsManagementPage() {
       );
       notify.success("Cập nhật thành công!");
       closeEditModal();
+      if (refreshSettings) {
+        refreshSettings();
+      }
       
     } catch (error) {
       console.error(error);

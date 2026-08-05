@@ -3,6 +3,7 @@ import Pagination from "@/components/ui/pagination/Pagination";
 import { X, Star, Trash2, Loader2, UserCircle2, AlertTriangle, Search, ArrowUpDown, RefreshCw, MessageSquare, MapPin } from "lucide-react";
 import { usePlaceReviews } from "@/api/user/useLocationQuery";
 import { useDeleteReview } from "@/api/admin/locationAdminApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -71,11 +72,18 @@ function ConfirmPopover({ onConfirm, onCancel, isPending }) {
 function ReviewRow({ review, placeId }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const { mutate: deleteReview, isPending } = useDeleteReview();
+  const queryClient = useQueryClient();
 
   const handleDelete = () => {
     deleteReview(
       { placeId, reviewId: review.id },
-      { onSuccess: () => setShowConfirm(false) }
+      {
+        onSuccess: () => {
+          setShowConfirm(false);
+          queryClient.invalidateQueries({ queryKey: ["place-reviews"] });
+          queryClient.invalidateQueries({ queryKey: ["place", placeId] });
+        }
+      }
     );
   };
 

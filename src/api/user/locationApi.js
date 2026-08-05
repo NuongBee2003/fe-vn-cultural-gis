@@ -414,6 +414,23 @@ export async function searchPlaceLocationsByDB(query, limit = 10) {
 }
 
 /**
+ * Lấy danh sách Places nổi bật (hot places) trực tiếp để hiển thị trong báo cáo
+ */
+export async function getHotPlaces() {
+  try {
+    const res = await fetch(`${BASE_URL}/place?isFeatured=true&limit=200`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const result = await res.json();
+    return result.data || [];
+  } catch (error) {
+    console.error("❌ Lỗi khi fetch getHotPlaces:", error);
+    throw error;
+  }
+}
+
+/**
  * 10. Lấy danh sách locations của các địa điểm nổi bật (isFeatured = true)
  */
 export async function getFeaturedLocations() {

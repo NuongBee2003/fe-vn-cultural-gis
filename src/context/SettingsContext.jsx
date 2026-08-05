@@ -1,40 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { settingApi } from '@/api/admin/settingApi';
 
 const SettingsContext = createContext({
   appName: 'Di Sản Việt',
   appLogo: null,
   isLoading: true,
+  refreshSettings: () => {},
 });
 
 export const SettingsProvider = ({ children }) => {
   const [settingsData, setSettingsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    let active = true;
-
-    const loadSettings = async () => {
-      setIsLoading(true);
-      try {
-        const result = await settingApi.getAllSettings();
-        if (!active) return;
-        setSettingsData(Array.isArray(result) ? result : (result.data || []));
-      } catch (error) {
-        console.error('Lỗi khi lấy cấu hình hệ thống:', error);
-        if (!active) return;
-        setSettingsData([]);
-      } finally {
-        if (!active) return;
-        setIsLoading(false);
-      }
-    };
-
-    loadSettings();
-    return () => {
-      active = false;
-    };
+  const loadSettings = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const result = await settingApi.getAllSettings();
+      setSettingsData(Array.isArray(result) ? result : (result.data || []));
+    } catch (error) {
+      console.error('Lỗi khi lấy cấu hình hệ thống:', error);
+      setSettingsData([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
 
   let appName = 'Di Sản Việt';
   let appLogo = null;
@@ -52,7 +45,7 @@ export const SettingsProvider = ({ children }) => {
   }
 
   return (
-    <SettingsContext.Provider value={{ appName, appLogo, isLoading }}>
+    <SettingsContext.Provider value={{ appName, appLogo, isLoading, refreshSettings: loadSettings }}>
       {children}
     </SettingsContext.Provider>
   );

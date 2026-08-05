@@ -11,10 +11,10 @@ function getAuthToken() {
 }
 
 /**
- * Gửi báo cáo mới (về địa điểm hoặc bình luận)
- * @param {Object} payload - { location_id, comment_id, report_type, description }
+ * Gửi báo cáo mới (về địa điểm, bình luận hoặc đánh giá)
+ * @param {Object} payload - { location_id, comment_id, review_id, report_type, description }
  */
-export async function createReport({ location_id, comment_id, report_type, description }) {
+export async function createReport({ location_id, comment_id, review_id, report_type, description }) {
   try {
     const token = getAuthToken();
     const headers = {
@@ -30,6 +30,7 @@ export async function createReport({ location_id, comment_id, report_type, descr
       body: JSON.stringify({
         location_id: location_id ? Number(location_id) : undefined,
         comment_id: comment_id ? Number(comment_id) : undefined,
+        review_id: review_id ? Number(review_id) : undefined,
         report_type,
         description: description?.trim() || "",
       }),

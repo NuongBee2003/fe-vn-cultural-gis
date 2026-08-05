@@ -13,6 +13,7 @@ import {
   getAllPlaces,
   getFeaturedLocations,
   toggleReviewLike,
+  getHotPlaces,
 } from "./locationApi";
 
 /**
@@ -245,6 +246,14 @@ export function useToggleReviewLike() {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["place-reviews"] });
     },
+  });
+}
+
+export function useHotPlaces() {
+  return useQuery({
+    queryKey: ["places", "hot"],
+    queryFn: getHotPlaces,
+    staleTime: 1 * 60 * 1000,
   });
 }
 

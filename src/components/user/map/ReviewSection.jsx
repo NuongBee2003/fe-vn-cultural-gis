@@ -463,6 +463,7 @@ export default function ReviewSection({ placeId, locationId }) {
               review={r}
               placeId={placeId}
               onRequireLogin={() => setShowLoginPrompt(true)}
+              onReviewDeleted={refetch}
             />
           ))}
 

@@ -35,19 +35,6 @@ export const subscriptionApi = {
     return await res.json();
   },
 
-  cancel: async () => {
-    const token = getToken();
-    const res = await fetch(`${BASE_URL}/subscription/cancel`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || "Failed to cancel subscription");
-    }
-    return await res.json();
-  },
-
   getMyHistory: async () => {
     const token = getToken();
     const res = await fetch(`${BASE_URL}/subscription/my-history`, {

@@ -30,6 +30,7 @@ import ReviewsManagementPage from "@/pages/admin/ReviewsManagementPage";
 import HolidaysManagementPage from "@/pages/admin/HolidaysManagementPage";
 import ProductsManagementPage from "@/pages/admin/ProductsManagementPage";
 import ReportsManagementPage from "@/pages/admin/ReportsManagementPage";
+import HotPlacesPage from "@/pages/admin/HotPlacesPage";
 
 import BusinessOverviewPage from "@/pages/business/BusinessOverviewPage";
 import BusinessProductsPage from "@/pages/business/BusinessProductsPage";
@@ -258,7 +259,7 @@ export const routeConfig = [
       },
       {
         path: PATHS.DASHBOARD_REPORTS_HOT_PLACES,
-        element: dashPage("Địa điểm hot", "Báo cáo địa điểm phổ biến"),
+        element: <HotPlacesPage />,
         title: "Báo cáo — Địa điểm hot",
       },
       {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PATHS } from "@/constants/paths";
-import { MapPinned, PackageOpen, Award, Calendar, RefreshCw, XCircle, Store, Phone, User, Building } from "lucide-react";
+import { MapPinned, PackageOpen, Award, Calendar, RefreshCw, Store, Phone, User, Building } from "lucide-react";
 import { subscriptionApi } from "@/api/business/subscriptionApi";
 import { productApi } from "@/api/business/productApi";
 import { authApi } from "@/api/user/authApi";
@@ -50,19 +50,6 @@ export default function BusinessOverviewPage() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleCancelSub = async () => {
-    if (!window.confirm("Bạn có chắc chắn muốn hủy gói dịch vụ hiện tại không? Sau khi hủy, tài khoản sẽ quay lại giới hạn gói mặc định.")) {
-      return;
-    }
-    try {
-      await subscriptionApi.cancel();
-      alert("Hủy gói dịch vụ thành công!");
-      fetchData();
-    } catch (err) {
-      alert(err.message || "Hủy gói dịch vụ thất bại");
-    }
-  };
 
   if (loading) {
     return (
@@ -156,15 +143,6 @@ export default function BusinessOverviewPage() {
                   Nâng cấp dịch vụ
                 </Button>
               </Link>
-              {!isDefault && (
-                <Button 
-                  onClick={handleCancelSub} 
-                  variant="outline" 
-                  className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-                >
-                  <XCircle className="mr-1.5 h-4 w-4" /> Hủy gói dịch vụ
-                </Button>
-              )}
             </div>
           </div>
 
