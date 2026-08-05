@@ -137,6 +137,12 @@ export default function BusinessProductsPage() {
       return;
     }
 
+    const maxProducts = activeSub?.package?.max_products ?? 3;
+    if (!editingProduct && products.length >= maxProducts) {
+      alert(`Bạn đã đạt giới hạn ${maxProducts} sản phẩm của gói hiện tại. Hãy nâng cấp gói để đăng thêm.`);
+      return;
+    }
+
     setSubmitting(true);
     try {
       let imageUrl = formData.image_url;
@@ -206,7 +212,7 @@ export default function BusinessProductsPage() {
         <div className="flex items-center gap-2">
           <Button 
             onClick={openAddModal}
-            disabled={limitsReached && !authApi.isAdmin()}
+            disabled={limitsReached}
             className="flex items-center gap-1.5 bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50"
           >
             <Plus className="h-4 w-4" /> Đăng sản phẩm mới
@@ -220,7 +226,7 @@ export default function BusinessProductsPage() {
           Bạn đang sử dụng gói <strong className="text-amber-200">{activeSub?.package?.name || "Free"}</strong>. 
           Giới hạn sản phẩm: <strong className="text-amber-200">{products.length} / {maxProducts}</strong>.
         </div>
-        {limitsReached && !authApi.isAdmin() && (
+        {limitsReached && (
           <span className="font-semibold text-red-400">
             Bạn đã đạt giới hạn! Hãy nâng cấp gói để tiếp tục đăng thêm.
           </span>

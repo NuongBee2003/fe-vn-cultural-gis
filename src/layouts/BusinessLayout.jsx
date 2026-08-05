@@ -150,7 +150,8 @@ export default function BusinessLayout() {
             {BUSINESS_NAV_ITEMS
               .filter((item) => {
                 if (item.to === "/business/products") {
-                  return String(userInfo?.role || "").toLowerCase() === "admin";
+                  const role = String(userInfo?.role || "").toLowerCase();
+                  return role === "admin" || role === "business";
                 }
                 return true;
               })

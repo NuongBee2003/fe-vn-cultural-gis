@@ -305,7 +305,7 @@ export const routeConfig = [
       {
         path: "products",
         element: (
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["business", "admin"]}>
             <BusinessProductsPage />
           </ProtectedRoute>
         ),
