@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAllPlaces, useCategories } from "@/api/user/useLocationQuery";
 import { useCreatePlace, useUpdatePlace, useDeletePlace } from "@/api/admin/locationAdminApi";
 import { useTranslation } from "react-i18next";
@@ -30,6 +31,7 @@ const DEFAULT_CATEGORY = { id: null, name: "all" };
 
 export default function PlacesManagementPage() {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -118,7 +120,12 @@ export default function PlacesManagementPage() {
           }
         }
       }
-      deleteMutation.mutate(place.id);
+      deleteMutation.mutate(place.id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["places"] });
+          queryClient.invalidateQueries({ queryKey: ["locations"] });
+        }
+      });
     }
   };
 
@@ -133,6 +140,8 @@ export default function PlacesManagementPage() {
     } else {
       await createMutation.mutateAsync(formData);
     }
+    queryClient.invalidateQueries({ queryKey: ["places"] });
+    queryClient.invalidateQueries({ queryKey: ["locations"] });
   };
 
   const handlePageSizeChange = (newSize) => {
