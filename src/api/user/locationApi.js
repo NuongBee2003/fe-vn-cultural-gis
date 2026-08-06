@@ -396,6 +396,7 @@ export async function searchPlaceLocationsByDB(query, limit = 10) {
             lat: loc.lat ? Number(loc.lat) : null,
             lng: loc.lng ? Number(loc.lng) : null,
             address: loc.address || "",
+            status: loc.status || "active",
             iconMarker: item.category?.icon_marker || "",
             markerColor: item.category?.color || "#3b82f6",
             thumbnail: item.thumbnail || null,

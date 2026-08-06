@@ -294,8 +294,13 @@ export default function SearchBar({ onSelectLocation, onSearchSubmit, onSearchCl
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-semibold text-gray-800 truncate group-hover:text-[#B8922E] transition-colors">
-                            {loc.name}
+                          <p className="text-[13px] font-semibold text-gray-800 group-hover:text-[#B8922E] transition-colors flex items-center gap-1.5">
+                            <span className="truncate">{loc.name}</span>
+                            {loc.status === "closed" && (
+                              <span className="shrink-0 text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-1 py-0.25 rounded-md">
+                                Tạm đóng
+                              </span>
+                            )}
                           </p>
                           {loc.address && (
                             <p className="text-[11.5px] text-gray-400 truncate mt-0.5">
@@ -391,8 +396,13 @@ export default function SearchBar({ onSelectLocation, onSearchSubmit, onSearchCl
 
                         {/* Nội dung */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-semibold text-gray-800 truncate group-hover:text-[#B8922E] transition-colors">
-                            {loc.name}
+                          <p className="text-[13px] font-semibold text-gray-800 group-hover:text-[#B8922E] transition-colors flex items-center gap-1.5">
+                            <span className="truncate">{loc.name}</span>
+                            {loc.status === "closed" && (
+                              <span className="shrink-0 text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-1 py-0.25 rounded-md">
+                                Tạm đóng
+                              </span>
+                            )}
                           </p>
                           {loc.address && (
                             <p className="text-[11.5px] text-gray-400 truncate mt-0.5">
