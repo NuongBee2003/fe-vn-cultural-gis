@@ -3,6 +3,15 @@ import { read, utils, writeFile } from "xlsx";
 import { X, Upload, Download, CheckCircle, AlertTriangle, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
 import { useNotify } from "@/context/NotifyContext";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table-data/table";
+
 
 export default function ExcelImportModal({ isOpen, onClose, categories, onSubmit, isMutating }) {
   const notify = useNotify();
