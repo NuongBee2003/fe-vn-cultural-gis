@@ -164,6 +164,18 @@ export default function CustomManagementPage() {
     const errs = {};
     if (!formData.name.trim()) errs.name = "Tên phong tục không được để trống";
     if (!formData.time_period.trim()) errs.time_period = "Vui lòng nhập thời gian diễn ra";
+    
+    if (!formData.rituals || !formData.rituals.trim()) {
+      errs.rituals = "Các nghi lễ không được để trống và phải phân tách bằng kí tự ' -> ' (Ví dụ: Chuẩn bị -> Làm lễ -> Thụ lộc)";
+    } else if (!formData.rituals.includes(" -> ")) {
+      errs.rituals = "Các nghi lễ phải được phân tách bằng kí tự ' -> ' (Ví dụ: Chuẩn bị -> Làm lễ -> Thụ lộc)";
+    } else {
+      const parts = formData.rituals.split(" -> ");
+      if (parts.some((part) => !part.trim())) {
+        errs.rituals = "Các bước nghi lễ không được để trống ở giữa các kí tự ' -> '";
+      }
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -404,7 +416,7 @@ export default function CustomManagementPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Tên phong tục */}
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground">Tên phong tục *</label>
+                <label className="block text-sm font-medium mb-1.5 text-foreground">Tên phong tục <span className="text-red-500">*</span></label>
                 <Input
                   name="name"
                   value={formData.name}
@@ -417,7 +429,7 @@ export default function CustomManagementPage() {
 
               {/* Thời gian */}
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground">Thời gian diễn ra *</label>
+                <label className="block text-sm font-medium mb-1.5 text-foreground">Thời gian diễn ra <span className="text-red-500">*</span></label>
                 <Input
                   name="time_period"
                   value={formData.time_period}
@@ -430,7 +442,7 @@ export default function CustomManagementPage() {
 
               {/* Nghi lễ chính */}
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground">Các nghi lễ & hoạt động chính</label>
+                <label className="block text-sm font-medium mb-1.5 text-foreground">Các nghi lễ & hoạt động chính <span className="text-red-500">*</span></label>
                 <Input
                   name="rituals"
                   value={formData.rituals}
@@ -438,6 +450,7 @@ export default function CustomManagementPage() {
                   placeholder="Ví dụ: Chuẩn bị lễ vật -> Làm lễ khấn -> Thụ lộc..."
                   disabled={isMutating}
                 />
+                {errors.rituals && <p className="text-xs text-red-500 mt-1">{errors.rituals}</p>}
               </div>
 
               {/* Mô tả */}
