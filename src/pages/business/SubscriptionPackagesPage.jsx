@@ -183,15 +183,17 @@ export default function SubscriptionPackagesPage() {
     // Kiểm tra xem đã có thông tin doanh nghiệp hay chưa
     const hasName = currentUser.business_name && currentUser.business_name.trim();
     const hasPhone = currentUser.business_phone && currentUser.business_phone.trim();
+    const phoneRegex = /^0\d{9}$/;
+    const hasValidPhone = hasPhone && phoneRegex.test(currentUser.business_phone.trim());
 
-    if (hasName && hasPhone) {
+    if (hasName && hasValidPhone) {
       // Tự động điền state
       setBusinessName(currentUser.business_name.trim());
       setBusinessPhone(currentUser.business_phone.trim());
       // Thực hiện đăng ký luôn, bỏ qua bước nhập form
       await executeSubscribe(pkg, currentUser.business_name, currentUser.business_phone);
     } else {
-      // Nếu chưa có đầy đủ thông tin, hiện form yêu cầu điền
+      // Nếu chưa có đầy đủ thông tin hoặc số điện thoại không hợp lệ, hiện form yêu cầu điền
       setBusinessName(currentUser.business_name || "");
       setBusinessPhone(currentUser.business_phone || "");
       setTargetPkg(pkg);
@@ -205,6 +207,12 @@ export default function SubscriptionPackagesPage() {
 
     if (!businessName.trim() || !businessPhone.trim()) {
       notify.warning("Vui lòng nhập đầy đủ tên doanh nghiệp và số điện thoại!");
+      return;
+    }
+
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(businessPhone.trim())) {
+      notify.warning("Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0.");
       return;
     }
 
