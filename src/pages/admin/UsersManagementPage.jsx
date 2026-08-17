@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAdminUsers } from "@/api/admin/userAdminApi";
+import { getAdminUsers, updateUserStatus } from "@/api/admin/userAdminApi";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -55,6 +56,8 @@ export default function UsersManagementPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
+  const notify = useNotify();
 
   // Filters
   const [search, setSearch] = useState("");
@@ -73,6 +76,19 @@ export default function UsersManagementPage() {
       setError("Không thể tải danh sách tài khoản từ máy chủ.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (userId, newStatus) => {
+    try {
+      setUpdatingId(userId);
+      await updateUserStatus(userId, newStatus);
+      notify.success("Cập nhật trạng thái thành công!");
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: newStatus } : u));
+    } catch (err) {
+      notify.error(err.message || "Cập nhật trạng thái thất bại!");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -188,6 +204,7 @@ export default function UsersManagementPage() {
             >
               <option value="all">Tất cả</option>
               <option value="admin">Quản trị viên</option>
+              <option value="business">Doanh nghiệp</option>
               <option value="user">Người dùng</option>
             </select>
           </label>
@@ -228,7 +245,7 @@ export default function UsersManagementPage() {
                 <TableHead className="w-10">STT</TableHead>
                 <TableHead>Tài khoản</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Quyền hạn</TableHead>
+                <TableHead>Trạng thái</TableHead>
                 <TableHead>ID</TableHead>
                 <TableHead>Ngày tạo</TableHead>
               </TableRow>
@@ -267,9 +284,21 @@ export default function UsersManagementPage() {
                       </div>
                     </TableCell>
 
-                    {/* Quyền */}
+                    {/* Trạng thái */}
                     <TableCell>
-                      {getRoleBadge(user.role)}
+                      <select
+                        value={user.status || "active"}
+                        onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                        disabled={updatingId === user.id}
+                        className={`h-8 w-[120px] rounded-md border bg-transparent px-2 text-xs font-semibold outline-none focus-visible:ring-2 disabled:opacity-50 ${
+                          user.status === 'banned' 
+                            ? 'border-red-200 text-red-700 bg-red-50' 
+                            : 'border-emerald-200 text-emerald-700 bg-emerald-50'
+                        }`}
+                      >
+                        <option value="active">Hoạt động</option>
+                        <option value="banned">Bị khóa</option>
+                      </select>
                     </TableCell>
 
                     {/* ID */}
