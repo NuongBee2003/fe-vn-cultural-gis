@@ -431,17 +431,21 @@ export default function ExhibitionsManagementPage() {
                       )}
                     </TableCell>
 
-                    <TableCell className="font-semibold text-foreground">
-                      {item.title}
-                      {item.style_tag && (
-                        <span className="block text-[10px] font-normal text-muted-foreground">
-                          Style: {item.style_tag}
-                        </span>
-                      )}
+                    <TableCell>
+                      <div className="font-semibold text-foreground max-w-[200px] whitespace-normal line-clamp-2">
+                        {item.title}
+                        {item.style_tag && (
+                          <span className="block text-[10px] font-normal text-muted-foreground mt-0.5">
+                            Style: {item.style_tag}
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-sm">
-                      {item.user?.username || "Hệ thống"}
+                    <TableCell>
+                      <div className="text-sm max-w-[120px] whitespace-normal truncate">
+                        {item.user?.username || "Hệ thống"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-xs font-medium">
@@ -450,15 +454,17 @@ export default function ExhibitionsManagementPage() {
                       </span>
                     </TableCell>
 
-                    <TableCell className="text-xs">
-                      <div className="flex flex-col gap-0.5">
-                        {item.place_name && (
-                          <span className="font-medium text-slate-700 flex items-center gap-0.5">
-                            <MapPin size={10} className="shrink-0 text-slate-400" />
-                            {item.place_name}
-                          </span>
-                        )}
-                        <span className="text-muted-foreground">{item.province}</span>
+                    <TableCell>
+                      <div className="text-xs max-w-[150px] whitespace-normal">
+                        <div className="flex flex-col gap-0.5">
+                          {item.place_name && (
+                            <span className="font-medium text-slate-700 flex items-center gap-0.5 line-clamp-2">
+                              <MapPin size={10} className="shrink-0 text-slate-400" />
+                              {item.place_name}
+                            </span>
+                          )}
+                          <span className="text-muted-foreground line-clamp-1">{item.province}</span>
+                        </div>
                       </div>
                     </TableCell>
 
@@ -466,8 +472,10 @@ export default function ExhibitionsManagementPage() {
                       {getStatusBadge(item.status)}
                     </TableCell>
 
-                    <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate" title={item.description}>
-                      {item.description}
+                    <TableCell>
+                      <div className="text-xs text-muted-foreground max-w-[200px] whitespace-normal line-clamp-2" title={item.description}>
+                        {item.description || "—"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right space-x-1.5 whitespace-nowrap">

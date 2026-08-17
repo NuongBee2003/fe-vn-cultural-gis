@@ -316,22 +316,30 @@ export default function FolkArtManagementPage() {
                       )}
                     </TableCell>
 
-                    <TableCell className="font-semibold text-foreground">
-                      {item.name}
+                    <TableCell>
+                      <div className="font-semibold text-foreground max-w-[200px] whitespace-normal line-clamp-2">
+                        {item.name}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-xs">
-                      <span className="inline-block rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-xs font-medium border border-emerald-100">
-                        {item.instruments || "—"}
-                      </span>
+                    <TableCell>
+                      <div className="text-xs max-w-[200px] whitespace-normal">
+                        <span className="inline-block rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-xs font-medium border border-emerald-100 line-clamp-2">
+                          {item.instruments || "—"}
+                        </span>
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate" title={item.history}>
-                      {item.history || "—"}
+                    <TableCell>
+                      <div className="text-xs text-muted-foreground max-w-[200px] whitespace-normal line-clamp-2" title={item.history}>
+                        {item.history || "—"}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate" title={item.description}>
-                      {item.description || "—"}
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[300px] whitespace-normal line-clamp-2" title={item.description}>
+                        {item.description || "—"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right space-x-2 whitespace-nowrap">

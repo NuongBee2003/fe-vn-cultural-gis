@@ -339,12 +339,16 @@ export default function CustomManagementPage() {
                       </span>
                     </TableCell>
 
-                    <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate" title={item.rituals}>
-                      {item.rituals || "—"}
+                    <TableCell>
+                      <div className="text-xs text-muted-foreground max-w-[200px] whitespace-normal line-clamp-2" title={item.rituals}>
+                        {item.rituals || "—"}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate" title={item.description}>
-                      {item.description || "—"}
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[300px] whitespace-normal line-clamp-2" title={item.description}>
+                        {item.description || "—"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right space-x-2 whitespace-nowrap">

@@ -378,18 +378,23 @@ export default function CuisineManagementPage() {
                     </TableCell>
 
                     <TableCell>
-                      <span className="inline-block rounded-full bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium border">
-                        {item.origin || "—"}
-                      </span>
+                      <div className="max-w-[150px] whitespace-normal">
+                        <span className="inline-block rounded-full bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium border">
+                          {item.origin || "—"}
+                        </span>
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate" title={item.ingredients}>
-                      {item.ingredients || "—"}
+                    <TableCell>
+                      <div className="text-xs text-muted-foreground max-w-[150px] whitespace-normal line-clamp-2" title={item.ingredients}>
+                        {item.ingredients || "—"}
+                      </div>
                     </TableCell>
 
                     {/* Địa điểm gợi ý */}
-                    <TableCell className="text-xs max-w-[200px]">
-                      <div className="flex flex-wrap gap-1">
+                    <TableCell>
+                      <div className="text-xs max-w-[200px] whitespace-normal">
+                        <div className="flex flex-wrap gap-1">
                         {item.cuisine_places && item.cuisine_places.length > 0 ? (
                           item.cuisine_places.map((cp) => (
                             <span
@@ -403,11 +408,14 @@ export default function CuisineManagementPage() {
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
+                        </div>
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate" title={item.description}>
-                      {item.description || "—"}
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[200px] whitespace-normal line-clamp-2" title={item.description}>
+                        {item.description || "—"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right space-x-2 whitespace-nowrap">

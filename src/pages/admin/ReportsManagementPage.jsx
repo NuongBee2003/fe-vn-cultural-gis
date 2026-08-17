@@ -325,8 +325,9 @@ export default function ReportsManagementPage() {
                     </TableCell>
 
                     {/* Người báo cáo */}
-                    <TableCell className="max-w-[150px]">
-                      {report.user ? (
+                    <TableCell>
+                      <div className="max-w-[150px]">
+                        {report.user ? (
                         <div className="flex flex-col">
                           <span className="font-semibold text-xs text-slate-800">
                             {report.user.username}
@@ -337,12 +338,14 @@ export default function ReportsManagementPage() {
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground italic">(Ẩn danh)</span>
-                      )}
+                        )}
+                      </div>
                     </TableCell>
 
                     {/* Đối tượng báo cáo */}
-                    <TableCell className="max-w-[220px]">
-                      {report.location ? (
+                    <TableCell>
+                      <div className="max-w-[220px] whitespace-normal">
+                        {report.location ? (
                         <div className="flex items-start gap-1.5 text-xs text-slate-800">
                           <MapPin size={14} className="mt-0.5 shrink-0 text-rose-500" />
                           <div>
@@ -391,12 +394,14 @@ export default function ReportsManagementPage() {
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
-                      )}
+                        )}
+                      </div>
                     </TableCell>
 
                     {/* Lý do & Mô tả (Gộp 1 ô) */}
-                    <TableCell className="max-w-[280px]">
-                      <div className="flex flex-col gap-0.5">
+                    <TableCell>
+                      <div className="max-w-[280px] whitespace-normal">
+                        <div className="flex flex-col gap-0.5">
                         <span className="text-xs font-semibold text-slate-800">
                           {report.report_type}
                         </span>
@@ -405,6 +410,7 @@ export default function ReportsManagementPage() {
                             Mô tả: {report.description}
                           </span>
                         )}
+                        </div>
                       </div>
                     </TableCell>
 

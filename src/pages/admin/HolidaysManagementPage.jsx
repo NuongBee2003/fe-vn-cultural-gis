@@ -411,8 +411,10 @@ export default function HolidaysManagementPage() {
                       )}
                     </TableCell>
 
-                    <TableCell className="font-semibold text-foreground">
-                      {item.name}
+                    <TableCell>
+                      <div className="font-semibold text-foreground max-w-[200px] whitespace-normal line-clamp-2">
+                        {item.name}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-xs">
@@ -428,7 +430,8 @@ export default function HolidaysManagementPage() {
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell>
+                      <div className="text-xs text-muted-foreground whitespace-normal">
                       {item.places?.length > 0 ? (
                         <div className="flex flex-col gap-1">
                           {item.places.map(p => (
@@ -443,6 +446,7 @@ export default function HolidaysManagementPage() {
                       ) : (
                         <span className="text-slate-400 italic">Chưa liên kết</span>
                       )}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right space-x-2 whitespace-nowrap">

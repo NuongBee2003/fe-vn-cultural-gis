@@ -390,8 +390,10 @@ export default function PlacesManagementPage() {
                         {(page - 1) * pageSize + index + 1}
                       </TableCell>
 
-                      <TableCell className="font-medium max-w-[200px]">
-                        <span className="line-clamp-2">{place.name}</span>
+                      <TableCell>
+                        <div className="font-medium max-w-[200px] whitespace-normal line-clamp-2">
+                          {place.name}
+                        </div>
                       </TableCell>
 
                       <TableCell>
@@ -400,22 +402,26 @@ export default function PlacesManagementPage() {
                         </span>
                       </TableCell>
 
-                      <TableCell className="text-sm text-muted-foreground max-w-[240px]">
-                        <div className="flex flex-col gap-1">
-                          {addresses.length > 0 ? (
-                            addresses.map((addr, idx) => (
-                              <span key={idx} className="line-clamp-1 border-b border-muted/50 pb-0.5 last:border-0 last:pb-0" title={addr}>
-                                {addr}
-                              </span>
-                            ))
-                          ) : (
-                            "—"
-                          )}
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground max-w-[240px] whitespace-normal">
+                          <div className="flex flex-col gap-1">
+                            {addresses.length > 0 ? (
+                              addresses.map((addr, idx) => (
+                                <span key={idx} className="line-clamp-1 border-b border-muted/50 pb-0.5 last:border-0 last:pb-0" title={addr}>
+                                  {addr}
+                                </span>
+                              ))
+                            ) : (
+                              "—"
+                            )}
+                          </div>
                         </div>
                       </TableCell>
 
-                      <TableCell className="text-sm text-muted-foreground max-w-[240px]">
-                        <span className="line-clamp-2 text-center">{place.description || "—"}</span>
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground max-w-[240px] whitespace-normal line-clamp-2 text-center">
+                          {place.description || "—"}
+                        </div>
                       </TableCell>
 
                       <TableCell>

@@ -328,8 +328,10 @@ export default function ProductsManagementPage() {
                        product.category === 'accessory' ? 'Phụ kiện' : 'Doanh nghiệp'}
                     </span>
                   </TableCell>
-                  <TableCell className="max-w-xs truncate" title={product.description}>
-                    {product.description || <span className="text-muted-foreground italic">Không có mô tả</span>}
+                  <TableCell>
+                    <div className="max-w-xs whitespace-normal line-clamp-2" title={product.description}>
+                      {product.description || "—"}
+                    </div>
                   </TableCell>
                   <TableCell className="font-semibold text-amber-700">
                     {Number(product.price).toLocaleString("vi-VN")} ₫

@@ -261,8 +261,10 @@ export default function UsersManagementPage() {
                     </TableCell>
 
                     {/* Email */}
-                    <TableCell className="text-sm text-muted-foreground max-w-[220px] truncate">
-                      {user.email || "—"}
+                    <TableCell>
+                      <div className="max-w-[220px] truncate text-sm text-muted-foreground">
+                        {user.email || "—"}
+                      </div>
                     </TableCell>
 
                     {/* Quyền */}

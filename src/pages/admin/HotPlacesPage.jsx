@@ -346,8 +346,9 @@ export default function HotPlacesPage() {
                       </TableCell>
 
                       {/* Name & description */}
-                      <TableCell className="max-w-[240px]">
-                        <div className="flex flex-col gap-0.5">
+                      <TableCell>
+                        <div className="max-w-[240px] whitespace-normal">
+                          <div className="flex flex-col gap-0.5">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-bold text-slate-800 text-xs line-clamp-1">{place.name}</span>
                             {(place.is_featured === 1 || place.is_featured === '1' || place.is_featured === true) && (
@@ -361,6 +362,7 @@ export default function HotPlacesPage() {
                               {place.description}
                             </span>
                           )}
+                          </div>
                         </div>
                       </TableCell>
 
@@ -399,8 +401,9 @@ export default function HotPlacesPage() {
                       </TableCell>
 
                       {/* Addresses of locations */}
-                      <TableCell className="max-w-[280px] text-[11px] text-slate-500">
-                        <div className="flex flex-col gap-1">
+                      <TableCell>
+                        <div className="max-w-[280px] text-[11px] text-slate-500 whitespace-normal">
+                          <div className="flex flex-col gap-1">
                           {addresses.length > 0 ? (
                             addresses.map((addr, idx) => (
                               <span key={idx} className="line-clamp-1 flex items-center gap-1" title={addr}>
@@ -411,6 +414,7 @@ export default function HotPlacesPage() {
                           ) : (
                             <span className="italic text-slate-400">Chưa cập nhật chi nhánh</span>
                           )}
+                          </div>
                         </div>
                       </TableCell>
 

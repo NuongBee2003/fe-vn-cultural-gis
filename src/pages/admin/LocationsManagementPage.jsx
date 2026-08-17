@@ -195,8 +195,10 @@ export default function LocationsManagementPage() {
                   <TableRow key={`${location.id}-${index}`}>
                     <TableCell>{(page - 1) * pageSize + index + 1}</TableCell>
                     <TableCell className="font-medium">{location.name}</TableCell>
-                    <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
-                      {location.description || "Chưa có mô tả"}
+                    <TableCell>
+                      <div className="max-w-xs whitespace-normal line-clamp-2 text-sm text-muted-foreground">
+                        {location.description || "Chưa có mô tả"}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <span className="inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">

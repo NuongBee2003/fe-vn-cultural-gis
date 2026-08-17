@@ -224,24 +224,26 @@ export default function ReviewsManagementPage() {
                       {(page - 1) * pageSize + index + 1}
                     </TableCell>
 
-                    <TableCell className="font-semibold max-w-[120px] truncate">
-                      {review.user?.username || "(Ẩn danh)"}
+                    <TableCell>
+                      <div className="font-semibold max-w-[120px] truncate">
+                        {review.user?.username || "(Ẩn danh)"}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="font-medium max-w-[200px]">
-                      <span className="line-clamp-2">
+                    <TableCell>
+                      <div className="font-medium max-w-[200px] whitespace-normal line-clamp-2">
                         {review.location?.place?.name || review.location?.address || "—"}
-                      </span>
+                      </div>
                     </TableCell>
 
                     <TableCell>
                       {renderStars(review.rating)}
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[280px]">
-                      <span className="line-clamp-2" title={review.comment}>
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[280px] whitespace-normal line-clamp-2" title={review.comment}>
                         {review.comment || <span className="italic text-gray-400">Không có bình luận</span>}
-                      </span>
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">

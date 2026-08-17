@@ -252,22 +252,28 @@ export default function PostsManagementPage() {
                       {(page - 1) * pageSize + index + 1}
                     </TableCell>
 
-                    <TableCell className="font-semibold max-w-[120px] truncate">
-                      {post.user?.username || "(Ẩn danh)"}
+                    <TableCell>
+                      <div className="font-semibold max-w-[120px] truncate">
+                        {post.user?.username || "(Ẩn danh)"}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="font-medium max-w-[180px]">
-                      <span className="line-clamp-2">{post.title}</span>
+                    <TableCell>
+                      <div className="font-medium max-w-[180px] whitespace-normal line-clamp-2">
+                        {post.title}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[280px]">
-                      <span className="line-clamp-2">{post.content}</span>
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[280px] whitespace-normal line-clamp-2">
+                        {post.content}
+                      </div>
                     </TableCell>
 
-                    <TableCell className="text-sm text-muted-foreground max-w-[180px]">
-                      <span className="line-clamp-2">
+                    <TableCell>
+                      <div className="text-sm text-muted-foreground max-w-[180px] whitespace-normal line-clamp-2">
                         {post.location?.place?.name || post.location?.address || "—"}
-                      </span>
+                      </div>
                     </TableCell>
 
                     <TableCell>
