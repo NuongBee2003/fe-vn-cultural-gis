@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { Input } from "@/components/ui/input/input";
@@ -26,6 +27,7 @@ import { REGIONS } from "@/constants/provinces";
 
 export default function CuisineManagementPage() {
   const { t } = useTranslation();
+  const notify = useNotify();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -164,7 +166,11 @@ export default function CuisineManagementPage() {
   };
 
   const handleDelete = async (item) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa món ẩm thực "${item.name}" không?`)) {
+    const ok = await notify.confirm(`Bạn có chắc chắn muốn xóa món ẩm thực "${item.name}" không?`, {
+      title: "Xóa ẩm thực",
+      confirmLabel: "Xóa",
+    });
+    if (ok) {
       try {
         setIsMutating(true);
         if (item.image_url && item.image_url.includes("supabase.co")) {
@@ -176,8 +182,9 @@ export default function CuisineManagementPage() {
         }
         await deleteCuisine(item.id);
         setItems((prev) => prev.filter((i) => i.id !== item.id));
+        notify.success("Xóa món ẩm thực thành công!");
       } catch (error) {
-        alert("Xóa thất bại: " + error.message);
+        notify.error("Xóa thất bại: " + error.message);
       } finally {
         setIsMutating(false);
       }
@@ -209,7 +216,7 @@ export default function CuisineManagementPage() {
       };
       reader.readAsDataURL(file);
     } catch (err) {
-      alert(err.message);
+      notify.error(err.message);
     }
   };
 
@@ -253,14 +260,16 @@ export default function CuisineManagementPage() {
 
       if (selectedItem) {
         await updateCuisine(selectedItem.id, payload);
+        notify.success("Cập nhật ẩm thực thành công!");
       } else {
         await createCuisine(payload);
+        notify.success("Thêm mới ẩm thực thành công!");
       }
 
       setIsOpen(false);
       loadData();
     } catch (err) {
-      alert("Lỗi khi lưu ẩm thực: " + err.message);
+      notify.error("Lỗi khi lưu ẩm thực: " + err.message);
     } finally {
       setIsMutating(false);
       setUploadingImage(false);

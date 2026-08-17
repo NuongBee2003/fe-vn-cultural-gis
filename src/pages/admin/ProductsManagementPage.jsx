@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, ExternalLink, RefreshCw, X, PackageOpen, Search } from "lucide-react";
 import { productApi } from "@/api/business/productApi";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import {
@@ -18,6 +19,7 @@ import { SUPABASE_BUCKETS } from "@/constants/supabaseConfig";
 const PAGE_SIZES = [5, 10, 15, 20];
 
 export default function ProductsManagementPage() {
+  const notify = useNotify();
   const [products, setProducts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -104,9 +106,11 @@ export default function ProductsManagementPage() {
   };
 
   const handleDelete = async (id, name, imageUrl) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${name}" không?`)) {
-      return;
-    }
+    const ok = await notify.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${name}" không?`, {
+      title: "Xóa sản phẩm",
+      confirmLabel: "Xóa",
+    });
+    if (!ok) return;
     try {
       if (imageUrl && imageUrl.includes("supabase.co")) {
         try {
@@ -116,10 +120,10 @@ export default function ProductsManagementPage() {
         }
       }
       await productApi.delete(id);
-      alert("Xóa sản phẩm thành công!");
+      notify.success("Xóa sản phẩm thành công!");
       fetchProducts();
     } catch (err) {
-      alert(err.message || "Xóa sản phẩm thất bại");
+      notify.error(err.message || "Xóa sản phẩm thất bại");
     }
   };
 
@@ -146,14 +150,14 @@ export default function ProductsManagementPage() {
       };
       reader.readAsDataURL(file);
     } catch (err) {
-      alert(err.message);
+      notify.error(err.message);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.price) {
-      alert("Vui lòng điền tên và giá sản phẩm!");
+      notify.error("Vui lòng điền tên và giá sản phẩm!");
       return;
     }
 
@@ -189,15 +193,15 @@ export default function ProductsManagementPage() {
 
       if (editingProduct) {
         await productApi.update(editingProduct.id, payload);
-        alert("Cập nhật sản phẩm thành công!");
+        notify.success("Cập nhật sản phẩm thành công!");
       } else {
         await productApi.create(payload);
-        alert("Đăng sản phẩm thành công!");
+        notify.success("Đăng sản phẩm thành công!");
       }
       setIsModalOpen(false);
       fetchProducts();
     } catch (err) {
-      alert(err.message || "Lưu sản phẩm thất bại");
+      notify.error(err.message || "Lưu sản phẩm thất bại");
     } finally {
       setSubmitting(false);
       setUploadingImage(false);

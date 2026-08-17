@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAllPlaces, useCategories } from "@/api/user/useLocationQuery";
 import { useCreatePlace, useUpdatePlace, useDeletePlace } from "@/api/admin/locationAdminApi";
 import { useTranslation } from "react-i18next";
+import { useNotify } from "@/context/NotifyContext";
 import { authApi } from "@/api/user/authApi";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
@@ -31,6 +32,7 @@ const DEFAULT_CATEGORY = { id: null, name: "all" };
 
 export default function PlacesManagementPage() {
   const { t } = useTranslation();
+  const notify = useNotify();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -96,11 +98,11 @@ export default function PlacesManagementPage() {
   };
 
   const handleDelete = async (place) => {
-    if (
-      window.confirm(
-        t('dashboard.places.confirmDelete', { name: place.name })
-      )
-    ) {
+    const ok = await notify.confirm(
+      t('dashboard.places.confirmDelete', { name: place.name }),
+      { title: "Xác nhận xóa", confirmLabel: "Xóa" }
+    );
+    if (ok) {
       const placeImages = [];
       for (const loc of place.locations || []) {
         if (loc.assets) {

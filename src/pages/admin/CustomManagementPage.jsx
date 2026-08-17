@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNotify } from "@/context/NotifyContext";
 import { Button } from "@/components/ui/button/button";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { Input } from "@/components/ui/input/input";
@@ -24,6 +25,7 @@ import { SUPABASE_BUCKETS, IMAGE_UPLOAD_CONFIG } from "@/constants/supabaseConfi
 
 export default function CustomManagementPage() {
   const { t } = useTranslation();
+  const notify = useNotify();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -38,7 +40,7 @@ export default function CustomManagementPage() {
     name: "",
     description: "",
     time_period: "",
-    rituals: "",
+    rituals: [""],
     image_url: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -88,7 +90,7 @@ export default function CustomManagementPage() {
       name: "",
       description: "",
       time_period: "",
-      rituals: "",
+      rituals: [""],
       image_url: "",
     });
     setSelectedFile(null);
@@ -102,7 +104,7 @@ export default function CustomManagementPage() {
       name: item.name || "",
       description: item.description || "",
       time_period: item.time_period || "",
-      rituals: item.rituals || "",
+      rituals: item.rituals ? item.rituals.split(" -> ") : [""],
       image_url: item.image_url || "",
     });
     setSelectedFile(null);
@@ -111,7 +113,11 @@ export default function CustomManagementPage() {
   };
 
   const handleDelete = async (item) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa phong tục "${item.name}" không?`)) {
+    const ok = await notify.confirm(`Bạn có chắc chắn muốn xóa phong tục "${item.name}" không?`, {
+      title: "Xóa phong tục",
+      confirmLabel: "Xóa",
+    });
+    if (ok) {
       try {
         setIsMutating(true);
         if (item.image_url && item.image_url.includes("supabase.co")) {
@@ -123,8 +129,9 @@ export default function CustomManagementPage() {
         }
         await deleteCustom(item.id);
         setItems((prev) => prev.filter((i) => i.id !== item.id));
+        notify.success("Xóa phong tục thành công!");
       } catch (error) {
-        alert("Xóa thất bại: " + error.message);
+        notify.error("Xóa thất bại: " + error.message);
       } finally {
         setIsMutating(false);
       }
@@ -156,7 +163,7 @@ export default function CustomManagementPage() {
       };
       reader.readAsDataURL(file);
     } catch (err) {
-      alert(err.message);
+      notify.error(err.message);
     }
   };
 
@@ -164,16 +171,9 @@ export default function CustomManagementPage() {
     const errs = {};
     if (!formData.name.trim()) errs.name = "Tên phong tục không được để trống";
     if (!formData.time_period.trim()) errs.time_period = "Vui lòng nhập thời gian diễn ra";
-    
-    if (!formData.rituals || !formData.rituals.trim()) {
-      errs.rituals = "Các nghi lễ không được để trống và phải phân tách bằng kí tự ' -> ' (Ví dụ: Chuẩn bị -> Làm lễ -> Thụ lộc)";
-    } else if (!formData.rituals.includes(" -> ")) {
-      errs.rituals = "Các nghi lễ phải được phân tách bằng kí tự ' -> ' (Ví dụ: Chuẩn bị -> Làm lễ -> Thụ lộc)";
-    } else {
-      const parts = formData.rituals.split(" -> ");
-      if (parts.some((part) => !part.trim())) {
-        errs.rituals = "Các bước nghi lễ không được để trống ở giữa các kí tự ' -> '";
-      }
+    const validRituals = Array.isArray(formData.rituals) ? formData.rituals.filter(r => r.trim()) : [];
+    if (validRituals.length === 0) {
+      errs.rituals = "Vui lòng thêm ít nhất một bước nghi lễ hoặc hoạt động chính";
     }
 
     setErrors(errs);
@@ -205,19 +205,22 @@ export default function CustomManagementPage() {
 
       const payload = {
         ...formData,
+        rituals: formData.rituals.filter(r => r.trim()).join(" -> "),
         image_url: imageUrl,
       };
 
       if (selectedItem) {
         await updateCustom(selectedItem.id, payload);
+        notify.success("Cập nhật phong tục thành công!");
       } else {
         await createCustom(payload);
+        notify.success("Thêm mới phong tục thành công!");
       }
 
       setIsOpen(false);
       loadData();
     } catch (err) {
-      alert("Lỗi khi lưu phong tục: " + err.message);
+      notify.error("Lỗi khi lưu phong tục: " + err.message);
     } finally {
       setIsMutating(false);
       setUploadingImage(false);
@@ -447,13 +450,49 @@ export default function CustomManagementPage() {
               {/* Nghi lễ chính */}
               <div>
                 <label className="block text-sm font-medium mb-1.5 text-foreground">Các nghi lễ & hoạt động chính <span className="text-red-500">*</span></label>
-                <Input
-                  name="rituals"
-                  value={formData.rituals}
-                  onChange={handleInputChange}
-                  placeholder="Ví dụ: Chuẩn bị lễ vật -> Làm lễ khấn -> Thụ lộc..."
-                  disabled={isMutating}
-                />
+                <div className="space-y-2">
+                  {formData.rituals.map((ritual, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-xs font-semibold text-slate-500 shrink-0">
+                        {index + 1}
+                      </span>
+                      <Input
+                        value={ritual}
+                        onChange={(e) => {
+                          const newRituals = [...formData.rituals];
+                          newRituals[index] = e.target.value;
+                          setFormData(prev => ({ ...prev, rituals: newRituals }));
+                          if (errors.rituals) setErrors(prev => ({ ...prev, rituals: "" }));
+                        }}
+                        placeholder={`Bước ${index + 1}...`}
+                        disabled={isMutating}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (formData.rituals.length > 1) {
+                            const newRituals = formData.rituals.filter((_, i) => i !== index);
+                            setFormData(prev => ({ ...prev, rituals: newRituals }));
+                          }
+                        }}
+                        disabled={formData.rituals.length <= 1 || isMutating}
+                        className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 text-xs h-8 border-dashed"
+                    onClick={() => setFormData(prev => ({ ...prev, rituals: [...prev.rituals, ""] }))}
+                    disabled={isMutating}
+                  >
+                    <Plus size={14} className="mr-1" /> Thêm bước
+                  </Button>
+                </div>
                 {errors.rituals && <p className="text-xs text-red-500 mt-1">{errors.rituals}</p>}
               </div>
 
