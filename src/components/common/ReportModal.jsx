@@ -4,11 +4,7 @@ import { Flag, X, Loader2, CheckCircle2, AlertCircle, MapPin, MessageSquare } fr
 import { createReport } from "@/api/user/reportApi";
 
 const LOCATION_OPTIONS = [
-  { id: "WRONG_LOCATION", label: "Vị trí không chính xác / sai vị trí trên bản đồ" },
   { id: "CLOSED", label: "Địa điểm đã ngừng hoạt động / đóng cửa" },
-  { id: "INCORRECT_INFO", label: "Thông tin địa điểm sai sự thật" },
-  { id: "INAPPROPRIATE_CONTENT", label: "Hình ảnh hoặc nội dung không phù hợp" },
-  { id: "OTHER", label: "Ý kiến khác" },
 ];
 
 const COMMENT_OPTIONS = [
