@@ -20,6 +20,25 @@ export const authApi = {
     return data;
   },
 
+  // Google Login
+  googleLogin: async (payload) => {
+    const response = await fetch(`${API_URL}/auth/google-login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Google Login failed');
+    }
+
+    return data;
+  },
+
   // Register
   register: async (username, email, password, phone, avatar) => {
     const response = await fetch(`${API_URL}/auth/register`, {
